@@ -26,6 +26,7 @@
     <button class="nav-item" title="Overview" data-href="index.html" aria-label="Go to Overview"><span class="nav-icon">🏠</span><span class="nav-label">Overview</span></button>
     <button class="nav-item" title="Route Analytics" data-href="routes.html" aria-label="Go to Route Analytics"><span class="nav-icon">🗺️</span><span class="nav-label">Route Analytics</span></button>
     <button class="nav-item" title="Passengers" data-href="passengers.html" aria-label="Go to Passengers"><span class="nav-icon">👥</span><span class="nav-label">Passengers</span></button>
+    <button class="nav-item" title="Bus Fleet" data-href="buses.html" aria-label="Go to Bus Fleet"><span class="nav-icon">🚌</span><span class="nav-label">Bus Fleet</span></button>
     <button class="nav-item active" title="Revenue" data-href="revenue.html" aria-label="Go to Revenue"><span class="nav-icon">💰</span><span class="nav-label">Revenue</span></button>
     <div class="sidebar-divider"></div>
     <button class="nav-item" title="Reports" data-href="reports.html" aria-label="Go to Reports"><span class="nav-icon">📋</span><span class="nav-label">Reports</span></button>
@@ -125,7 +126,7 @@
             </div>
             <div class="card-body">
               <div class="chart-wrap chart-donut">
-                <canvas id="revenuePie" style="max-height:160px; max-width:210px;"></canvas>
+                <canvas id="revenuePie" style="max-height:210px; max-width:260px;"></canvas>
               </div>
               <div class="donut-stats">
                 <div class="donut-stat">
@@ -139,19 +140,6 @@
                 <div class="donut-stat">
                   <div class="donut-stat-val">24.7%</div>
                   <div class="donut-stat-label">Efficiency</div>
-                </div>
-              </div>
-              <div class="collection-bar-wrap">
-                <div class="coll-bar-labels">
-                  <span style="color:#10B981; font-weight:600; font-size:12.5px;">● Collected</span>
-                  <span style="color:#EF4444; font-weight:600; font-size:12.5px;">Uncollected ●</span>
-                </div>
-                <div class="coll-bar-track">
-                  <div class="coll-bar-fill"></div>
-                </div>
-                <div class="coll-bar-pct">
-                  <span>24.7%</span>
-                  <span>75.3%</span>
                 </div>
               </div>
             </div>
@@ -259,7 +247,7 @@
         }]
       },
       options: {
-        cutout: '70%',
+        cutout: '64%',
         plugins: {
           legend: { display: false },
           tooltip: { callbacks: { label: ctx => ' ₹' + ctx.raw.toLocaleString() + ' (' + (ctx.raw / 386420 * 100).toFixed(1) + '%)' } }

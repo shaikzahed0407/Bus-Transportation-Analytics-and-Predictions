@@ -553,11 +553,11 @@
     }
 
     .chart-wrap.chart-donut {
-      height: 175px;
+      height: 220px;
       display: flex;
       justify-content: center;
       align-items: center;
-      margin-top: 6px;
+      margin: 8px 0 12px;
     }
 
     /* ══ TABLE ══ */

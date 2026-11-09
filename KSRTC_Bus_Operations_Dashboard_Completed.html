@@ -243,9 +243,13 @@
       gap: 6px;
     }
 
-    .mobile-sidebar-btn { display: none; }
+    .mobile-sidebar-btn {
+      display: none;
+    }
 
-    .sidebar-backdrop { display: none; }
+    .sidebar-backdrop {
+      display: none;
+    }
 
     /* ══ MAIN WRAPPER ══ */
     .main-wrapper {
@@ -886,7 +890,9 @@
     }
 
     @media (max-width: 768px) {
-      :root { --sidebar-w: 0px; }
+      :root {
+        --sidebar-w: 0px;
+      }
 
       .sidebar {
         display: flex;
@@ -902,12 +908,34 @@
         box-shadow: 12px 0 34px rgba(0, 0, 0, 0.16);
       }
 
-      .sidebar-header { justify-content: space-between; }
-      .sidebar-brand { display: flex; }
-      .sidebar-toggle { width: 34px; height: 34px; flex-basis: 34px; }
-      .nav-item { width: 100%; margin: 0; padding: 0 13px; justify-content: flex-start; }
-      .nav-label { display: block; }
-      .sidebar-bottom { align-items: stretch; }
+      .sidebar-header {
+        justify-content: space-between;
+      }
+
+      .sidebar-brand {
+        display: flex;
+      }
+
+      .sidebar-toggle {
+        width: 34px;
+        height: 34px;
+        flex-basis: 34px;
+      }
+
+      .nav-item {
+        width: 100%;
+        margin: 0;
+        padding: 0 13px;
+        justify-content: flex-start;
+      }
+
+      .nav-label {
+        display: block;
+      }
+
+      .sidebar-bottom {
+        align-items: stretch;
+      }
 
       body.sidebar-mobile-open .sidebar-backdrop {
         display: block;
@@ -918,13 +946,44 @@
         border: 0;
       }
 
-      .mobile-sidebar-btn { display: inline-flex; width: 36px; height: 36px; flex-basis: 36px; margin-right: 4px; }
-      .topbar { padding: 14px 16px; flex-wrap: wrap; }
-      .topbar-left { width: 100%; }
-      .search-bar { order: 3; width: 100%; min-width: 0; }
-      .topbar-right { margin-left: auto; }
-      .float-map { width: min(100vw, 440px); height: 100vh; height: 100dvh; border-radius: 12px 0 0 12px; }
-      .map-launcher { width: 42px; height: 54px; }
+      .mobile-sidebar-btn {
+        display: inline-flex;
+        width: 36px;
+        height: 36px;
+        flex-basis: 36px;
+        margin-right: 4px;
+      }
+
+      .topbar {
+        padding: 14px 16px;
+        flex-wrap: wrap;
+      }
+
+      .topbar-left {
+        width: 100%;
+      }
+
+      .search-bar {
+        order: 3;
+        width: 100%;
+        min-width: 0;
+      }
+
+      .topbar-right {
+        margin-left: auto;
+      }
+
+      .float-map {
+        width: min(100vw, 440px);
+        height: 100vh;
+        height: 100dvh;
+        border-radius: 12px 0 0 12px;
+      }
+
+      .map-launcher {
+        width: 42px;
+        height: 54px;
+      }
     }
 
     /* ══ RIGHT-SIDE MAP DRAWER ══ */
@@ -1143,7 +1202,9 @@
       font: inherit;
     }
 
-    .search-bar input::placeholder { color: var(--text-muted); }
+    .search-bar input::placeholder {
+      color: var(--text-muted);
+    }
 
     .search-bar kbd {
       flex-shrink: 0;
@@ -1155,7 +1216,8 @@
       font-size: 10px;
     }
 
-    button:focus-visible, input:focus-visible {
+    button:focus-visible,
+    input:focus-visible {
       outline: 2px solid var(--accent-dark);
       outline-offset: 2px;
     }
@@ -1191,26 +1253,78 @@
       font-style: italic;
     }
 
-    .nav-item[data-target] { flex-shrink: 0; }
+    .nav-item[data-target] {
+      flex-shrink: 0;
+    }
 
     @media (max-width: 768px) {
-      .topbar { padding: 14px 16px; flex-wrap: wrap; }
-      .topbar-left { width: 100%; }
-      .search-bar { order: 3; width: 100%; min-width: 0; }
-      .topbar-right { margin-left: auto; }
-      .float-map { width: min(100vw, 440px); height: 100vh; height: 100dvh; border-radius: 12px 0 0 12px; }
-      .map-launcher { width: 42px; height: 54px; }
+      .topbar {
+        padding: 14px 16px;
+        flex-wrap: wrap;
+      }
+
+      .topbar-left {
+        width: 100%;
+      }
+
+      .search-bar {
+        order: 3;
+        width: 100%;
+        min-width: 0;
+      }
+
+      .topbar-right {
+        margin-left: auto;
+      }
+
+      .float-map {
+        width: min(100vw, 440px);
+        height: 100vh;
+        height: 100dvh;
+        border-radius: 12px 0 0 12px;
+      }
+
+      .map-launcher {
+        width: 42px;
+        height: 54px;
+      }
     }
 
     @media print {
-      body { display: block; background: #fff; }
-      .sidebar, .topbar, .float-map, .map-launcher, .card-action, .toast, .search-bar { display: none !important; }
-      .main-wrapper { margin: 0; }
-      .content { padding: 0; gap: 12px; }
-      .card, .kpi-card { break-inside: avoid; box-shadow: none; }
-      .footer { padding: 8px 0; }
-    }
+      body {
+        display: block;
+        background: #fff;
+      }
 
+      .sidebar,
+      .topbar,
+      .float-map,
+      .map-launcher,
+      .card-action,
+      .toast,
+      .search-bar {
+        display: none !important;
+      }
+
+      .main-wrapper {
+        margin: 0;
+      }
+
+      .content {
+        padding: 0;
+        gap: 12px;
+      }
+
+      .card,
+      .kpi-card {
+        break-inside: avoid;
+        box-shadow: none;
+      }
+
+      .footer {
+        padding: 8px 0;
+      }
+    }
   </style>
 </head>
 
@@ -1223,25 +1337,35 @@
         <div class="sidebar-logo">K</div>
         <span class="sidebar-brand-name">KSRTC Analytics</span>
       </div>
-      <button class="sidebar-toggle" id="sidebarToggle" type="button" title="Expand sidebar" aria-label="Expand sidebar" aria-expanded="false">
+      <button class="sidebar-toggle" id="sidebarToggle" type="button" title="Expand sidebar" aria-label="Expand sidebar"
+        aria-expanded="false">
         <span class="sidebar-toggle-icon" id="sidebarToggleIcon" aria-hidden="true">☰</span>
       </button>
     </div>
 
-    <button class="nav-item active" title="Overview" data-target="section-overview" aria-label="Go to overview"><span class="nav-icon">🏠</span><span class="nav-label">Overview</span></button>
-    <button class="nav-item" title="Routes" data-target="section-routes" aria-label="Go to route performance"><span class="nav-icon">🗺️</span><span class="nav-label">Route Analytics</span></button>
-    <button class="nav-item" title="Passengers" data-target="section-passengers" aria-label="Go to passenger analysis"><span class="nav-icon">👥</span><span class="nav-label">Passengers</span></button>
-    <button class="nav-item" title="Revenue" data-target="section-revenue" aria-label="Go to revenue analysis"><span class="nav-icon">💰</span><span class="nav-label">Revenue</span></button>
+    <button class="nav-item active" title="Overview" data-target="section-overview" aria-label="Go to overview"><span
+        class="nav-icon">🏠</span><span class="nav-label">Overview</span></button>
+    <button class="nav-item" title="Routes" data-target="section-routes" aria-label="Go to route performance"><span
+        class="nav-icon">🗺️</span><span class="nav-label">Route Analytics</span></button>
+    <button class="nav-item" title="Passengers" data-target="section-passengers"
+      aria-label="Go to passenger analysis"><span class="nav-icon">👥</span><span
+        class="nav-label">Passengers</span></button>
+    <button class="nav-item" title="Revenue" data-target="section-revenue" aria-label="Go to revenue analysis"><span
+        class="nav-icon">💰</span><span class="nav-label">Revenue</span></button>
 
     <div class="sidebar-divider"></div>
 
-    <button class="nav-item" title="Reports" data-target="section-reports" aria-label="Go to reports"><span class="nav-icon">📋</span><span class="nav-label">Reports</span></button>
-    <button class="nav-item" title="Alerts" data-target="section-alerts" aria-label="Go to alerts"><span class="nav-icon">🔔</span><span class="nav-label">Alerts</span></button>
+    <button class="nav-item" title="Reports" data-target="section-reports" aria-label="Go to reports"><span
+        class="nav-icon">📋</span><span class="nav-label">Reports</span></button>
+    <button class="nav-item" title="Alerts" data-target="section-alerts" aria-label="Go to alerts"><span
+        class="nav-icon">🔔</span><span class="nav-label">Alerts</span></button>
 
     <div class="sidebar-bottom">
       <div class="sidebar-divider"></div>
-      <button class="nav-item" id="settingsBtn" title="Settings" aria-label="Settings"><span class="nav-icon">⚙️</span><span class="nav-label">Settings</span></button>
-      <button class="nav-item" id="logoutBtn" title="Exit dashboard preview" aria-label="Exit dashboard preview"><span class="nav-icon">↪️</span><span class="nav-label">Exit preview</span></button>
+      <button class="nav-item" id="settingsBtn" title="Settings" aria-label="Settings"><span
+          class="nav-icon">⚙️</span><span class="nav-label">Settings</span></button>
+      <button class="nav-item" id="logoutBtn" title="Exit dashboard preview" aria-label="Exit dashboard preview"><span
+          class="nav-icon">↪️</span><span class="nav-label">Exit preview</span></button>
     </div>
   </aside>
   <button class="sidebar-backdrop" id="sidebarBackdrop" type="button" aria-label="Close navigation"></button>
@@ -1252,7 +1376,8 @@
     <!-- TOPBAR -->
     <header class="topbar">
       <div class="topbar-left">
-        <button class="mobile-sidebar-btn" id="mobileSidebarToggle" type="button" title="Open navigation" aria-label="Open navigation" aria-expanded="false">☰</button>
+        <button class="mobile-sidebar-btn" id="mobileSidebarToggle" type="button" title="Open navigation"
+          aria-label="Open navigation" aria-expanded="false">☰</button>
         <div>
           <div class="topbar-title">Operations Dashboard</div>
           <div class="topbar-sub">KSRTC · Kalaburagi Division · Single Day Report</div>
@@ -1260,13 +1385,16 @@
       </div>
       <label class="search-bar" for="dashboardSearch">
         <span aria-hidden="true">🔍</span>
-        <input id="dashboardSearch" type="search" placeholder="Search routes and stops…" autocomplete="off" aria-label="Search route and stop tables">
+        <input id="dashboardSearch" type="search" placeholder="Search routes and stops…" autocomplete="off"
+          aria-label="Search route and stop tables">
         <kbd> / </kbd>
       </label>
       <div class="topbar-right">
         <div class="date-badge">📅 20 October 2026</div>
-        <button class="icon-btn" id="downloadReportBtn" title="Print or save dashboard report" aria-label="Print or save dashboard report">⬇️</button>
-        <button class="icon-btn" id="notificationsBtn" title="View operational alerts" aria-label="View operational alerts">🔔</button>
+        <button class="icon-btn" id="downloadReportBtn" title="Print or save dashboard report"
+          aria-label="Print or save dashboard report">⬇️</button>
+        <button class="icon-btn" id="notificationsBtn" title="View operational alerts"
+          aria-label="View operational alerts">🔔</button>
       </div>
     </header>
 
@@ -1416,7 +1544,7 @@
             </div>
             <div class="card-body">
               <div class="chart-wrap chart-donut">
-                <canvas id="revenuePie" style="max-height:160px; max-width:210px;"></canvas>
+                <canvas id="revenuePie" style="max-height:210px; max-width:260px;"></canvas>
               </div>
               <div class="donut-stats">
                 <div class="donut-stat">
@@ -1430,19 +1558,6 @@
                 <div class="donut-stat">
                   <div class="donut-stat-val">24.7%</div>
                   <div class="donut-stat-label">Efficiency</div>
-                </div>
-              </div>
-              <div class="collection-bar-wrap">
-                <div class="coll-bar-labels">
-                  <span style="color:#10B981; font-weight:600; font-size:12.5px;">● Collected</span>
-                  <span style="color:#EF4444; font-weight:600; font-size:12.5px;">Uncollected ●</span>
-                </div>
-                <div class="coll-bar-track">
-                  <div class="coll-bar-fill"></div>
-                </div>
-                <div class="coll-bar-pct">
-                  <span>24.7%</span>
-                  <span>75.3%</span>
                 </div>
               </div>
             </div>
@@ -1659,7 +1774,8 @@
     <!-- Title bar — click to toggle -->
     <div class="float-map-bar" id="floatMapBar">
       <div class="float-map-bar-right">
-        <button class="fmap-ctrl" id="floatMapMinBtn" type="button" title="Minimise map" aria-label="Minimise map">›</button>
+        <button class="fmap-ctrl" id="floatMapMinBtn" type="button" title="Minimise map"
+          aria-label="Minimise map">›</button>
       </div>
     </div>
 
@@ -1677,7 +1793,8 @@
         <div class="float-map-placeholder">
           <div class="pin">📍</div>
           <h3 id="mapPlaceholderTitle">Route view preview</h3>
-          <p id="mapPlaceholderText">Route summary is available in the dashboard. A geographic map requires stop coordinates or latitude/longitude values in the source dataset.</p>
+          <p id="mapPlaceholderText">Route summary is available in the dashboard. A geographic map requires stop
+            coordinates or latitude/longitude values in the source dataset.</p>
           <div class="ready-badge" id="mapReadyBadge">✦ Route data available</div>
         </div>
         <!-- ↑ END INTEGRATION POINT -->
@@ -1802,7 +1919,7 @@
         }]
       },
       options: {
-        cutout: '70%',
+        cutout: '64%',
         plugins: {
           legend: { display: false },
           tooltip: { callbacks: { label: ctx => ` ₹${ctx.raw.toLocaleString()} (${(ctx.raw / 386420 * 100).toFixed(1)}%)` } }
@@ -2031,14 +2148,14 @@
         document.body.classList.toggle('sidebar-expanded', expanded);
         document.body.classList.remove('sidebar-mobile-open');
         if (persist) {
-          try { localStorage.setItem('ksrtc-sidebar-expanded', String(expanded)); } catch (_) {}
+          try { localStorage.setItem('ksrtc-sidebar-expanded', String(expanded)); } catch (_) { }
         }
       }
       updateSidebarControls(expanded);
     }
 
     let savedSidebarState = false;
-    try { savedSidebarState = localStorage.getItem('ksrtc-sidebar-expanded') === 'true'; } catch (_) {}
+    try { savedSidebarState = localStorage.getItem('ksrtc-sidebar-expanded') === 'true'; } catch (_) { }
     setSidebarExpanded(sidebarMedia.matches ? false : savedSidebarState, false);
 
     sidebarToggle.addEventListener('click', () => {
@@ -2054,7 +2171,7 @@
     sidebarMedia.addEventListener('change', () => {
       document.body.classList.remove('sidebar-expanded', 'sidebar-mobile-open');
       let desktopExpanded = false;
-      try { desktopExpanded = localStorage.getItem('ksrtc-sidebar-expanded') === 'true'; } catch (_) {}
+      try { desktopExpanded = localStorage.getItem('ksrtc-sidebar-expanded') === 'true'; } catch (_) { }
       setSidebarExpanded(sidebarMedia.matches ? false : desktopExpanded, false);
     });
 
