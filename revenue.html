@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Revenue Analysis | KSRTC Kalaburagi Division</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+  <!-- ══ COLLAPSIBLE SIDEBAR ══ -->
+  <aside class="sidebar" id="sidebar" aria-label="Main navigation">
+    <div class="sidebar-header">
+      <div class="sidebar-brand">
+        <div class="sidebar-logo">K</div>
+        <span class="sidebar-brand-name">KSRTC Analytics</span>
+      </div>
+      <button class="sidebar-toggle" id="sidebarToggle" type="button" title="Expand sidebar" aria-label="Expand sidebar" aria-expanded="false">
+        <span class="sidebar-toggle-icon" id="sidebarToggleIcon" aria-hidden="true">☰</span>
+      </button>
+    </div>
+
+    <button class="nav-item" title="Overview" data-href="index.html" aria-label="Go to Overview"><span class="nav-icon">🏠</span><span class="nav-label">Overview</span></button>
+    <button class="nav-item" title="Route Analytics" data-href="routes.html" aria-label="Go to Route Analytics"><span class="nav-icon">🗺️</span><span class="nav-label">Route Analytics</span></button>
+    <button class="nav-item" title="Passengers" data-href="passengers.html" aria-label="Go to Passengers"><span class="nav-icon">👥</span><span class="nav-label">Passengers</span></button>
+    <button class="nav-item active" title="Revenue" data-href="revenue.html" aria-label="Go to Revenue"><span class="nav-icon">💰</span><span class="nav-label">Revenue</span></button>
+    <div class="sidebar-divider"></div>
+    <button class="nav-item" title="Reports" data-href="reports.html" aria-label="Go to Reports"><span class="nav-icon">📋</span><span class="nav-label">Reports</span></button>
+    <button class="nav-item" title="Alerts" data-href="alerts.html" aria-label="Go to Alerts"><span class="nav-icon">🔔</span><span class="nav-label">Alerts</span></button>
+
+    <div class="sidebar-bottom">
+      <div class="sidebar-divider"></div>
+      <button class="nav-item" id="settingsBtn" title="Settings" aria-label="Settings"><span class="nav-icon">⚙️</span><span class="nav-label">Settings</span></button>
+      <button class="nav-item" id="logoutBtn" title="Exit dashboard preview" aria-label="Exit dashboard preview"><span class="nav-icon">↪️</span><span class="nav-label">Exit preview</span></button>
+    </div>
+  </aside>
+  <button class="sidebar-backdrop" id="sidebarBackdrop" type="button" aria-label="Close navigation"></button>
+
+  <!-- ══ MAIN ══ -->
+  <div class="main-wrapper">
+
+    <!-- TOPBAR -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <button class="mobile-sidebar-btn" id="mobileSidebarToggle" type="button" title="Open navigation" aria-label="Open navigation" aria-expanded="false">☰</button>
+        <div>
+          <div class="topbar-title">Revenue Analysis</div>
+          <div class="topbar-sub">KSRTC · Kalaburagi Division · Operations Intelligence</div>
+        </div>
+      </div>
+      <label class="search-bar" for="dashboardSearch">
+        <span aria-hidden="true">🔍</span>
+        <input id="dashboardSearch" type="search" placeholder="Search routes and stops…" autocomplete="off" aria-label="Search tables">
+        <kbd> / </kbd>
+      </label>
+      <div class="topbar-right">
+        <div class="date-badge">📅 20 October 2026</div>
+        <button class="icon-btn" id="downloadReportBtn" title="Print or save dashboard report" aria-label="Print or save dashboard report">⬇️</button>
+        <button class="icon-btn" id="notificationsBtn" title="View operational alerts" aria-label="View operational alerts" onclick="window.location.href='alerts.html'">🔔</button>
+      </div>
+    </header>
+
+    <!-- CONTENT -->
+    <div class="content">
+<div>
+    <div class="section-label">Revenue Metrics</div>
+    <div class="kpi-grid" style="grid-template-columns: repeat(4, 1fr);">
+      <div class="kpi-card dark">
+        <div class="kpi-top"><div class="kpi-icon-wrap">📉</div><span class="pill red">Critical</span></div>
+        <div class="kpi-value">₹2,90,929</div>
+        <div class="kpi-label">Uncollected Fare (75.3%)</div>
+        <div class="kpi-sub">Subsidized / Shakti Scheme</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-top"><div class="kpi-icon-wrap">💰</div><span class="kpi-trend trend-down">24.7%</span></div>
+        <div class="kpi-value">₹95,491</div>
+        <div class="kpi-label">Collected Cash Fare</div>
+        <div class="kpi-sub">₹2,031 avg per trip</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-top"><div class="kpi-icon-wrap">💵</div><span class="kpi-trend trend-neutral">Gross</span></div>
+        <div class="kpi-value">₹3,86,420</div>
+        <div class="kpi-label">Total Billed Value</div>
+        <div class="kpi-sub">Across 19,275 tickets</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-top"><div class="kpi-icon-wrap">👥</div><span class="kpi-trend trend-neutral">Per Pax</span></div>
+        <div class="kpi-value">₹11.75</div>
+        <div class="kpi-label">Avg Fare Realization</div>
+        <div class="kpi-sub">₹2.90 cash collected avg</div>
+      </div>
+    </div>
+  </div>
+<!-- ── HOURLY TRAFFIC + REVENUE PIE ── -->
+      <div>
+        <div class="section-label">Traffic & Revenue Analysis</div>
+        <div class="row-overview-split">
+
+          <!-- Hourly chart -->
+          <div class="card" id="section-passengers">
+            <div class="card-head">
+              <div>
+                <div class="card-title">Hourly Passenger Traffic & Demand</div>
+                <div class="card-subtitle">Hourly passenger boardings & peak fleet demand · 20 Oct 2026</div>
+              </div>
+              <button class="card-action" data-export-chart="hourlyChart">Export ↗</button>
+            </div>
+            <div class="card-body">
+              <div class="chart-wrap chart-hourly">
+                <canvas id="hourlyChart"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <!-- Revenue doughnut -->
+          <div class="card" id="section-revenue">
+            <div class="card-head">
+              <div>
+                <div class="card-title">Revenue Collection Status</div>
+                <div class="card-subtitle">Collected vs Uncollected fare</div>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="chart-wrap chart-donut">
+                <canvas id="revenuePie" style="max-height:160px; max-width:210px;"></canvas>
+              </div>
+              <div class="donut-stats">
+                <div class="donut-stat">
+                  <div class="donut-stat-val" style="color:#10B981;">₹95K</div>
+                  <div class="donut-stat-label">Collected</div>
+                </div>
+                <div class="donut-stat">
+                  <div class="donut-stat-val" style="color:#EF4444;">₹2.9L</div>
+                  <div class="donut-stat-label">Uncollected</div>
+                </div>
+                <div class="donut-stat">
+                  <div class="donut-stat-val">24.7%</div>
+                  <div class="donut-stat-label">Efficiency</div>
+                </div>
+              </div>
+              <div class="collection-bar-wrap">
+                <div class="coll-bar-labels">
+                  <span style="color:#10B981; font-weight:600; font-size:12.5px;">● Collected</span>
+                  <span style="color:#EF4444; font-weight:600; font-size:12.5px;">Uncollected ●</span>
+                </div>
+                <div class="coll-bar-track">
+                  <div class="coll-bar-fill"></div>
+                </div>
+                <div class="coll-bar-pct">
+                  <span>24.7%</span>
+                  <span>75.3%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      
+<div class="row-2">
+    <div class="card">
+      <div class="card-head"><div><div class="card-title">Revenue Collected per Hour (₹)</div><div class="card-subtitle">Fare collection timeline</div></div></div>
+      <div class="card-body"><div class="chart-wrap chart-compact"><canvas id="revenueHourChart"></canvas></div></div>
+    </div>
+    <div class="card">
+      <div class="card-head"><div><div class="card-title">Route Revenue Breakdown</div><div class="card-subtitle">Collected vs Uncollected · Top 8 routes</div></div></div>
+      <div class="card-body"><div class="chart-wrap"><canvas id="routeRevenueChart"></canvas></div></div>
+    </div>
+  </div>
+    </div><!-- /content -->
+
+    <footer class="footer">
+      KSRTC Kalaburagi Division · Bus Ticket Intelligence Dashboard · Data: PS-3 Bus Ticket System · 20 Oct 2026
+      &nbsp;·&nbsp;
+      19,275 records &nbsp;·&nbsp; All amounts in INR &nbsp;·&nbsp;
+      <strong>Hackathon PS-3 — Bus Ticket Data Analysis</strong>
+    </footer>
+
+  </div><!-- /main-wrapper -->
+
+  <!-- Map launcher remains visible at the right edge when the drawer is closed. -->
+  <button class="map-launcher" id="mapLauncher" type="button" title="Open map" aria-label="Open map">🗺️</button>
+
+  <!-- ══ RIGHT-SIDE MAP PANEL ══ -->
+  <div class="float-map" id="floatMap" aria-label="Bus network map panel" aria-hidden="true">
+    <div class="float-map-bar" id="floatMapBar">
+      <div class="float-map-bar-right">
+        <button class="fmap-ctrl" id="floatMapMinBtn" type="button" title="Minimise map" aria-label="Minimise map">›</button>
+      </div>
+    </div>
+
+    <div class="float-map-tabs" id="floatMapTabs">
+      <button class="fmap-tab active">Routes</button>
+      <button class="fmap-tab">Zones</button>
+      <button class="fmap-tab">Heatmap</button>
+    </div>
+
+    <div class="float-map-body">
+      <div id="google-map-container">
+        <div class="float-map-placeholder">
+          <div class="pin">📍</div>
+          <h3 id="mapPlaceholderTitle">Route view preview</h3>
+          <p id="mapPlaceholderText">Route summary is available in the dashboard. A geographic map requires stop coordinates or latitude/longitude values in the source dataset.</p>
+          <div class="ready-badge" id="mapReadyBadge">✦ Route data available</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="common.js"></script>
+  <script>
+
+    // Hourly Traffic Chart
+    new Chart(document.getElementById('hourlyChart').getContext('2d'), {
+      type: 'bar',
+      data: {
+        labels: hourLabels,
+        datasets: [{
+          label: 'Passengers',
+          data: hourly.map(h => h.passengers),
+          backgroundColor: hourly.map(h =>
+            h.passengers >= 3000 ? PURPLE :
+              h.passengers >= 1500 ? PURPLE_MID : PURPLE_SOFT
+          ),
+          borderRadius: 5,
+          borderSkipped: false
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { display: false },
+          tooltip: { callbacks: { label: ctx => ' ' + ctx.raw.toLocaleString() + ' passengers' } }
+        },
+        scales: {
+          y: { beginAtZero: true, grid: { color: GRID_COLOR }, ticks: { callback: v => v >= 1000 ? (v / 1000) + 'k' : v } },
+          x: { grid: { display: false } }
+        }
+      }
+    });
+
+    // Revenue Doughnut
+    new Chart(document.getElementById('revenuePie').getContext('2d'), {
+      type: 'doughnut',
+      data: {
+        labels: ['Collected', 'Uncollected'],
+        datasets: [{
+          data: [95491, 290929],
+          backgroundColor: [GREEN, RED],
+          borderWidth: 3,
+          borderColor: '#fff',
+          hoverOffset: 6
+        }]
+      },
+      options: {
+        cutout: '70%',
+        plugins: {
+          legend: { display: false },
+          tooltip: { callbacks: { label: ctx => ' ₹' + ctx.raw.toLocaleString() + ' (' + (ctx.raw / 386420 * 100).toFixed(1) + '%)' } }
+        }
+      }
+    });
+
+    // Chart 6: Revenue per Hour Line
+    new Chart(document.getElementById('revenueHourChart').getContext('2d'), {
+      type: 'line',
+      data: {
+        labels: hourLabels,
+        datasets: [{
+          label: 'Collected (₹)',
+          data: hourly.map(h => h.collected),
+          borderColor: GREEN,
+          backgroundColor: 'rgba(16,185,129,0.1)',
+          fill: true, tension: 0.4,
+          pointBackgroundColor: GREEN,
+          pointRadius: 3, pointHoverRadius: 5
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { display: false },
+          tooltip: { callbacks: { label: ctx => ' ₹' + ctx.raw.toLocaleString() } }
+        },
+        scales: {
+          y: { beginAtZero: true, grid: { color: GRID_COLOR }, ticks: { callback: v => '₹' + (v >= 1000 ? (v / 1000) + 'k' : v) } },
+          x: { grid: { display: false } }
+        }
+      }
+    });
+
+    // Route Revenue Stacked
+    const topR8 = topRoutes.slice(0, 8);
+    new Chart(document.getElementById('routeRevenueChart').getContext('2d'), {
+      type: 'bar',
+      data: {
+        labels: topR8.map(r => r.route.replace(' → ', '→').substring(0, 20)),
+        datasets: [
+          { label: 'Collected', data: topR8.map(r => r.collected), backgroundColor: GREEN, borderRadius: 3 },
+          { label: 'Uncollected', data: topR8.map(r => r.uncollected), backgroundColor: RED, borderRadius: 3 }
+        ]
+      },
+      options: {
+        indexAxis: 'y',
+        responsive: true,
+        plugins: {
+          legend: { position: 'top', labels: { padding: 12 } },
+          tooltip: { callbacks: { label: ctx => ' ₹' + ctx.raw.toLocaleString() } }
+        },
+        scales: {
+          x: { stacked: true, grid: { color: GRID_COLOR }, ticks: { callback: v => '₹' + (v >= 1000 ? (v / 1000) + 'k' : v) } },
+          y: { stacked: true, grid: { display: false }, ticks: { font: { size: 10 } } }
+        }
+      }
+    });
+
+  </script>
+</body>
+
+</html>

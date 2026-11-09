@@ -1,0 +1,433 @@
+{
+  "totals": {
+    "totalPassengers": 32874,
+    "totalCollected": 95491,
+    "totalUncollected": 290929,
+    "totalTickets": 19275,
+    "totalBusTrips": 47,
+    "totalRoutes": 1404,
+    "totalStops": 134
+  },
+  "topRoutes": [
+    {
+      "route": "Budhavihar → Cbs",
+      "passengers": 812,
+      "collected": 6704,
+      "uncollected": 7891,
+      "count": 407
+    },
+    {
+      "route": "Cbs → Budhavihar",
+      "passengers": 713,
+      "collected": 5320,
+      "uncollected": 7383,
+      "count": 335
+    },
+    {
+      "route": "Cbs → Supermarket",
+      "passengers": 642,
+      "collected": 2349,
+      "uncollected": 5949,
+      "count": 366
+    },
+    {
+      "route": "Cbs → Sedam R R",
+      "passengers": 445,
+      "collected": 1959,
+      "uncollected": 3948,
+      "count": 320
+    },
+    {
+      "route": "Sedam R R → Cbs",
+      "passengers": 433,
+      "collected": 1810,
+      "uncollected": 4032,
+      "count": 315
+    },
+    {
+      "route": "Budhavihar → S V P Circle",
+      "passengers": 395,
+      "collected": 3795,
+      "uncollected": 2934,
+      "count": 174
+    },
+    {
+      "route": "Supermarket → Ruknuddin Tola Darga ",
+      "passengers": 391,
+      "collected": 1455,
+      "uncollected": 3808,
+      "count": 282
+    },
+    {
+      "route": "Supermarket → Cbs",
+      "passengers": 387,
+      "collected": 1577,
+      "uncollected": 3640,
+      "count": 262
+    },
+    {
+      "route": "Cbs → Kbn Darga",
+      "passengers": 368,
+      "collected": 1596,
+      "uncollected": 3864,
+      "count": 149
+    },
+    {
+      "route": "Ruknuddin Tola Darga  → Supermarket",
+      "passengers": 322,
+      "collected": 1165,
+      "uncollected": 3031,
+      "count": 214
+    },
+    {
+      "route": "Old Hospital → Cbs",
+      "passengers": 312,
+      "collected": 756,
+      "uncollected": 2766,
+      "count": 200
+    },
+    {
+      "route": "Sedam R R → Supermarket",
+      "passengers": 308,
+      "collected": 1021,
+      "uncollected": 2975,
+      "count": 217
+    },
+    {
+      "route": "Supermarket → Aland Check Post",
+      "passengers": 308,
+      "collected": 765,
+      "uncollected": 2808,
+      "count": 192
+    },
+    {
+      "route": "Cbs → S V P Circle",
+      "passengers": 267,
+      "collected": 173,
+      "uncollected": 1383,
+      "count": 183
+    },
+    {
+      "route": "Supermarket → S V P Circle",
+      "passengers": 262,
+      "collected": 402,
+      "uncollected": 2610,
+      "count": 136
+    }
+  ],
+  "hourly": [
+    {
+      "hour": 6,
+      "passengers": 102,
+      "trips": 57,
+      "collected": 398
+    },
+    {
+      "hour": 7,
+      "passengers": 849,
+      "trips": 479,
+      "collected": 2154
+    },
+    {
+      "hour": 8,
+      "passengers": 1396,
+      "trips": 886,
+      "collected": 2915
+    },
+    {
+      "hour": 9,
+      "passengers": 2170,
+      "trips": 1325,
+      "collected": 5897
+    },
+    {
+      "hour": 10,
+      "passengers": 2849,
+      "trips": 1762,
+      "collected": 7867
+    },
+    {
+      "hour": 11,
+      "passengers": 3017,
+      "trips": 1798,
+      "collected": 8710
+    },
+    {
+      "hour": 12,
+      "passengers": 3400,
+      "trips": 1965,
+      "collected": 9826
+    },
+    {
+      "hour": 13,
+      "passengers": 2922,
+      "trips": 1756,
+      "collected": 8802
+    },
+    {
+      "hour": 14,
+      "passengers": 2821,
+      "trips": 1637,
+      "collected": 8290
+    },
+    {
+      "hour": 15,
+      "passengers": 3336,
+      "trips": 1880,
+      "collected": 9660
+    },
+    {
+      "hour": 16,
+      "passengers": 3144,
+      "trips": 1764,
+      "collected": 7431
+    },
+    {
+      "hour": 17,
+      "passengers": 2995,
+      "trips": 1694,
+      "collected": 9161
+    },
+    {
+      "hour": 18,
+      "passengers": 2043,
+      "trips": 1229,
+      "collected": 6527
+    },
+    {
+      "hour": 19,
+      "passengers": 1064,
+      "trips": 649,
+      "collected": 4086
+    },
+    {
+      "hour": 20,
+      "passengers": 442,
+      "trips": 237,
+      "collected": 1875
+    },
+    {
+      "hour": 21,
+      "passengers": 231,
+      "trips": 120,
+      "collected": 1123
+    },
+    {
+      "hour": 22,
+      "passengers": 75,
+      "trips": 35,
+      "collected": 769
+    },
+    {
+      "hour": 23,
+      "passengers": 18,
+      "trips": 2,
+      "collected": 0
+    }
+  ],
+  "daily": [
+    {
+      "date": "2026-10-20",
+      "passengers": 32874,
+      "trips": 19275,
+      "collected": 95491,
+      "uncollected": 290929
+    }
+  ],
+  "topStops": [
+    {
+      "stop": "Supermarket",
+      "boardings": 4569,
+      "revenue": 13331
+    },
+    {
+      "stop": "Cbs",
+      "boardings": 4342,
+      "revenue": 17271
+    },
+    {
+      "stop": "Sedam R R",
+      "boardings": 2170,
+      "revenue": 5856
+    },
+    {
+      "stop": "Budhavihar",
+      "boardings": 1906,
+      "revenue": 14600
+    },
+    {
+      "stop": "Aland Check Post",
+      "boardings": 1283,
+      "revenue": 2330
+    },
+    {
+      "stop": "Old Hospital",
+      "boardings": 1236,
+      "revenue": 2196
+    },
+    {
+      "stop": "S V P Circle",
+      "boardings": 1218,
+      "revenue": 3325
+    },
+    {
+      "stop": "Ruknuddin Tola Darga ",
+      "boardings": 1077,
+      "revenue": 2787
+    },
+    {
+      "stop": "Central bus stand",
+      "boardings": 866,
+      "revenue": 2766
+    },
+    {
+      "stop": "Madiwala vritta",
+      "boardings": 758,
+      "revenue": 1907
+    }
+  ],
+  "dowStats": {
+    "Tue": {
+      "day": "Tue",
+      "passengers": 32874,
+      "trips": 19275,
+      "revenue": 95491
+    }
+  },
+  "allStops": [
+    "Adarsh Nagar",
+    "Airport",
+    "Ajmera Colony X",
+    "Aland Check Post",
+    "Aland Colony",
+    "Ambedkar nagar",
+    "Anand Hotel",
+    "Azadhapura",
+    "Bamboo Bazar",
+    "Bamboo bazar x",
+    "Bare Hills",
+    "Basaveshvar Hospital",
+    "Belur Industrial Area",
+    "Bhavani Nagar",
+    "Biddapur Colony",
+    "Budhavihar",
+    "Cbs",
+    "Central Jail",
+    "Central bus stand",
+    "Dariyapur",
+    "Devi Nagar",
+    "District Court",
+    "Esi Hospital",
+    "G D A Colony",
+    "Gandhi Nagar",
+    "Geeta Nagar",
+    "Goa Hotel",
+    "Gug Campus",
+    "Gug Main Gate",
+    "Gug bus stand",
+    "Hafth Gumbaj",
+    "Hagarga X",
+    "Hampi Math",
+    "High Court",
+    "High Court X",
+    "Hirapur",
+    "Hirapur X",
+    "Hirapur colony",
+    "Humanabad Base",
+    "Humnabad R R",
+    "Jafarabadh",
+    "Jafarabadh X",
+    "Jagat Circle",
+    "Jayaterth Kalyan Mantap",
+    "Jewargi Colony",
+    "K B N Hospital",
+    "Kakade Chowk",
+    "Kalanoor",
+    "Kapanura Village",
+    "Karuneshwar Nagar",
+    "Kasi Kamal Apartment",
+    "Kbn Darga",
+    "Kct Eng College",
+    "Kendriya Vidyalaya",
+    "Khb Green Park",
+    "Kotanoor",
+    "Kotanoor Matha",
+    "Kothari Bahavan",
+    "Ksdb",
+    "Ksrtc Colony",
+    "Kusnoor",
+    "Kusnoor Tanda",
+    "Lalagiri X",
+    "M B Nagar",
+    "M S Sitanoor",
+    "Madina Colony",
+    "Madiwala vritta",
+    "Malgatti",
+    "Mallaya Temple",
+    "Mehaboob Nagar",
+    "Mijaguri X",
+    "Mile Stone",
+    "Mini Vidhansouda",
+    "Misba Colony",
+    "Misba colony",
+    "Msk Mill X",
+    "Naganahalli X",
+    "Nandhikura Tanda",
+    "Nandhikura V",
+    "Nandhikura X",
+    "Neheru Gunj",
+    "New Hospital",
+    "New Raghavendra Colony",
+    "New Rto Cross",
+    "Nobel School",
+    "Nv School",
+    "Old Hospital",
+    "Old Rto X",
+    "Om Nagar",
+    "P N T Cross",
+    "Paakija Chowk",
+    "Pda College",
+    "Petrol Pump",
+    "Pink City",
+    "Pooja Colony X",
+    "Pragati Colony",
+    "Quadri Chowk",
+    "R T O Training Center",
+    "Railway Station",
+    "Rajapur X",
+    "Ram Mandir",
+    "Ramathirtha",
+    "Ramnagar",
+    "Rastrapati Circle",
+    "Revansiddeshwar Colony",
+    "Ruknuddin Tola Darga ",
+    "S B College",
+    "S B Naka",
+    "S B Temple",
+    "S V P Circle",
+    "Santosh Colony",
+    "Santraswadi",
+    "Sedam R R",
+    "Shetty Complex",
+    "Siddarood Mata",
+    "Sindagi B",
+    "Sirasgi tanda",
+    "Sirasigi",
+    "Sm Krishna Colony",
+    "Soniya Gandhi Colony",
+    "Srinivas Saradagi",
+    "St Bt Bus Stand",
+    "St Bt Cross",
+    "Supermarket",
+    "Svp Chowk",
+    "Swargate nagar",
+    "Taj Nagar",
+    "Taj Sultanpur",
+    "Tilak Nagar",
+    "Udnoor Tanda",
+    "Udnur X",
+    "Varda Nagar",
+    "Yadula Colony",
+    null
+  ]
+}
