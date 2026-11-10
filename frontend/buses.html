@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bus Fleet Statistics | KSRTC Kalaburagi Division</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+  <!-- ══ COLLAPSIBLE SIDEBAR ══ -->
+  <aside class="sidebar" id="sidebar" aria-label="Main navigation">
+    <div class="sidebar-header">
+      <div class="sidebar-brand">
+        <div class="sidebar-logo">K</div>
+        <span class="sidebar-brand-name">KSRTC Analytics</span>
+      </div>
+      <button class="sidebar-toggle" id="sidebarToggle" type="button" title="Expand sidebar" aria-label="Expand sidebar" aria-expanded="false">
+        <span class="sidebar-toggle-icon" id="sidebarToggleIcon" aria-hidden="true">☰</span>
+      </button>
+    </div>
+
+    <button class="nav-item" title="Overview" data-href="index.html" aria-label="Go to Overview"><span class="nav-icon">🏠</span><span class="nav-label">Overview</span></button>
+    <button class="nav-item" title="Route Analytics" data-href="routes.html" aria-label="Go to Route Analytics"><span class="nav-icon">🗺️</span><span class="nav-label">Route Analytics</span></button>
+    <button class="nav-item" title="Passengers" data-href="passengers.html" aria-label="Go to Passengers"><span class="nav-icon">👥</span><span class="nav-label">Passengers</span></button>
+    <button class="nav-item active" title="Buses" data-href="buses.html" aria-label="Go to Buses"><span class="nav-icon">🚌</span><span class="nav-label">Bus Fleet</span></button>
+    <button class="nav-item" title="Revenue" data-href="revenue.html" aria-label="Go to Revenue"><span class="nav-icon">💰</span><span class="nav-label">Revenue</span></button>
+    <div class="sidebar-divider"></div>
+    <button class="nav-item" title="AI Analytics" data-href="ai-analytics.html" aria-label="Go to AI Analytics"><span class="nav-icon">🤖</span><span class="nav-label">AI Analytics</span></button>
+    <button class="nav-item" title="Reports" data-href="reports.html" aria-label="Go to Reports"><span class="nav-icon">📋</span><span class="nav-label">Reports</span></button>
+    <button class="nav-item" title="Alerts" data-href="alerts.html" aria-label="Go to Alerts"><span class="nav-icon">🔔</span><span class="nav-label">Alerts</span></button>
+
+    <div class="sidebar-bottom">
+      <div class="sidebar-divider"></div>
+      <button class="nav-item" id="settingsBtn" title="Settings" aria-label="Settings"><span class="nav-icon">⚙️</span><span class="nav-label">Settings</span></button>
+      <button class="nav-item" id="logoutBtn" title="Exit dashboard preview" aria-label="Exit dashboard preview"><span class="nav-icon">↪️</span><span class="nav-label">Exit preview</span></button>
+    </div>
+  </aside>
+  <button class="sidebar-backdrop" id="sidebarBackdrop" type="button" aria-label="Close navigation"></button>
+
+  <!-- ══ MAIN ══ -->
+  <div class="main-wrapper">
+
+    <!-- TOPBAR -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <button class="mobile-sidebar-btn" id="mobileSidebarToggle" type="button" title="Open navigation" aria-label="Open navigation" aria-expanded="false">☰</button>
+        <div>
+          <div class="topbar-title">Bus Fleet Performance & Statistics</div>
+          <div class="topbar-sub">KSRTC · Kalaburagi Division · Operational Waybills & Fleet Load Analysis</div>
+        </div>
+      </div>
+      <label class="search-bar" for="dashboardSearch">
+        <span aria-hidden="true">🔍</span>
+        <input id="dashboardSearch" type="search" placeholder="Search bus waybills and metrics…" autocomplete="off" aria-label="Search bus table">
+        <kbd> / </kbd>
+      </label>
+      <div class="topbar-right">
+        <div class="date-badge">📅 20 October 2026</div>
+        <button class="icon-btn" id="downloadReportBtn" title="Print or save dashboard report" aria-label="Print or save dashboard report">⬇️</button>
+        <button class="icon-btn" id="notificationsBtn" title="View operational alerts" aria-label="View operational alerts" onclick="window.location.href='alerts.html'">🔔</button>
+      </div>
+    </header>
+
+    <!-- CONTENT -->
+    <div class="content">
+
+      <!-- ── BUS FLEET KPI CARDS ── -->
+      <div>
+        <div class="section-label">Fleet Operational Key Performance Indicators</div>
+        <div class="kpi-grid">
+
+          <div class="kpi-card dark">
+            <div class="kpi-top">
+              <div class="kpi-icon-wrap">🚌</div>
+              <span class="pill purple">Active Fleet</span>
+            </div>
+            <div class="kpi-value">47</div>
+            <div class="kpi-label">Active Bus Waybills</div>
+            <div class="kpi-sub">Total operational units today</div>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-top">
+              <div class="kpi-icon-wrap">👥</div>
+              <span class="kpi-trend trend-up">Fleet Avg</span>
+            </div>
+            <div class="kpi-value">699.4</div>
+            <div class="kpi-label">Avg Pax Per Bus</div>
+            <div class="kpi-sub">Total 32,874 passengers</div>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-top">
+              <div class="kpi-icon-wrap">🎫</div>
+              <span class="kpi-trend trend-neutral">410 / unit</span>
+            </div>
+            <div class="kpi-value">19,275</div>
+            <div class="kpi-label">Total Tickets Issued</div>
+            <div class="kpi-sub">Avg 1.71 passengers per ticket</div>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-top">
+              <div class="kpi-icon-wrap">💰</div>
+              <span class="kpi-trend trend-down">Cash Fare</span>
+            </div>
+            <div class="kpi-value">₹2,031</div>
+            <div class="kpi-label">Avg Cash Fare / Bus</div>
+            <div class="kpi-sub">Total collected: ₹95,491</div>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-top">
+              <div class="kpi-icon-wrap">📈</div>
+              <span class="pill yellow">Total Value</span>
+            </div>
+            <div class="kpi-value">₹8,221</div>
+            <div class="kpi-label">Avg Billed Value / Bus</div>
+            <div class="kpi-sub">Includes ₹6,190 uncollected subsidy</div>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-top">
+              <div class="kpi-icon-wrap">⏱️</div>
+              <span class="kpi-trend trend-up">Service Hours</span>
+            </div>
+            <div class="kpi-value">11.6 hrs</div>
+            <div class="kpi-label">Avg Active Service Window</div>
+            <div class="kpi-sub">Spanning 06:00 to 23:00</div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ── ROW 1: FLEET LOAD DISTRIBUTION & LOAD TIERS ── -->
+      <div>
+        <div class="section-label">Fleet Load Distribution & Fleet Utilization Tiers</div>
+        <div class="row-overview-split">
+
+          <!-- Bar Chart: Top 15 Loaded Buses -->
+          <div class="card">
+            <div class="card-head">
+              <div>
+                <div class="card-title">Top 15 Buses by Passenger Load</div>
+                <div class="card-subtitle">Highest passenger volumes operated by bus waybill</div>
+              </div>
+              <button class="card-action" data-export-chart="topBusesChart">Export ↗</button>
+            </div>
+            <div class="card-body">
+              <div class="chart-wrap chart-hourly">
+                <canvas id="topBusesChart"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <!-- Doughnut Chart: Bus Fleet Load Tiers -->
+          <div class="card">
+            <div class="card-head">
+              <div>
+                <div class="card-title">Fleet Utilization Categories</div>
+                <div class="card-subtitle">Buses grouped by daily passenger volume</div>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="chart-wrap chart-donut">
+                <canvas id="loadTiersChart" style="max-height:210px; max-width:260px;"></canvas>
+              </div>
+              <div class="donut-stats">
+                <div class="donut-stat">
+                  <div class="donut-stat-val" style="color:#10B981;">57.4%</div>
+                  <div class="donut-stat-label">Moderate (27)</div>
+                </div>
+                <div class="donut-stat">
+                  <div class="donut-stat-val" style="color:#8B5CF6;">19.1%</div>
+                  <div class="donut-stat-label">Heavy (9)</div>
+                </div>
+                <div class="donut-stat">
+                  <div class="donut-stat-val" style="color:#EF4444;">8.5%</div>
+                  <div class="donut-stat-label">Extreme (4)</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ── ROW 2: REVENUE EFFICIENCY & ACTIVE HOURS CHARTS ── -->
+      <div>
+        <div class="section-label">Financial Performance & Service Coverage per Bus</div>
+        <div class="row-2">
+
+          <!-- Revenue Collected by Top Buses -->
+          <div class="card">
+            <div class="card-head">
+              <div>
+                <div class="card-title">Top 10 Buses by Collected Fare Revenue (₹)</div>
+                <div class="card-subtitle">Cash realization by bus waybill</div>
+              </div>
+              <button class="card-action" data-export-chart="busRevenueChart">Export ↗</button>
+            </div>
+            <div class="card-body">
+              <div class="chart-wrap" style="height:240px;">
+                <canvas id="busRevenueChart"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <!-- Route Coverage Complexity -->
+          <div class="card">
+            <div class="card-head">
+              <div>
+                <div class="card-title">Stop & Corridor Coverage (Top 10 Buses)</div>
+                <div class="card-subtitle">Number of distinct bus stops served per waybill</div>
+              </div>
+              <button class="card-action" data-export-chart="busCoverageChart">Export ↗</button>
+            </div>
+            <div class="card-body">
+              <div class="chart-wrap" style="height:240px;">
+                <canvas id="busCoverageChart"></canvas>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ── COMPLETE BUS FLEET AUDIT TABLE ── -->
+      <div>
+        <div class="section-label">All 47 Bus Waybills — Complete Fleet Ledger</div>
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <div class="card-title">Bus Fleet Detailed Performance Ledger</div>
+              <div class="card-subtitle">Sorted by passenger volume · All monetary values in INR (₹)</div>
+            </div>
+            <button class="card-action" data-export-table="busFleetTable">Export CSV ↗</button>
+          </div>
+          <div class="card-body" style="padding-top:0;">
+            <div class="tbl-wrap">
+              <table id="busFleetTable">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Waybill No.</th>
+                    <th>Passengers</th>
+                    <th>Tickets</th>
+                    <th>Pax / Ticket</th>
+                    <th>Cash Coll. (₹)</th>
+                    <th>Uncollected (₹)</th>
+                    <th>Total Fare (₹)</th>
+                    <th>Stops Served</th>
+                    <th>Active Hours</th>
+                    <th>Load Status</th>
+                  </tr>
+                </thead>
+                <tbody id="busFleetTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /content -->
+
+    <footer class="footer">
+      KSRTC Kalaburagi Division · Bus Ticket Intelligence Dashboard · Data: PS-3 Bus Ticket System · 20 Oct 2026
+      &nbsp;·&nbsp;
+      19,275 records &nbsp;·&nbsp; All amounts in INR &nbsp;·&nbsp;
+      <strong>Hackathon PS-3 — Bus Ticket Data Analysis</strong>
+    </footer>
+
+  </div><!-- /main-wrapper -->
+
+  <!-- Map launcher remains visible at the right edge when the drawer is closed. -->
+  <button class="map-launcher" id="mapLauncher" type="button" title="Open map" aria-label="Open map">🗺️</button>
+  <button class="map-backdrop" id="mapBackdrop" type="button" aria-label="Close map"></button>
+
+  <!-- ══ RIGHT-SIDE MAP PANEL ══ -->
+  <div class="float-map" id="floatMap" aria-label="Bus network map panel" aria-hidden="true">
+    <div class="float-map-bar" id="floatMapBar">
+      <div class="float-map-bar-left"><span class="map-dot"></span> Kalaburagi Transit GIS</div>
+      <div class="float-map-bar-right">
+        <button class="fmap-ctrl" id="floatMapMinBtn" type="button" title="Minimise map" aria-label="Minimise map">›</button>
+      </div>
+    </div>
+
+    <div class="float-map-tabs" id="floatMapTabs">
+      <button class="fmap-tab active">Routes</button>
+      <button class="fmap-tab">Zones</button>
+      <button class="fmap-tab">Heatmap</button>
+    </div>
+
+    <div class="float-map-body">
+      <div id="google-map-container">
+        <div class="float-map-placeholder">
+          <div class="pin">📍</div>
+          <h3 id="mapPlaceholderTitle">Route view preview</h3>
+          <p id="mapPlaceholderText">Route summary is available in the dashboard. A geographic map requires stop coordinates or latitude/longitude values in the source dataset.</p>
+          <div class="ready-badge" id="mapReadyBadge">✦ Route data available</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="js/common.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/charts.js"></script>
+  <script>
+    // Complete 47 bus fleet records dataset
+    const allBusesData = [
+      { wb: "1020039540", passengers: 1575, tickets: 753, collected: 1825, uncollected: 10420, totalFare: 12245, stopCount: 20, routeCount: 72, activeHours: 12, paxPerTkt: 2.09, collRate: 14.9, revPerPax: 1.2 },
+      { wb: "1020039526", passengers: 1277, tickets: 529, collected: 1677, uncollected: 11606, totalFare: 13283, stopCount: 20, routeCount: 99, activeHours: 11, paxPerTkt: 2.41, collRate: 12.6, revPerPax: 1.3 },
+      { wb: "1020039545", passengers: 1116, tickets: 726, collected: 1799, uncollected: 9200, totalFare: 10999, stopCount: 18, routeCount: 48, activeHours: 12, paxPerTkt: 1.54, collRate: 16.4, revPerPax: 1.6 },
+      { wb: "1020039548", passengers: 1116, tickets: 674, collected: 3309, uncollected: 9380, totalFare: 12689, stopCount: 30, routeCount: 281, activeHours: 12, paxPerTkt: 1.66, collRate: 26.1, revPerPax: 3.0 },
+      { wb: "1020039488", passengers: 1018, tickets: 490, collected: 1287, uncollected: 8739, totalFare: 10026, stopCount: 19, routeCount: 64, activeHours: 11, paxPerTkt: 2.08, collRate: 12.8, revPerPax: 1.3 },
+      { wb: "1020039511", passengers: 1008, tickets: 643, collected: 2197, uncollected: 9481, totalFare: 11678, stopCount: 21, routeCount: 77, activeHours: 13, paxPerTkt: 1.57, collRate: 18.8, revPerPax: 2.2 },
+      { wb: "1020039522", passengers: 1007, tickets: 641, collected: 4249, uncollected: 9629, totalFare: 13878, stopCount: 17, routeCount: 65, activeHours: 15, paxPerTkt: 1.57, collRate: 30.6, revPerPax: 4.2 },
+      { wb: "1020039546", passengers: 996, tickets: 673, collected: 1928, uncollected: 8094, totalFare: 10022, stopCount: 23, routeCount: 101, activeHours: 12, paxPerTkt: 1.48, collRate: 19.2, revPerPax: 1.9 },
+      { wb: "1020039495", passengers: 974, tickets: 613, collected: 2182, uncollected: 9763, totalFare: 11945, stopCount: 19, routeCount: 62, activeHours: 12, paxPerTkt: 1.59, collRate: 18.3, revPerPax: 2.2 },
+      { wb: "1020039535", passengers: 899, tickets: 623, collected: 2671, uncollected: 8683, totalFare: 11354, stopCount: 24, routeCount: 95, activeHours: 12, paxPerTkt: 1.44, collRate: 23.5, revPerPax: 3.0 },
+      { wb: "1020039544", passengers: 899, tickets: 574, collected: 1968, uncollected: 7521, totalFare: 9489, stopCount: 18, routeCount: 52, activeHours: 12, paxPerTkt: 1.57, collRate: 20.7, revPerPax: 2.2 },
+      { wb: "1020039534", passengers: 855, tickets: 512, collected: 2124, uncollected: 7894, totalFare: 10018, stopCount: 20, routeCount: 65, activeHours: 12, paxPerTkt: 1.67, collRate: 21.2, revPerPax: 2.5 },
+      { wb: "1020039547", passengers: 825, tickets: 479, collected: 2315, uncollected: 8312, totalFare: 10627, stopCount: 20, routeCount: 57, activeHours: 12, paxPerTkt: 1.72, collRate: 21.8, revPerPax: 2.8 },
+      { wb: "1020039533", passengers: 819, tickets: 468, collected: 2261, uncollected: 8250, totalFare: 10511, stopCount: 19, routeCount: 59, activeHours: 11, paxPerTkt: 1.75, collRate: 21.5, revPerPax: 2.8 },
+      { wb: "1020039552", passengers: 780, tickets: 426, collected: 3606, uncollected: 6539, totalFare: 10145, stopCount: 21, routeCount: 57, activeHours: 12, paxPerTkt: 1.83, collRate: 35.5, revPerPax: 4.6 },
+      { wb: "1020039497", passengers: 778, tickets: 388, collected: 3441, uncollected: 6714, totalFare: 10155, stopCount: 28, routeCount: 97, activeHours: 13, paxPerTkt: 2.01, collRate: 33.9, revPerPax: 4.4 },
+      { wb: "1020039543", passengers: 773, tickets: 442, collected: 2541, uncollected: 7338, totalFare: 9879, stopCount: 24, routeCount: 68, activeHours: 12, paxPerTkt: 1.75, collRate: 25.7, revPerPax: 3.3 },
+      { wb: "1020039538", passengers: 769, tickets: 442, collected: 2603, uncollected: 7586, totalFare: 10189, stopCount: 21, routeCount: 59, activeHours: 13, paxPerTkt: 1.74, collRate: 25.5, revPerPax: 3.4 },
+      { wb: "1020039527", passengers: 767, tickets: 423, collected: 2108, uncollected: 7815, totalFare: 9923, stopCount: 16, routeCount: 46, activeHours: 12, paxPerTkt: 1.81, collRate: 21.2, revPerPax: 2.7 },
+      { wb: "1020039549", passengers: 765, tickets: 432, collected: 2795, uncollected: 7335, totalFare: 10130, stopCount: 20, routeCount: 65, activeHours: 12, paxPerTkt: 1.77, collRate: 27.6, revPerPax: 3.7 },
+      { wb: "1020039525", passengers: 757, tickets: 469, collected: 2577, uncollected: 7515, totalFare: 10092, stopCount: 19, routeCount: 55, activeHours: 11, paxPerTkt: 1.61, collRate: 25.5, revPerPax: 3.4 },
+      { wb: "1020039532", passengers: 739, tickets: 405, collected: 2068, uncollected: 7172, totalFare: 9240, stopCount: 21, routeCount: 54, activeHours: 11, paxPerTkt: 1.82, collRate: 22.4, revPerPax: 2.8 },
+      { wb: "1020039539", passengers: 738, tickets: 469, collected: 2364, uncollected: 7248, totalFare: 9612, stopCount: 18, routeCount: 47, activeHours: 13, paxPerTkt: 1.57, collRate: 24.6, revPerPax: 3.2 },
+      { wb: "1020039541", passengers: 728, tickets: 457, collected: 2420, uncollected: 7421, totalFare: 9841, stopCount: 23, routeCount: 81, activeHours: 12, paxPerTkt: 1.59, collRate: 24.6, revPerPax: 3.3 },
+      { wb: "1020039502", passengers: 722, tickets: 441, collected: 2297, uncollected: 7122, totalFare: 9419, stopCount: 20, routeCount: 58, activeHours: 12, paxPerTkt: 1.64, collRate: 24.4, revPerPax: 3.2 },
+      { wb: "1020039530", passengers: 718, tickets: 400, collected: 2269, uncollected: 7041, totalFare: 9310, stopCount: 18, routeCount: 54, activeHours: 11, paxPerTkt: 1.80, collRate: 24.4, revPerPax: 3.2 },
+      { wb: "1020039512", passengers: 708, tickets: 412, collected: 2603, uncollected: 6636, totalFare: 9239, stopCount: 19, routeCount: 57, activeHours: 11, paxPerTkt: 1.72, collRate: 28.2, revPerPax: 3.7 },
+      { wb: "1020039531", passengers: 706, tickets: 415, collected: 2516, uncollected: 7164, totalFare: 9680, stopCount: 19, routeCount: 51, activeHours: 12, paxPerTkt: 1.70, collRate: 26.0, revPerPax: 3.6 },
+      { wb: "1020039529", passengers: 700, tickets: 418, collected: 2459, uncollected: 7200, totalFare: 9659, stopCount: 21, routeCount: 65, activeHours: 12, paxPerTkt: 1.67, collRate: 25.5, revPerPax: 3.5 },
+      { wb: "1020039536", passengers: 686, tickets: 395, collected: 2062, uncollected: 6927, totalFare: 8989, stopCount: 18, routeCount: 52, activeHours: 11, paxPerTkt: 1.74, collRate: 22.9, revPerPax: 3.0 },
+      { wb: "1020039528", passengers: 681, tickets: 388, collected: 2364, uncollected: 6816, totalFare: 9180, stopCount: 17, routeCount: 46, activeHours: 12, paxPerTkt: 1.76, collRate: 25.8, revPerPax: 3.5 },
+      { wb: "1020039519", passengers: 662, tickets: 377, collected: 2289, uncollected: 6571, totalFare: 8860, stopCount: 17, routeCount: 51, activeHours: 12, paxPerTkt: 1.76, collRate: 25.8, revPerPax: 3.5 },
+      { wb: "1020039537", passengers: 659, tickets: 381, collected: 4476, uncollected: 5192, totalFare: 9668, stopCount: 14, routeCount: 46, activeHours: 14, paxPerTkt: 1.73, collRate: 46.3, revPerPax: 6.8 },
+      { wb: "1020039504", passengers: 641, tickets: 351, collected: 2043, uncollected: 6228, totalFare: 8271, stopCount: 19, routeCount: 53, activeHours: 12, paxPerTkt: 1.83, collRate: 24.7, revPerPax: 3.2 },
+      { wb: "1020039521", passengers: 636, tickets: 376, collected: 2253, uncollected: 6183, totalFare: 8436, stopCount: 18, routeCount: 49, activeHours: 11, paxPerTkt: 1.69, collRate: 26.7, revPerPax: 3.5 },
+      { wb: "1020039524", passengers: 632, tickets: 377, collected: 2197, uncollected: 6204, totalFare: 8401, stopCount: 20, routeCount: 56, activeHours: 12, paxPerTkt: 1.68, collRate: 26.2, revPerPax: 3.5 },
+      { wb: "1020039505", passengers: 622, tickets: 349, collected: 2092, uncollected: 6120, totalFare: 8212, stopCount: 18, routeCount: 48, activeHours: 11, paxPerTkt: 1.78, collRate: 25.5, revPerPax: 3.4 },
+      { wb: "1020039551", passengers: 615, tickets: 357, collected: 2221, uncollected: 5979, totalFare: 8200, stopCount: 19, routeCount: 49, activeHours: 12, paxPerTkt: 1.72, collRate: 27.1, revPerPax: 3.6 },
+      { wb: "1020039520", passengers: 605, tickets: 356, collected: 2108, uncollected: 5886, totalFare: 7994, stopCount: 17, routeCount: 45, activeHours: 12, paxPerTkt: 1.70, collRate: 26.4, revPerPax: 3.5 },
+      { wb: "1020039517", passengers: 592, tickets: 345, collected: 2140, uncollected: 5814, totalFare: 7954, stopCount: 19, routeCount: 50, activeHours: 12, paxPerTkt: 1.72, collRate: 26.9, revPerPax: 3.6 },
+      { wb: "1020039515", passengers: 531, tickets: 312, collected: 1928, uncollected: 5192, totalFare: 7120, stopCount: 18, routeCount: 48, activeHours: 11, paxPerTkt: 1.70, collRate: 27.1, revPerPax: 3.6 },
+      { wb: "1020039498", passengers: 487, tickets: 276, collected: 1750, uncollected: 4683, totalFare: 6433, stopCount: 19, routeCount: 49, activeHours: 10, paxPerTkt: 1.76, collRate: 27.2, revPerPax: 3.6 },
+      { wb: "1020039508", passengers: 452, tickets: 261, collected: 1629, uncollected: 4326, totalFare: 5955, stopCount: 17, routeCount: 46, activeHours: 10, paxPerTkt: 1.73, collRate: 27.4, revPerPax: 3.6 },
+      { wb: "1020039513", passengers: 388, tickets: 218, collected: 1395, uncollected: 3744, totalFare: 5139, stopCount: 18, routeCount: 47, activeHours: 9, paxPerTkt: 1.78, collRate: 27.1, revPerPax: 3.6 },
+      { wb: "1020039516", passengers: 326, tickets: 189, collected: 1188, uncollected: 3144, totalFare: 4332, stopCount: 16, routeCount: 43, activeHours: 8, paxPerTkt: 1.72, collRate: 27.4, revPerPax: 3.6 },
+      { wb: "1020039523", passengers: 219, tickets: 126, collected: 792, uncollected: 2124, totalFare: 2916, stopCount: 14, routeCount: 38, activeHours: 6, paxPerTkt: 1.74, collRate: 27.2, revPerPax: 3.6 },
+      { wb: "1020039542", passengers: 72, tickets: 42, collected: 264, uncollected: 708, totalFare: 972, stopCount: 12, routeCount: 28, activeHours: 3, paxPerTkt: 1.71, collRate: 27.2, revPerPax: 3.7 }
+    ];
+
+    // ── Chart 1: Top 15 Loaded Buses (Bar) ──
+    const top15 = allBusesData.slice(0, 15);
+    new Chart(document.getElementById('topBusesChart').getContext('2d'), {
+      type: 'bar',
+      data: {
+        labels: top15.map(b => '#' + b.wb.slice(-5)),
+        datasets: [{
+          label: 'Passengers Carried',
+          data: top15.map(b => b.passengers),
+          backgroundColor: top15.map(b =>
+            b.passengers >= 1200 ? '#EF4444' :
+              b.passengers >= 1000 ? '#8B5CF6' : 'rgba(139,92,246,0.6)'
+          ),
+          borderRadius: 5,
+          borderSkipped: false
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { display: false },
+          tooltip: { callbacks: { label: ctx => ' ' + ctx.raw.toLocaleString() + ' passengers carried' } }
+        },
+        scales: {
+          y: { beginAtZero: true, grid: { color: GRID_COLOR }, ticks: { callback: v => v >= 1000 ? (v / 1000) + 'k' : v } },
+          x: { grid: { display: false } }
+        }
+      }
+    });
+
+    // ── Chart 2: Fleet Load Tiers (Doughnut) ──
+    new Chart(document.getElementById('loadTiersChart').getContext('2d'), {
+      type: 'doughnut',
+      data: {
+        labels: ['Moderate (500-800)', 'Heavy (800-1100)', 'Overloaded (1100+)', 'Light (<500)'],
+        datasets: [{
+          data: [27, 9, 4, 7],
+          backgroundColor: ['#10B981', '#8B5CF6', '#EF4444', '#F59E0B'],
+          borderWidth: 3,
+          borderColor: '#fff',
+          hoverOffset: 6
+        }]
+      },
+      options: {
+        cutout: '64%',
+        plugins: {
+          legend: { display: false },
+          tooltip: { callbacks: { label: ctx => ' ' + ctx.raw + ' buses (' + (ctx.raw / 47 * 100).toFixed(1) + '%)' } }
+        }
+      }
+    });
+
+    // ── Chart 3: Top Revenue Buses (Bar) ──
+    const revSorted = [...allBusesData].sort((a,b) => b.collected - a.collected).slice(0, 10);
+    new Chart(document.getElementById('busRevenueChart').getContext('2d'), {
+      type: 'bar',
+      data: {
+        labels: revSorted.map(b => '#' + b.wb.slice(-5)),
+        datasets: [{
+          label: 'Collected Fare (₹)',
+          data: revSorted.map(b => b.collected),
+          backgroundColor: '#10B981',
+          borderRadius: 4,
+          borderSkipped: false
+        }]
+      },
+      options: {
+        indexAxis: 'y',
+        responsive: true,
+        plugins: {
+          legend: { display: false },
+          tooltip: { callbacks: { label: ctx => ' ₹' + ctx.raw.toLocaleString() } }
+        },
+        scales: {
+          x: { beginAtZero: true, grid: { color: GRID_COLOR }, ticks: { callback: v => '₹' + v.toLocaleString() } },
+          y: { grid: { display: false } }
+        }
+      }
+    });
+
+    // ── Chart 4: Stops Served (Bar) ──
+    new Chart(document.getElementById('busCoverageChart').getContext('2d'), {
+      type: 'bar',
+      data: {
+        labels: top15.slice(0, 10).map(b => '#' + b.wb.slice(-5)),
+        datasets: [{
+          label: 'Unique Stops Served',
+          data: top15.slice(0, 10).map(b => b.stopCount),
+          backgroundColor: '#8B5CF6',
+          borderRadius: 4,
+          borderSkipped: false
+        }]
+      },
+      options: {
+        indexAxis: 'y',
+        responsive: true,
+        plugins: {
+          legend: { display: false },
+          tooltip: { callbacks: { label: ctx => ' ' + ctx.raw + ' unique stops served' } }
+        },
+        scales: {
+          x: { beginAtZero: true, grid: { color: GRID_COLOR } },
+          y: { grid: { display: false } }
+        }
+      }
+    });
+
+    // ── Table: Populate 47 Bus Fleet Table ──
+    const tableBody = document.getElementById('busFleetTableBody');
+    if (tableBody) {
+      const rowsHtml = allBusesData.map((b, i) => {
+        const badge = b.passengers >= 1100 ? ['red', 'Overloaded'] :
+          b.passengers >= 800 ? ['purple', 'Heavy'] :
+            b.passengers >= 500 ? ['green', 'Moderate'] : ['yellow', 'Light'];
+        return `
+        <tr>
+          <td style="font-weight:700; color:var(--text-muted);">${i + 1}</td>
+          <td><strong>#${b.wb}</strong></td>
+          <td><strong>${b.passengers.toLocaleString()}</strong></td>
+          <td style="color:var(--text-muted);">${b.tickets.toLocaleString()}</td>
+          <td style="font-weight:600;">${b.paxPerTkt}</td>
+          <td style="color:#059669; font-weight:600;">₹${b.collected.toLocaleString()}</td>
+          <td style="color:#DC2626; font-weight:600;">₹${b.uncollected.toLocaleString()}</td>
+          <td style="font-weight:700;">₹${b.totalFare.toLocaleString()}</td>
+          <td style="color:var(--text-muted);">${b.stopCount} stops</td>
+          <td style="color:var(--text-muted);">${b.activeHours} hrs</td>
+          <td><span class="pill ${badge[0]}">${badge[1]}</span></td>
+        </tr>`;
+      }).join('');
+      tableBody.innerHTML = rowsHtml;
+    }
+  </script>
+</body>
+
+</html>
+

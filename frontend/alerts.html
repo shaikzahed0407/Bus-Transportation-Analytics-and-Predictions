@@ -6,6 +6,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Operational Alerts & Insights | KSRTC Kalaburagi Division</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
   <link rel="stylesheet" href="styles.css">
 </head>
 
@@ -26,8 +28,10 @@
     <button class="nav-item" title="Overview" data-href="index.html" aria-label="Go to Overview"><span class="nav-icon">🏠</span><span class="nav-label">Overview</span></button>
     <button class="nav-item" title="Route Analytics" data-href="routes.html" aria-label="Go to Route Analytics"><span class="nav-icon">🗺️</span><span class="nav-label">Route Analytics</span></button>
     <button class="nav-item" title="Passengers" data-href="passengers.html" aria-label="Go to Passengers"><span class="nav-icon">👥</span><span class="nav-label">Passengers</span></button>
+    <button class="nav-item" title="Bus Fleet" data-href="buses.html" aria-label="Go to Bus Fleet"><span class="nav-icon">🚌</span><span class="nav-label">Bus Fleet</span></button>
     <button class="nav-item" title="Revenue" data-href="revenue.html" aria-label="Go to Revenue"><span class="nav-icon">💰</span><span class="nav-label">Revenue</span></button>
     <div class="sidebar-divider"></div>
+    <button class="nav-item" title="AI Analytics" data-href="ai-analytics.html" aria-label="Go to AI Analytics"><span class="nav-icon">🤖</span><span class="nav-label">AI Analytics</span></button>
     <button class="nav-item" title="Reports" data-href="reports.html" aria-label="Go to Reports"><span class="nav-icon">📋</span><span class="nav-label">Reports</span></button>
     <button class="nav-item active" title="Alerts" data-href="alerts.html" aria-label="Go to Alerts"><span class="nav-icon">🔔</span><span class="nav-label">Alerts</span></button>
 
@@ -59,7 +63,7 @@
       <div class="topbar-right">
         <div class="date-badge">📅 20 October 2026</div>
         <button class="icon-btn" id="downloadReportBtn" title="Print or save dashboard report" aria-label="Print or save dashboard report">⬇️</button>
-        <button class="icon-btn" id="notificationsBtn" title="View operational alerts" aria-label="View operational alerts" onclick="window.location.href='alerts.html'">🔔</button>
+        <button class="icon-btn" id="notificationsBtn" title="View operational alerts" aria-label="View operational alerts" onclick="document.getElementById('section-alerts')?.scrollIntoView({behavior:'smooth'})">🔔</button>
       </div>
     </header>
 
@@ -75,12 +79,11 @@
             </div>
           </div>
           <div class="card-body">
-            <div class="alert-card danger">
-              <div class="alert-icon">🚨</div>
+            <div class="alert-card info">
+              <div class="alert-icon">🏛️</div>
               <div>
-                <div class="alert-title">Critical: Uncollected Fare — ₹2,90,929</div>
-                <div class="alert-desc">75.3% of total owed revenue remains uncollected. Immediate enforcement, digital
-                  payment adoption, and conductor accountability measures required.</div>
+                <div class="alert-title">State Subsidy Receivable: Shakti Scheme — ₹2,90,929</div>
+                <div class="alert-desc">75.3% of total fare value corresponds to zero-fare tickets issued under the Government of Karnataka's Shakti Scheme for women passengers. Expedite monthly reimbursement reconciliation with Department of Transport.</div>
               </div>
             </div>
             <div class="alert-card warning">
@@ -136,10 +139,12 @@
 
   <!-- Map launcher remains visible at the right edge when the drawer is closed. -->
   <button class="map-launcher" id="mapLauncher" type="button" title="Open map" aria-label="Open map">🗺️</button>
+  <button class="map-backdrop" id="mapBackdrop" type="button" aria-label="Close map"></button>
 
   <!-- ══ RIGHT-SIDE MAP PANEL ══ -->
   <div class="float-map" id="floatMap" aria-label="Bus network map panel" aria-hidden="true">
     <div class="float-map-bar" id="floatMapBar">
+      <div class="float-map-bar-left"><span class="map-dot"></span> Kalaburagi Transit GIS</div>
       <div class="float-map-bar-right">
         <button class="fmap-ctrl" id="floatMapMinBtn" type="button" title="Minimise map" aria-label="Minimise map">›</button>
       </div>
@@ -165,7 +170,9 @@
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-  <script src="common.js"></script>
+  <script src="js/common.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/charts.js"></script>
   <script>
 
     // Stop Efficiency Bars

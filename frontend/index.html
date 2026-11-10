@@ -6,6 +6,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Operations Overview | KSRTC Kalaburagi Division</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
   <link rel="stylesheet" href="styles.css">
 </head>
 
@@ -26,8 +28,10 @@
     <button class="nav-item active" title="Overview" data-href="index.html" aria-label="Go to Overview"><span class="nav-icon">🏠</span><span class="nav-label">Overview</span></button>
     <button class="nav-item" title="Route Analytics" data-href="routes.html" aria-label="Go to Route Analytics"><span class="nav-icon">🗺️</span><span class="nav-label">Route Analytics</span></button>
     <button class="nav-item" title="Passengers" data-href="passengers.html" aria-label="Go to Passengers"><span class="nav-icon">👥</span><span class="nav-label">Passengers</span></button>
+    <button class="nav-item" title="Bus Fleet" data-href="buses.html" aria-label="Go to Bus Fleet"><span class="nav-icon">🚌</span><span class="nav-label">Bus Fleet</span></button>
     <button class="nav-item" title="Revenue" data-href="revenue.html" aria-label="Go to Revenue"><span class="nav-icon">💰</span><span class="nav-label">Revenue</span></button>
     <div class="sidebar-divider"></div>
+    <button class="nav-item" title="AI Analytics" data-href="ai-analytics.html" aria-label="Go to AI Analytics"><span class="nav-icon">🤖</span><span class="nav-label">AI Analytics</span></button>
     <button class="nav-item" title="Reports" data-href="reports.html" aria-label="Go to Reports"><span class="nav-icon">📋</span><span class="nav-label">Reports</span></button>
     <button class="nav-item" title="Alerts" data-href="alerts.html" aria-label="Go to Alerts"><span class="nav-icon">🔔</span><span class="nav-label">Alerts</span></button>
 
@@ -73,22 +77,22 @@
           <!-- Dark featured card -->
           <div class="kpi-card dark">
             <div class="kpi-top">
-              <div class="kpi-icon-wrap">📉</div>
-              <span class="pill red" style="font-size:10px;">Critical</span>
+              <div class="kpi-icon-wrap">🏛️</div>
+              <span class="pill yellow" style="font-size:10px;">Govt Subsidy</span>
             </div>
             <div class="kpi-value">₹2,90,929</div>
-            <div class="kpi-label">Uncollected Revenue</div>
-            <div class="kpi-sub">75.3% of total fare owed</div>
+            <div class="kpi-label">Shakti Subsidy Claim</div>
+            <div class="kpi-sub">75.3% women free fare (reimbursable)</div>
           </div>
 
           <div class="kpi-card">
             <div class="kpi-top">
               <div class="kpi-icon-wrap">🚌</div>
-              <span class="kpi-trend trend-neutral">1 day</span>
+              <span class="kpi-trend trend-neutral">Fleet</span>
             </div>
             <div class="kpi-value">47</div>
-            <div class="kpi-label">Bus Trips</div>
-            <div class="kpi-sub">Unique waybills operated</div>
+            <div class="kpi-label">Active Bus Units</div>
+            <div class="kpi-sub">Operating daily waybills</div>
           </div>
 
           <div class="kpi-card">
@@ -210,7 +214,7 @@
             </div>
             <div class="card-body">
               <div class="chart-wrap chart-donut">
-                <canvas id="revenuePie" style="max-height:160px; max-width:210px;"></canvas>
+                <canvas id="revenuePie" style="max-height:210px; max-width:260px;"></canvas>
               </div>
               <div class="donut-stats">
                 <div class="donut-stat">
@@ -224,19 +228,6 @@
                 <div class="donut-stat">
                   <div class="donut-stat-val">24.7%</div>
                   <div class="donut-stat-label">Efficiency</div>
-                </div>
-              </div>
-              <div class="collection-bar-wrap">
-                <div class="coll-bar-labels">
-                  <span style="color:#10B981; font-weight:600; font-size:12.5px;">● Collected</span>
-                  <span style="color:#EF4444; font-weight:600; font-size:12.5px;">Uncollected ●</span>
-                </div>
-                <div class="coll-bar-track">
-                  <div class="coll-bar-fill"></div>
-                </div>
-                <div class="coll-bar-pct">
-                  <span>24.7%</span>
-                  <span>75.3%</span>
                 </div>
               </div>
             </div>
@@ -259,10 +250,12 @@
 
   <!-- Map launcher remains visible at the right edge when the drawer is closed. -->
   <button class="map-launcher" id="mapLauncher" type="button" title="Open map" aria-label="Open map">🗺️</button>
+  <button class="map-backdrop" id="mapBackdrop" type="button" aria-label="Close map"></button>
 
   <!-- ══ RIGHT-SIDE MAP PANEL ══ -->
   <div class="float-map" id="floatMap" aria-label="Bus network map panel" aria-hidden="true">
     <div class="float-map-bar" id="floatMapBar">
+      <div class="float-map-bar-left"><span class="map-dot"></span> Kalaburagi Transit GIS</div>
       <div class="float-map-bar-right">
         <button class="fmap-ctrl" id="floatMapMinBtn" type="button" title="Minimise map" aria-label="Minimise map">›</button>
       </div>
@@ -288,7 +281,9 @@
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-  <script src="common.js"></script>
+  <script src="js/common.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/charts.js"></script>
   <script>
 
     // Hourly Traffic Chart
@@ -334,7 +329,7 @@
         }]
       },
       options: {
-        cutout: '70%',
+        cutout: '64%',
         plugins: {
           legend: { display: false },
           tooltip: { callbacks: { label: ctx => ' ₹' + ctx.raw.toLocaleString() + ' (' + (ctx.raw / 386420 * 100).toFixed(1) + '%)' } }

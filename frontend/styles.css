@@ -352,6 +352,10 @@
       gap: 14px;
     }
 
+    .kpi-grid.kpi-grid-4 {
+      grid-template-columns: repeat(4, 1fr);
+    }
+
     .kpi-card {
       background: var(--card);
       border-radius: var(--radius);
@@ -553,11 +557,11 @@
     }
 
     .chart-wrap.chart-donut {
-      height: 175px;
+      height: 220px;
       display: flex;
       justify-content: center;
       align-items: center;
-      margin-top: 6px;
+      margin: 8px 0 12px;
     }
 
     /* ══ TABLE ══ */
@@ -868,6 +872,10 @@
         grid-template-columns: repeat(3, 1fr);
       }
 
+      .kpi-grid.kpi-grid-4 {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
       .row-2,
       .row-overview-split,
       .row-3,
@@ -878,6 +886,11 @@
 
     @media (max-width: 768px) {
       :root { --sidebar-w: 0px; }
+
+      .kpi-grid,
+      .kpi-grid.kpi-grid-4 {
+        grid-template-columns: repeat(2, 1fr);
+      }
 
       .sidebar {
         display: flex;
@@ -916,6 +929,16 @@
       .topbar-right { margin-left: auto; }
       .float-map { width: min(100vw, 440px); height: 100vh; height: 100dvh; border-radius: 12px 0 0 12px; }
       .map-launcher { width: 42px; height: 54px; }
+    }
+
+    @media (max-width: 480px) {
+      .kpi-grid,
+      .kpi-grid.kpi-grid-4 {
+        grid-template-columns: 1fr;
+      }
+      .content {
+        padding: 16px 14px 28px;
+      }
     }
 
     /* ══ RIGHT-SIDE MAP DRAWER ══ */
@@ -960,7 +983,28 @@
     }
 
     .float-map-bar-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #fff;
+      font-size: 13px;
+      font-weight: 600;
+      margin-right: auto;
+    }
+
+    .map-backdrop {
       display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 498;
+      background: rgba(24, 24, 27, 0.4);
+      backdrop-filter: blur(2px);
+      border: 0;
+      cursor: pointer;
+    }
+
+    body.map-open .map-backdrop {
+      display: block;
     }
 
     .map-launcher {
@@ -1183,15 +1227,6 @@
     }
 
     .nav-item[data-href] { flex-shrink: 0; }
-
-    @media (max-width: 768px) {
-      .topbar { padding: 14px 16px; flex-wrap: wrap; }
-      .topbar-left { width: 100%; }
-      .search-bar { order: 3; width: 100%; min-width: 0; }
-      .topbar-right { margin-left: auto; }
-      .float-map { width: min(100vw, 440px); height: 100vh; height: 100dvh; border-radius: 12px 0 0 12px; }
-      .map-launcher { width: 42px; height: 54px; }
-    }
 
     @media print {
       body { display: block; background: #fff; }
