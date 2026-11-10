@@ -6,6 +6,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Revenue Analysis | KSRTC Kalaburagi Division</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
   <link rel="stylesheet" href="styles.css">
 </head>
 
@@ -68,12 +70,12 @@
     <div class="content">
 <div>
     <div class="section-label">Revenue Metrics</div>
-    <div class="kpi-grid" style="grid-template-columns: repeat(4, 1fr);">
+    <div class="kpi-grid kpi-grid-4">
       <div class="kpi-card dark">
-        <div class="kpi-top"><div class="kpi-icon-wrap">📉</div><span class="pill red">Critical</span></div>
+        <div class="kpi-top"><div class="kpi-icon-wrap">🏛️</div><span class="pill yellow" style="font-size:10px;">Govt Subsidy</span></div>
         <div class="kpi-value">₹2,90,929</div>
-        <div class="kpi-label">Uncollected Fare (75.3%)</div>
-        <div class="kpi-sub">Subsidized / Shakti Scheme</div>
+        <div class="kpi-label">Shakti Subsidy Receivable (75.3%)</div>
+        <div class="kpi-sub">State-reimbursable women passenger fare</div>
       </div>
       <div class="kpi-card">
         <div class="kpi-top"><div class="kpi-icon-wrap">💰</div><span class="kpi-trend trend-down">24.7%</span></div>
@@ -172,10 +174,12 @@
 
   <!-- Map launcher remains visible at the right edge when the drawer is closed. -->
   <button class="map-launcher" id="mapLauncher" type="button" title="Open map" aria-label="Open map">🗺️</button>
+  <button class="map-backdrop" id="mapBackdrop" type="button" aria-label="Close map"></button>
 
   <!-- ══ RIGHT-SIDE MAP PANEL ══ -->
   <div class="float-map" id="floatMap" aria-label="Bus network map panel" aria-hidden="true">
     <div class="float-map-bar" id="floatMapBar">
+      <div class="float-map-bar-left"><span class="map-dot"></span> Kalaburagi Transit GIS</div>
       <div class="float-map-bar-right">
         <button class="fmap-ctrl" id="floatMapMinBtn" type="button" title="Minimise map" aria-label="Minimise map">›</button>
       </div>

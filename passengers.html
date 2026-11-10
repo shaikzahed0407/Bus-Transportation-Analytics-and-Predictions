@@ -6,6 +6,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Passenger Analytics | KSRTC Kalaburagi Division</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
   <link rel="stylesheet" href="styles.css">
 </head>
 
@@ -18,24 +22,36 @@
         <div class="sidebar-logo">K</div>
         <span class="sidebar-brand-name">KSRTC Analytics</span>
       </div>
-      <button class="sidebar-toggle" id="sidebarToggle" type="button" title="Expand sidebar" aria-label="Expand sidebar" aria-expanded="false">
+      <button class="sidebar-toggle" id="sidebarToggle" type="button" title="Expand sidebar" aria-label="Expand sidebar"
+        aria-expanded="false">
         <span class="sidebar-toggle-icon" id="sidebarToggleIcon" aria-hidden="true">☰</span>
       </button>
     </div>
 
-    <button class="nav-item" title="Overview" data-href="index.html" aria-label="Go to Overview"><span class="nav-icon">🏠</span><span class="nav-label">Overview</span></button>
-    <button class="nav-item" title="Route Analytics" data-href="routes.html" aria-label="Go to Route Analytics"><span class="nav-icon">🗺️</span><span class="nav-label">Route Analytics</span></button>
-    <button class="nav-item active" title="Passengers" data-href="passengers.html" aria-label="Go to Passengers"><span class="nav-icon">👥</span><span class="nav-label">Passengers</span></button>
-    <button class="nav-item" title="Bus Fleet" data-href="buses.html" aria-label="Go to Bus Fleet"><span class="nav-icon">🚌</span><span class="nav-label">Bus Fleet</span></button>
-    <button class="nav-item" title="Revenue" data-href="revenue.html" aria-label="Go to Revenue"><span class="nav-icon">💰</span><span class="nav-label">Revenue</span></button>
+    <button class="nav-item" title="Overview" data-href="index.html" aria-label="Go to Overview"><span
+        class="nav-icon">🏠</span><span class="nav-label">Overview</span></button>
+    <button class="nav-item" title="Route Analytics" data-href="routes.html" aria-label="Go to Route Analytics"><span
+        class="nav-icon">🗺️</span><span class="nav-label">Route Analytics</span></button>
+    <button class="nav-item active" title="Passengers" data-href="passengers.html" aria-label="Go to Passengers"><span
+        class="nav-icon">👥</span><span class="nav-label">Passengers</span></button>
+    <button class="nav-item" title="Bus Fleet" data-href="buses.html" aria-label="Go to Bus Fleet"><span
+        class="nav-icon">🚌</span><span class="nav-label">Bus Fleet</span></button>
+    <button class="nav-item" title="Revenue" data-href="revenue.html" aria-label="Go to Revenue"><span
+        class="nav-icon">💰</span><span class="nav-label">Revenue</span></button>
     <div class="sidebar-divider"></div>
-    <button class="nav-item" title="Reports" data-href="reports.html" aria-label="Go to Reports"><span class="nav-icon">📋</span><span class="nav-label">Reports</span></button>
-    <button class="nav-item" title="Alerts" data-href="alerts.html" aria-label="Go to Alerts"><span class="nav-icon">🔔</span><span class="nav-label">Alerts</span></button>
+    <button class="nav-item" title="AI Analytics" data-href="ai-analytics.html" aria-label="Go to AI Analytics"><span
+        class="nav-icon">🤖</span><span class="nav-label">AI Analytics</span></button>
+    <button class="nav-item" title="Reports" data-href="reports.html" aria-label="Go to Reports"><span
+        class="nav-icon">📋</span><span class="nav-label">Reports</span></button>
+    <button class="nav-item" title="Alerts" data-href="alerts.html" aria-label="Go to Alerts"><span
+        class="nav-icon">🔔</span><span class="nav-label">Alerts</span></button>
 
     <div class="sidebar-bottom">
       <div class="sidebar-divider"></div>
-      <button class="nav-item" id="settingsBtn" title="Settings" aria-label="Settings"><span class="nav-icon">⚙️</span><span class="nav-label">Settings</span></button>
-      <button class="nav-item" id="logoutBtn" title="Exit dashboard preview" aria-label="Exit dashboard preview"><span class="nav-icon">↪️</span><span class="nav-label">Exit preview</span></button>
+      <button class="nav-item" id="settingsBtn" title="Settings" aria-label="Settings"><span
+          class="nav-icon">⚙️</span><span class="nav-label">Settings</span></button>
+      <button class="nav-item" id="logoutBtn" title="Exit dashboard preview" aria-label="Exit dashboard preview"><span
+          class="nav-icon">↪️</span><span class="nav-label">Exit preview</span></button>
     </div>
   </aside>
   <button class="sidebar-backdrop" id="sidebarBackdrop" type="button" aria-label="Close navigation"></button>
@@ -46,28 +62,32 @@
     <!-- TOPBAR -->
     <header class="topbar">
       <div class="topbar-left">
-        <button class="mobile-sidebar-btn" id="mobileSidebarToggle" type="button" title="Open navigation" aria-label="Open navigation" aria-expanded="false">☰</button>
+        <button class="mobile-sidebar-btn" id="mobileSidebarToggle" type="button" title="Open navigation"
+          aria-label="Open navigation" aria-expanded="false">☰</button>
         <div>
-          <div class="topbar-title">Passenger Analytics & Flow</div>
-          <div class="topbar-sub">KSRTC · Kalaburagi Division · Ridership, Bus Load & Pickup Intelligence</div>
+          <div class="topbar-title">Passenger Analytics & Demographics</div>
+          <div class="topbar-sub">KSRTC · Kalaburagi Division · Ridership Patterns, Demand Timing & Pickup Shares</div>
         </div>
       </div>
       <label class="search-bar" for="dashboardSearch">
         <span aria-hidden="true">🔍</span>
-        <input id="dashboardSearch" type="search" placeholder="Search buses and stops…" autocomplete="off" aria-label="Search tables">
+        <input id="dashboardSearch" type="search" placeholder="Search passenger records and stops…" autocomplete="off"
+          aria-label="Search tables">
         <kbd> / </kbd>
       </label>
       <div class="topbar-right">
         <div class="date-badge">📅 20 October 2026</div>
-        <button class="icon-btn" id="downloadReportBtn" title="Print or save dashboard report" aria-label="Print or save dashboard report">⬇️</button>
-        <button class="icon-btn" id="notificationsBtn" title="View operational alerts" aria-label="View operational alerts" onclick="window.location.href='alerts.html'">🔔</button>
+        <button class="icon-btn" id="downloadReportBtn" title="Print or save dashboard report"
+          aria-label="Print or save dashboard report">⬇️</button>
+        <button class="icon-btn" id="notificationsBtn" title="View operational alerts"
+          aria-label="View operational alerts" onclick="window.location.href='alerts.html'">🔔</button>
       </div>
     </header>
 
     <!-- CONTENT -->
     <div class="content">
 
-      <!-- ── PASSENGER SUMMARY STATS ── -->
+      <!-- ── PASSENGER SUMMARY STATS (INSPIRATION: OVERVIEW KPI GRID) ── -->
       <div>
         <div class="section-label">Passenger Volume & Fleet Load Key Metrics</div>
         <div class="kpi-grid">
@@ -89,17 +109,17 @@
             </div>
             <div class="kpi-value">699.4</div>
             <div class="kpi-label">Avg Pax Per Bus</div>
-            <div class="kpi-sub">47 active buses / waybills</div>
+            <div class="kpi-sub">Across 47 bus waybills</div>
           </div>
 
           <div class="kpi-card">
             <div class="kpi-top">
               <div class="kpi-icon-wrap">🔥</div>
-              <span class="pill red">Max Loaded Bus</span>
+              <span class="pill red">Peak Unit</span>
             </div>
             <div class="kpi-value">1,575</div>
-            <div class="kpi-label">Highest Bus Load</div>
-            <div class="kpi-sub">Bus Waybill #1020039540</div>
+            <div class="kpi-label">Max Bus Load</div>
+            <div class="kpi-sub">Waybill #1020039540</div>
           </div>
 
           <div class="kpi-card">
@@ -108,8 +128,8 @@
               <span class="kpi-trend trend-neutral">Booking</span>
             </div>
             <div class="kpi-value">1.71</div>
-            <div class="kpi-label">Avg Pax Per Ticket</div>
-            <div class="kpi-sub">61.9% single passenger tickets</div>
+            <div class="kpi-label">Avg Pax / Ticket</div>
+            <div class="kpi-sub">61.9% solo travelers</div>
           </div>
 
           <div class="kpi-card">
@@ -119,7 +139,7 @@
             </div>
             <div class="kpi-value">4,569</div>
             <div class="kpi-label">Busiest Pickup Stop</div>
-            <div class="kpi-sub">Supermarket (13.9% of all boardings)</div>
+            <div class="kpi-sub">Supermarket (13.9% share)</div>
           </div>
 
           <div class="kpi-card">
@@ -129,23 +149,23 @@
             </div>
             <div class="kpi-value">3,400</div>
             <div class="kpi-label">Max Hourly Demand</div>
-            <div class="kpi-sub">12:00 PM – 1:00 PM peak rush</div>
+            <div class="kpi-sub">12:00 PM – 1:00 PM rush</div>
           </div>
 
         </div>
       </div>
 
-      <!-- ── ROW 1: HOURLY DEMAND & TICKET GROUPING ── -->
+      <!-- ── SECTION 1: HOURLY DEMAND & TIME-OF-DAY PIE (INSPIRATION: OVERVIEW SPLIT) ── -->
       <div>
-        <div class="section-label">Hourly Demand & Party Size Profile</div>
+        <div class="section-label">Hourly Demand & Time-of-Day Distribution</div>
         <div class="row-overview-split">
 
-          <!-- Hourly chart -->
+          <!-- Hourly Bar Chart -->
           <div class="card">
             <div class="card-head">
               <div>
                 <div class="card-title">Hourly Passenger Boarding Demand</div>
-                <div class="card-subtitle">Passenger boardings by time of day (06:00 to 23:00)</div>
+                <div class="card-subtitle">Passenger boardings by hour (06:00 to 23:00) with peak highlight</div>
               </div>
               <button class="card-action" data-export-chart="hourlyPaxChart">Export ↗</button>
             </div>
@@ -156,17 +176,89 @@
             </div>
           </div>
 
-          <!-- Group Size Breakdown Doughnut -->
+          <!-- Time-of-Day Pie Chart (Inspiration: Overview Revenue Donut) -->
           <div class="card">
             <div class="card-head">
               <div>
-                <div class="card-title">Passengers per Ticket (Party Size)</div>
-                <div class="card-subtitle">Distribution of solo vs. group travelers</div>
+                <div class="card-title">Time-of-Day Ridership Share</div>
+                <div class="card-subtitle">Passenger volume divided into operational day shifts</div>
               </div>
             </div>
             <div class="card-body">
               <div class="chart-wrap chart-donut">
-                <canvas id="groupSizeChart" style="max-height:210px; max-width:260px;"></canvas>
+                <canvas id="timeOfDayPie" style="max-height:210px; max-width:260px;"></canvas>
+              </div>
+              <div class="donut-stats">
+                <div class="donut-stat">
+                  <div class="donut-stat-val" style="color:#8B5CF6;">47.5%</div>
+                  <div class="donut-stat-label">Afternoon (15.6k)</div>
+                </div>
+                <div class="donut-stat">
+                  <div class="donut-stat-val" style="color:#10B981;">31.6%</div>
+                  <div class="donut-stat-label">Morning (10.4k)</div>
+                </div>
+                <div class="donut-stat">
+                  <div class="donut-stat-val" style="color:#F59E0B;">19.9%</div>
+                  <div class="donut-stat-label">Evening (6.5k)</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ── SECTION 2: PICKUP STOP PIE & TICKETING PARTY SIZE PIE (ROW-2 DUAL CHARTS) ── -->
+      <div>
+        <div class="section-label">Pickup Hub Concentrations & Party Size Profiles</div>
+        <div class="row-2">
+
+          <!-- Pie Chart: Top 5 Pickup Stops vs Rest -->
+          <div class="card">
+            <div class="card-head">
+              <div>
+                <div class="card-title">Pickup Stop Market Share (%)</div>
+                <div class="card-subtitle">Top 5 origin hubs vs. remainder of 129 bus stops</div>
+              </div>
+              <button class="card-action" data-export-chart="pickupSharePie">Export ↗</button>
+            </div>
+            <div class="card-body">
+              <div class="chart-wrap chart-donut" style="height:210px;">
+                <canvas id="pickupSharePie" style="max-height:190px; max-width:240px;"></canvas>
+              </div>
+              <div class="donut-stats">
+                <div class="donut-stat">
+                  <div class="donut-stat-val" style="color:#10B981;">13.9%</div>
+                  <div class="donut-stat-label">Supermarket</div>
+                </div>
+                <div class="donut-stat">
+                  <div class="donut-stat-val" style="color:#8B5CF6;">13.2%</div>
+                  <div class="donut-stat-label">CBS Hub</div>
+                </div>
+                <div class="donut-stat">
+                  <div class="donut-stat-val" style="color:#F59E0B;">6.6%</div>
+                  <div class="donut-stat-label">Sedam R R</div>
+                </div>
+                <div class="donut-stat">
+                  <div class="donut-stat-val" style="color:#A1A1AA;">56.6%</div>
+                  <div class="donut-stat-label">Other 129 Stops</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Pie Chart: Group Size / Passengers Per Ticket -->
+          <div class="card">
+            <div class="card-head">
+              <div>
+                <div class="card-title">Passengers per Ticket (Party Size)</div>
+                <div class="card-subtitle">Proportion of solo, paired, and group tickets issued</div>
+              </div>
+              <button class="card-action" data-export-chart="groupSizeChart">Export ↗</button>
+            </div>
+            <div class="card-body">
+              <div class="chart-wrap chart-donut" style="height:210px;">
+                <canvas id="groupSizeChart" style="max-height:190px; max-width:240px;"></canvas>
               </div>
               <div class="donut-stats">
                 <div class="donut-stat">
@@ -178,8 +270,12 @@
                   <div class="donut-stat-label">Pairs (2 Pax)</div>
                 </div>
                 <div class="donut-stat">
-                  <div class="donut-stat-val" style="color:#F59E0B;">17.0%</div>
-                  <div class="donut-stat-label">Groups (3+ Pax)</div>
+                  <div class="donut-stat-val" style="color:#F59E0B;">8.4%</div>
+                  <div class="donut-stat-label">Trios (3 Pax)</div>
+                </div>
+                <div class="donut-stat">
+                  <div class="donut-stat-val" style="color:#EF4444;">8.6%</div>
+                  <div class="donut-stat-label">Group (4+ Pax)</div>
                 </div>
               </div>
             </div>
@@ -188,39 +284,39 @@
         </div>
       </div>
 
-      <!-- ── ROW 2: PASSENGERS PER BUS & PASSENGERS PER PICKUP STOP ── -->
+      <!-- ── SECTION 3: TOP PICKUP STOPS & BUS LOAD BARS (INSPIRATION: ROUTE ANALYTICS) ── -->
       <div>
-        <div class="section-label">Bus Fleet Load & Pickup Stop Density</div>
+        <div class="section-label">Boarding Hub Rankings & Bus Load Analysis</div>
         <div class="row-2">
 
-          <!-- Top Buses by Passengers -->
+          <!-- Top 10 Pickup Stops (Horizontal Bar) -->
           <div class="card">
             <div class="card-head">
               <div>
-                <div class="card-title">Top 10 Buses by Passenger Load</div>
-                <div class="card-subtitle">Total passengers carried per bus waybill</div>
-              </div>
-              <button class="card-action" data-export-chart="busLoadChart">Export ↗</button>
-            </div>
-            <div class="card-body">
-              <div class="chart-wrap" style="height:240px;">
-                <canvas id="busLoadChart"></canvas>
-              </div>
-            </div>
-          </div>
-
-          <!-- Top Pickup Stops by Boardings -->
-          <div class="card">
-            <div class="card-head">
-              <div>
-                <div class="card-title">Top 10 Pickup Stops by Passenger Boardings</div>
-                <div class="card-subtitle">Total passengers picked up at major stops</div>
+                <div class="card-title">Top 10 Pickup Stops — Total Boardings</div>
+                <div class="card-subtitle">Major passenger boarding origin hubs</div>
               </div>
               <button class="card-action" data-export-chart="pickupStopChart">Export ↗</button>
             </div>
             <div class="card-body">
-              <div class="chart-wrap" style="height:240px;">
+              <div class="chart-wrap" style="height:250px;">
                 <canvas id="pickupStopChart"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <!-- Top 10 Buses by Passengers (Horizontal Bar) -->
+          <div class="card">
+            <div class="card-head">
+              <div>
+                <div class="card-title">Top 10 Buses by Total Passengers Carried</div>
+                <div class="card-subtitle">Passenger volume operated by bus waybill</div>
+              </div>
+              <button class="card-action" data-export-chart="busLoadChart">Export ↗</button>
+            </div>
+            <div class="card-body">
+              <div class="chart-wrap" style="height:250px;">
+                <canvas id="busLoadChart"></canvas>
               </div>
             </div>
           </div>
@@ -228,45 +324,17 @@
         </div>
       </div>
 
-      <!-- ── ROW 3: DETAILED TABLES ── -->
+      <!-- ── SECTION 4: INTERACTIVE TABLES (INSPIRATION: ROUTE TABLE WITH PROGRESS BARS) ── -->
       <div class="row-2">
-
-        <!-- Bus Fleet Performance Table -->
-        <div class="card">
-          <div class="card-head">
-            <div>
-              <div class="card-title">Top Bus Fleet Utilization (Waybills)</div>
-              <div class="card-subtitle">Ranked by passenger volume and ticketing count</div>
-            </div>
-            <button class="card-action" data-export-table="busTable">Export ↗</button>
-          </div>
-          <div class="card-body" style="padding-top:0;">
-            <div class="tbl-wrap">
-              <table id="busTable">
-                <thead>
-                  <tr>
-                    <th>#</th>
-                    <th>Bus Waybill</th>
-                    <th>Passengers</th>
-                    <th>Tickets</th>
-                    <th>Avg Pax/Tkt</th>
-                    <th>Utilization</th>
-                  </tr>
-                </thead>
-                <tbody id="busTableBody"></tbody>
-              </table>
-            </div>
-          </div>
-        </div>
 
         <!-- Pickup Stop Density Table -->
         <div class="card">
           <div class="card-head">
             <div>
               <div class="card-title">Pickup Stop Boarding Details</div>
-              <div class="card-subtitle">Boarding volume, share and ticket count</div>
+              <div class="card-subtitle">Boarding volume, network share and ticket transactions</div>
             </div>
-            <button class="card-action" data-export-table="pickupTable">Export ↗</button>
+            <button class="card-action" data-export-table="pickupTable">Export CSV ↗</button>
           </div>
           <div class="card-body" style="padding-top:0;">
             <div class="tbl-wrap">
@@ -276,12 +344,41 @@
                     <th>#</th>
                     <th>Pickup Stop</th>
                     <th>Boardings</th>
+                    <th>Volume Share</th>
                     <th>Tickets</th>
-                    <th>Share</th>
                     <th>Status</th>
                   </tr>
                 </thead>
                 <tbody id="pickupTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bus Fleet Passenger Load Table -->
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <div class="card-title">Bus Fleet Passenger Load</div>
+              <div class="card-subtitle">Ranked by passenger count and ticketing volume</div>
+            </div>
+            <button class="card-action" data-export-table="busTable">Export CSV ↗</button>
+          </div>
+          <div class="card-body" style="padding-top:0;">
+            <div class="tbl-wrap">
+              <table id="busTable">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Bus Waybill</th>
+                    <th>Passengers</th>
+                    <th>Load %</th>
+                    <th>Tickets</th>
+                    <th>Pax/Tkt</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="busTableBody"></tbody>
               </table>
             </div>
           </div>
@@ -302,12 +399,15 @@
 
   <!-- Map launcher remains visible at the right edge when the drawer is closed. -->
   <button class="map-launcher" id="mapLauncher" type="button" title="Open map" aria-label="Open map">🗺️</button>
+  <button class="map-backdrop" id="mapBackdrop" type="button" aria-label="Close map"></button>
 
   <!-- ══ RIGHT-SIDE MAP PANEL ══ -->
   <div class="float-map" id="floatMap" aria-label="Bus network map panel" aria-hidden="true">
     <div class="float-map-bar" id="floatMapBar">
+      <div class="float-map-bar-left"><span class="map-dot"></span> Kalaburagi Transit GIS</div>
       <div class="float-map-bar-right">
-        <button class="fmap-ctrl" id="floatMapMinBtn" type="button" title="Minimise map" aria-label="Minimise map">›</button>
+        <button class="fmap-ctrl" id="floatMapMinBtn" type="button" title="Minimise map"
+          aria-label="Minimise map">›</button>
       </div>
     </div>
 
@@ -322,7 +422,8 @@
         <div class="float-map-placeholder">
           <div class="pin">📍</div>
           <h3 id="mapPlaceholderTitle">Route view preview</h3>
-          <p id="mapPlaceholderText">Route summary is available in the dashboard. A geographic map requires stop coordinates or latitude/longitude values in the source dataset.</p>
+          <p id="mapPlaceholderText">Route summary is available in the dashboard. A geographic map requires stop
+            coordinates or latitude/longitude values in the source dataset.</p>
           <div class="ready-badge" id="mapReadyBadge">✦ Route data available</div>
         </div>
       </div>
@@ -333,7 +434,7 @@
 
   <script src="common.js"></script>
   <script>
-    // ══ PASSENGER DATASET SPECIFICS ══
+    // ══ DATASETS ══
     const topBusesData = [
       { wb: "1020039540", passengers: 1575, tickets: 753 },
       { wb: "1020039526", passengers: 1277, tickets: 529 },
@@ -389,14 +490,14 @@
       }
     });
 
-    // ── Chart 2: Group Size / Passengers per Ticket (Doughnut) ──
-    new Chart(document.getElementById('groupSizeChart').getContext('2d'), {
+    // ── Chart 2: Time of Day Ridership (Pie / Doughnut) ──
+    new Chart(document.getElementById('timeOfDayPie').getContext('2d'), {
       type: 'doughnut',
       data: {
-        labels: ['1 Pax (Solo)', '2 Pax (Pair)', '3 Pax', '4+ Pax (Group)'],
+        labels: ['Afternoon (12-17h)', 'Morning (06-12h)', 'Evening (17-21h)', 'Night (21-24h)'],
         datasets: [{
-          data: [11928, 4066, 1612, 1669],
-          backgroundColor: ['#8B5CF6', '#10B981', '#F59E0B', '#EF4444'],
+          data: [15623, 10383, 6544, 324],
+          backgroundColor: ['#8B5CF6', '#10B981', '#F59E0B', '#64748B'],
           borderWidth: 3,
           borderColor: '#fff',
           hoverOffset: 6
@@ -406,39 +507,56 @@
         cutout: '64%',
         plugins: {
           legend: { display: false },
+          tooltip: { callbacks: { label: ctx => ' ' + ctx.raw.toLocaleString() + ' pax (' + (ctx.raw / 32874 * 100).toFixed(1) + '%)' } }
+        }
+      }
+    });
+
+    // ── Chart 3: Pickup Stop Market Share (Pie / Doughnut) ──
+    new Chart(document.getElementById('pickupSharePie').getContext('2d'), {
+      type: 'doughnut',
+      data: {
+        labels: ['Supermarket', 'CBS', 'Sedam R R', 'Budhavihar', 'Aland Check Post', 'Other 129 Stops'],
+        datasets: [{
+          data: [4569, 4342, 2170, 1906, 1283, 18604],
+          backgroundColor: ['#10B981', '#8B5CF6', '#F59E0B', '#EC4899', '#06B6D4', '#E2E8F0'],
+          borderWidth: 3,
+          borderColor: '#fff',
+          hoverOffset: 6
+        }]
+      },
+      options: {
+        cutout: '62%',
+        plugins: {
+          legend: { display: false },
+          tooltip: { callbacks: { label: ctx => ' ' + ctx.raw.toLocaleString() + ' boardings (' + (ctx.raw / 32874 * 100).toFixed(1) + '%)' } }
+        }
+      }
+    });
+
+    // ── Chart 4: Group Size / Passengers per Ticket (Pie / Doughnut) ──
+    new Chart(document.getElementById('groupSizeChart').getContext('2d'), {
+      type: 'doughnut',
+      data: {
+        labels: ['1 Pax (Solo)', '2 Pax (Pair)', '3 Pax (Trio)', '4+ Pax (Group)'],
+        datasets: [{
+          data: [11928, 4066, 1612, 1669],
+          backgroundColor: ['#8B5CF6', '#10B981', '#F59E0B', '#EF4444'],
+          borderWidth: 3,
+          borderColor: '#fff',
+          hoverOffset: 6
+        }]
+      },
+      options: {
+        cutout: '62%',
+        plugins: {
+          legend: { display: false },
           tooltip: { callbacks: { label: ctx => ' ' + ctx.raw.toLocaleString() + ' tickets (' + (ctx.raw / 19275 * 100).toFixed(1) + '%)' } }
         }
       }
     });
 
-    // ── Chart 3: Passengers per Bus (Horizontal Bar) ──
-    new Chart(document.getElementById('busLoadChart').getContext('2d'), {
-      type: 'bar',
-      data: {
-        labels: topBusesData.map(b => 'Bus ' + b.wb.slice(-5)),
-        datasets: [{
-          label: 'Passengers Carried',
-          data: topBusesData.map(b => b.passengers),
-          backgroundColor: topBusesData.map((_, i) => i === 0 ? '#EF4444' : i < 3 ? '#8B5CF6' : 'rgba(139,92,246,0.6)'),
-          borderRadius: 4,
-          borderSkipped: false
-        }]
-      },
-      options: {
-        indexAxis: 'y',
-        responsive: true,
-        plugins: {
-          legend: { display: false },
-          tooltip: { callbacks: { label: ctx => ' ' + ctx.raw.toLocaleString() + ' passengers' } }
-        },
-        scales: {
-          x: { beginAtZero: true, grid: { color: GRID_COLOR }, ticks: { callback: v => v.toLocaleString() } },
-          y: { grid: { display: false } }
-        }
-      }
-    });
-
-    // ── Chart 4: Passengers per Pickup Stop (Horizontal Bar) ──
+    // ── Chart 5: Top Pickup Stops (Horizontal Bar) ──
     new Chart(document.getElementById('pickupStopChart').getContext('2d'), {
       type: 'bar',
       data: {
@@ -465,50 +583,84 @@
       }
     });
 
-    // ── Table 1: Bus Fleet Table ──
-    const maxBusPax = topBusesData[0].passengers;
-    const busTbody = document.getElementById('busTableBody');
-    if (busTbody) {
-      topBusesData.forEach((b, i) => {
-        const ratio = (b.passengers / b.tickets).toFixed(2);
-        const pct = Math.round(b.passengers / maxBusPax * 100);
-        const tier = b.passengers >= 1200 ? ['red', 'Overloaded'] : b.passengers >= 1000 ? ['purple', 'Heavy'] : ['green', 'Standard'];
-        busTbody.innerHTML += `
-        <tr>
-          <td style="font-weight:700; color:var(--text-muted);">${i + 1}</td>
-          <td><strong>#${b.wb}</strong></td>
-          <td><strong>${b.passengers.toLocaleString()}</strong></td>
-          <td style="color:var(--text-muted);">${b.tickets.toLocaleString()}</td>
-          <td style="font-weight:600;">${ratio}</td>
-          <td><span class="pill ${tier[0]}">${tier[1]} (${pct}%)</span></td>
-        </tr>`;
-      });
-    }
+    // ── Chart 6: Passengers per Bus (Horizontal Bar) ──
+    new Chart(document.getElementById('busLoadChart').getContext('2d'), {
+      type: 'bar',
+      data: {
+        labels: topBusesData.map(b => '#' + b.wb.slice(-5)),
+        datasets: [{
+          label: 'Passengers Carried',
+          data: topBusesData.map(b => b.passengers),
+          backgroundColor: topBusesData.map((_, i) => i === 0 ? '#EF4444' : i < 3 ? '#8B5CF6' : 'rgba(139,92,246,0.6)'),
+          borderRadius: 4,
+          borderSkipped: false
+        }]
+      },
+      options: {
+        indexAxis: 'y',
+        responsive: true,
+        plugins: {
+          legend: { display: false },
+          tooltip: { callbacks: { label: ctx => ' ' + ctx.raw.toLocaleString() + ' passengers' } }
+        },
+        scales: {
+          x: { beginAtZero: true, grid: { color: GRID_COLOR }, ticks: { callback: v => v.toLocaleString() } },
+          y: { grid: { display: false } }
+        }
+      }
+    });
 
-    // ── Table 2: Pickup Stop Table ──
+    // ── Table 1: Pickup Stop Details Table ──
     const totalBoardings = 32874;
+    const maxPickup = topPickupData[0].boardings;
     const pickupTbody = document.getElementById('pickupTableBody');
     if (pickupTbody) {
-      topPickupData.forEach((s, i) => {
+      pickupTbody.innerHTML = topPickupData.map((s, i) => {
         const share = (s.boardings / totalBoardings * 100).toFixed(1);
+        const pctBar = Math.round(s.boardings / maxPickup * 100);
         const badge = share >= 10 ? ['green', 'Hub (High)'] : share >= 5 ? ['purple', 'Major'] : ['yellow', 'Feeder'];
-        pickupTbody.innerHTML += `
+        return `
         <tr>
           <td style="font-weight:700; color:var(--text-muted);">${i + 1}</td>
           <td><strong>${s.stop}</strong></td>
           <td><strong>${s.boardings.toLocaleString()}</strong></td>
+          <td>
+            <div class="mini-bar-wrap" style="min-width:100px;">
+              <div class="mini-bar-bg"><div class="mini-bar-fill" style="width:${pctBar}%;"></div></div>
+              <span style="font-size:11px;color:var(--text-light);min-width:32px;">${share}%</span>
+            </div>
+          </td>
           <td style="color:var(--text-muted);">${s.tickets.toLocaleString()}</td>
-          <td style="font-weight:600;">${share}%</td>
           <td><span class="pill ${badge[0]}">${badge[1]}</span></td>
         </tr>`;
-      });
+      }).join('');
     }
 
-    // Connect search input to both tables
-    const searchableTables = [
-      document.getElementById('busTableBody'),
-      document.getElementById('pickupTableBody')
-    ].filter(Boolean);
+    // ── Table 2: Bus Fleet Passenger Load Table ──
+    const maxBusPax = topBusesData[0].passengers;
+    const busTbody = document.getElementById('busTableBody');
+    if (busTbody) {
+      busTbody.innerHTML = topBusesData.map((b, i) => {
+        const ratio = (b.passengers / b.tickets).toFixed(2);
+        const pct = Math.round(b.passengers / maxBusPax * 100);
+        const tier = b.passengers >= 1200 ? ['red', 'Overloaded'] : b.passengers >= 1000 ? ['purple', 'Heavy'] : ['green', 'Standard'];
+        return `
+        <tr>
+          <td style="font-weight:700; color:var(--text-muted);">${i + 1}</td>
+          <td><strong>#${b.wb}</strong></td>
+          <td><strong>${b.passengers.toLocaleString()}</strong></td>
+          <td>
+            <div class="mini-bar-wrap" style="min-width:100px;">
+              <div class="mini-bar-bg"><div class="mini-bar-fill" style="width:${pct}%;"></div></div>
+              <span style="font-size:11px;color:var(--text-light);min-width:32px;">${pct}%</span>
+            </div>
+          </td>
+          <td style="color:var(--text-muted);">${b.tickets.toLocaleString()}</td>
+          <td style="font-weight:600;">${ratio}</td>
+          <td><span class="pill ${tier[0]}">${tier[1]}</span></td>
+        </tr>`;
+      }).join('');
+    }
   </script>
 </body>
 
