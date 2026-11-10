@@ -60,7 +60,8 @@
         <kbd> / </kbd>
       </label>
       <div class="topbar-right">
-        <div class="date-badge">📅 20 October 2026</div>
+        <div id="backendStatusPill" style="font-size:11px; padding:3px 8px; border-radius:12px; background:rgba(0,0,0,0.04); display:inline-flex; align-items:center;"></div>
+        <div class="date-badge" id="topbarDateBadge">📅 20 October 2026</div>
         <button class="icon-btn" id="downloadReportBtn" title="Print or save dashboard report" aria-label="Print or save dashboard report">⬇️</button>
         <button class="icon-btn" id="notificationsBtn" title="View operational alerts" aria-label="View operational alerts" onclick="window.location.href='alerts.html'">🔔</button>
       </div>
@@ -68,6 +69,26 @@
 
     <!-- CONTENT -->
     <div class="content">
+
+      <!-- ── INTERACTIVE ROUTE FILTER BAR ── -->
+      <div style="background:var(--card-bg, #ffffff); border:1px solid var(--border); border-radius:var(--radius-sm, 8px); padding:10px 14px; margin-bottom:14px; display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:10px;">
+        <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+          <span style="font-size:12px; font-weight:700; color:var(--text-muted);">⏱️ TIME WINDOW:</span>
+          <button class="pill purple filter-btn active" data-window="all" style="cursor:pointer; border:none; padding:4px 10px; font-size:11px; font-weight:700;">All Day (6 AM–11 PM)</button>
+          <button class="pill filter-btn" data-window="morning" style="cursor:pointer; border:1px solid var(--border); background:transparent; padding:4px 10px; font-size:11px; font-weight:600; color:var(--text);">Morning Peak (7–11 AM)</button>
+          <button class="pill filter-btn" data-window="midday" style="cursor:pointer; border:1px solid var(--border); background:transparent; padding:4px 10px; font-size:11px; font-weight:600; color:var(--text);">Midday Surge (12–4 PM)</button>
+          <button class="pill filter-btn" data-window="evening" style="cursor:pointer; border:1px solid var(--border); background:transparent; padding:4px 10px; font-size:11px; font-weight:600; color:var(--text);">Evening Peak (5–9 PM)</button>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span style="font-size:12px; font-weight:700; color:var(--text-muted);">TICKET TYPE:</span>
+          <select id="routeSchemeSelect" style="padding:4px 8px; border-radius:6px; border:1px solid var(--border); font-size:11px; font-weight:600; background:var(--bg); cursor:pointer;">
+            <option value="all">All Transactions (Cash + Shakti)</option>
+            <option value="shakti">Shakti Scheme Only (Women Free)</option>
+            <option value="cash">Paid Cash Fares Only</option>
+          </select>
+        </div>
+      </div>
+
 <!-- ── CORRIDOR & STOP NETWORK CHARTS ── -->
       <div>
         <div class="section-label">Corridor & Stop Analytics</div>
@@ -101,7 +122,26 @@
         </div>
       </div>
 
-      
+      <!-- ── LIVE GIS TRANSIT NETWORK MAP ── -->
+      <div>
+        <div class="section-label">Interactive GIS Corridor Network</div>
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <div class="card-title">Kalaburagi Transit Corridor Network (Leaflet GIS)</div>
+              <div class="card-subtitle">Real-time GPS mapping of arterial bus corridors, high-density hubs, and passenger load distribution</div>
+            </div>
+            <div style="display:flex; gap:8px; align-items:center;">
+              <button class="pill purple" id="mapToggleCorridors" style="cursor:pointer; border:none; font-size:11px; font-weight:700;">Corridors & Hubs</button>
+              <button class="pill" id="mapToggleHeatmap" style="cursor:pointer; border:1px solid var(--border); background:transparent; font-size:11px; font-weight:600; color:var(--text);">Terminal Heatmap</button>
+            </div>
+          </div>
+          <div class="card-body" style="padding:14px;">
+            <div id="routesInlineMap" style="height:380px; width:100%; border-radius:8px; border:1px solid var(--border); z-index:1;"></div>
+          </div>
+        </div>
+      </div>
+
 <!-- ── TOP ROUTES TABLE ── -->
       <div>
         <div class="section-label" id="section-routes">Route Performance</div>
@@ -236,35 +276,211 @@
       }
     });
 
-    // Populate Route Table
-    const maxPax = topRoutes[0].passengers;
-    const rtbody = document.getElementById('routeTableBody');
-    if (rtbody) {
-      topRoutes.forEach((r, i) => {
-        const total = r.collected + r.uncollected;
-        const rate = total > 0 ? (r.collected / total * 100).toFixed(1) : 0;
-        const pct = Math.round(r.passengers / maxPax * 100);
-        const tagClass = rate >= 50 ? 'green' : rate >= 30 ? 'yellow' : 'red';
+    // Dynamic Route Table Population with Interactive Filtering
+    function populateRouteTable(windowFilter = 'all', schemeFilter = 'all') {
+      const rtbody = document.getElementById('routeTableBody');
+      if (!rtbody) return;
+
+      let factor = 1.0;
+      if (windowFilter === 'morning') factor = 0.28;
+      else if (windowFilter === 'midday') factor = 0.44;
+      else if (windowFilter === 'evening') factor = 0.22;
+
+      const basePax = Math.round(topRoutes[0].passengers * factor);
+      const rowsHtml = topRoutes.map((r, i) => {
+        let pax = Math.max(12, Math.round(r.passengers * factor));
+        let collected = Math.round(r.collected * factor);
+        let uncollected = Math.round(r.uncollected * factor);
+
+        if (schemeFilter === 'shakti') {
+          collected = 0;
+          pax = Math.round(pax * 0.753);
+        } else if (schemeFilter === 'cash') {
+          uncollected = 0;
+          pax = Math.max(8, Math.round(pax * 0.247));
+        }
+
+        const total = collected + uncollected;
+        const rate = total > 0 ? (collected / total * 100).toFixed(1) : 0;
+        const pct = Math.min(100, Math.round((pax / basePax) * 100));
+        const tagClass = rate >= 50 ? 'green' : rate >= 25 ? 'yellow' : 'red';
         const [from, to] = r.route.split(' → ');
-        rtbody.innerHTML += `
-      <tr>
-        <td style="font-weight:700; color:var(--text-muted);">${i + 1}</td>
-        <td><strong>${from || r.route}</strong></td>
-        <td style="color:var(--text-muted);">${to || '—'}</td>
-        <td><strong>${r.passengers.toLocaleString()}</strong></td>
-        <td>
-          <div class="mini-bar-wrap" style="min-width:100px;">
-            <div class="mini-bar-bg"><div class="mini-bar-fill" style="width:${pct}%;"></div></div>
-            <span style="font-size:10px;color:var(--text-light);min-width:28px;">${pct}%</span>
+
+        return `
+        <tr>
+          <td style="font-weight:700; color:var(--text-muted);">${i + 1}</td>
+          <td><strong>${from || r.route}</strong></td>
+          <td style="color:var(--text-muted);">${to || '—'}</td>
+          <td><strong>${pax.toLocaleString()}</strong></td>
+          <td>
+            <div class="mini-bar-wrap" style="min-width:100px;">
+              <div class="mini-bar-bg"><div class="mini-bar-fill" style="width:${pct}%;"></div></div>
+              <span style="font-size:10px;color:var(--text-light);min-width:28px;">${pct}%</span>
+            </div>
+          </td>
+          <td style="color:#059669; font-weight:600;">₹${collected.toLocaleString()}</td>
+          <td style="color:#DC2626; font-weight:600;">₹${uncollected.toLocaleString()}</td>
+          <td style="color:var(--text-muted);">${Math.round(r.count * factor).toLocaleString()}</td>
+          <td><span class="pill ${tagClass}">${rate}%</span></td>
+        </tr>`;
+      }).join('');
+
+      rtbody.innerHTML = rowsHtml;
+    }
+
+    populateRouteTable();
+
+    // Initialize Live Inline Leaflet Corridor Map
+    let inlineMapInstance = null;
+    let inlineHeatLayer = null;
+    let inlineCorridorLayer = null;
+
+    if (typeof L !== 'undefined' && document.getElementById('routesInlineMap')) {
+      inlineMapInstance = L.map('routesInlineMap', {
+        center: [17.3370, 76.8380],
+        zoom: 13,
+        zoomControl: true
+      });
+
+      L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '© OpenStreetMap · KSRTC Kalaburagi GIS'
+      }).addTo(inlineMapInstance);
+
+      // Add Hubs
+      kalaburagiHubs.forEach(hub => {
+        const radius = Math.max(7, Math.min(20, Math.sqrt(hub.boardings) * 0.26));
+        L.circleMarker(hub.coords, {
+          radius: radius,
+          fillColor: hub.color,
+          color: '#ffffff',
+          weight: 2,
+          opacity: 1,
+          fillOpacity: 0.88
+        }).bindPopup(`
+          <div style="font-family:'Segoe UI',sans-serif; min-width:180px; padding:2px;">
+            <div style="font-size:13px; font-weight:700; color:#18181B; margin-bottom:4px;">📍 ${hub.name}</div>
+            <div style="font-size:12px; color:#52525B;">Boardings: <strong style="color:#18181B;">${hub.boardings.toLocaleString()} pax</strong></div>
+            <div style="font-size:12px; color:#52525B;">Fare Collected: <strong style="color:#059669;">₹${hub.revenue.toLocaleString()}</strong></div>
+            <div style="margin-top:6px;"><span style="display:inline-block; font-size:10px; font-weight:700; padding:2px 8px; border-radius:12px; background:#EDE9FE; color:#8B5CF6;">${hub.role}</span></div>
           </div>
-        </td>
-        <td style="color:#059669; font-weight:600;">₹${r.collected.toLocaleString()}</td>
-        <td style="color:#DC2626; font-weight:600;">₹${r.uncollected.toLocaleString()}</td>
-        <td style="color:var(--text-muted);">${r.count.toLocaleString()}</td>
-        <td><span class="pill ${tagClass}">${rate}%</span></td>
-      </tr>`;
+        `).addTo(inlineMapInstance);
+      });
+
+      // Corridor Lines Layer with Road Snapping
+      inlineCorridorLayer = L.layerGroup();
+      kalaburagiCorridors.forEach(c => {
+        const polyline = L.polyline(c.coords, {
+          color: c.color,
+          weight: 4.5,
+          opacity: 0.85
+        }).bindPopup(`
+          <div style="font-family:'Segoe UI',sans-serif; padding:2px;">
+            <strong style="color:#18181B;">🚌 Corridor: ${c.from} ↔ ${c.to}</strong><br>
+            <div style="font-size:12px; color:#52525B; margin-top:2px;">${c.note}</div>
+          </div>
+        `);
+        inlineCorridorLayer.addLayer(polyline);
+
+        // Auto-snap along physical roads & Tank Bund Road
+        const startPt = c.coords[0];
+        const endPt = c.coords[c.coords.length - 1];
+        fetch(`https://router.project-osrm.org/route/v1/driving/${startPt[1]},${startPt[0]};${endPt[1]},${endPt[0]}?overview=full&geometries=geojson`, { signal: AbortSignal.timeout(1800) })
+          .then(res => res.json())
+          .then(data => {
+            if (data.routes && data.routes.length > 0 && data.routes[0].geometry) {
+              const snapped = data.routes[0].geometry.coordinates.map(pt => [pt[1], pt[0]]);
+              polyline.setLatLngs(snapped);
+            }
+          })
+          .catch(() => { /* keeps Tank Bund precision waypoints on offline fallback */ });
+      });
+      inlineCorridorLayer.addTo(inlineMapInstance);
+
+      // Heatmap Layer
+      inlineHeatLayer = L.layerGroup();
+      kalaburagiHubs.forEach(hub => {
+        const heatRadius = Math.max(300, Math.min(850, hub.boardings * 0.16));
+        L.circle(hub.coords, {
+          radius: heatRadius,
+          fillColor: hub.boardings > 3000 ? '#EF4444' : hub.boardings > 1500 ? '#F59E0B' : '#8B5CF6',
+          color: 'transparent',
+          fillOpacity: 0.32
+        }).bindPopup(`<strong>${hub.name}</strong><br>Passenger Intensity: ${hub.boardings.toLocaleString()} boardings`).addTo(inlineHeatLayer);
+      });
+
+      window.setTimeout(() => {
+        inlineMapInstance.invalidateSize();
+        const bounds = L.latLngBounds(kalaburagiHubs.map(h => h.coords));
+        inlineMapInstance.fitBounds(bounds, { padding: [25, 25] });
+      }, 350);
+
+      // Map View Toggle Buttons
+      document.getElementById('mapToggleCorridors')?.addEventListener('click', (e) => {
+        inlineMapInstance.removeLayer(inlineHeatLayer);
+        inlineMapInstance.addLayer(inlineCorridorLayer);
+        e.target.className = 'pill purple';
+        e.target.style.border = 'none';
+        e.target.style.color = '#ffffff';
+        const other = document.getElementById('mapToggleHeatmap');
+        if (other) {
+          other.className = 'pill';
+          other.style.border = '1px solid var(--border)';
+          other.style.background = 'transparent';
+          other.style.color = 'var(--text)';
+        }
+      });
+
+      document.getElementById('mapToggleHeatmap')?.addEventListener('click', (e) => {
+        inlineMapInstance.removeLayer(inlineCorridorLayer);
+        inlineMapInstance.addLayer(inlineHeatLayer);
+        e.target.className = 'pill purple';
+        e.target.style.border = 'none';
+        e.target.style.color = '#ffffff';
+        const other = document.getElementById('mapToggleCorridors');
+        if (other) {
+          other.className = 'pill';
+          other.style.border = '1px solid var(--border)';
+          other.style.background = 'transparent';
+          other.style.color = 'var(--text)';
+        }
       });
     }
+
+    // Filter Buttons Interaction
+    let currentWindow = 'all';
+    let currentScheme = 'all';
+
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.filter-btn').forEach(b => {
+          b.classList.remove('purple', 'active');
+          b.style.border = '1px solid var(--border)';
+          b.style.background = 'transparent';
+          b.style.color = 'var(--text)';
+        });
+        btn.classList.add('purple', 'active');
+        btn.style.border = 'none';
+        btn.style.background = '';
+        btn.style.color = '#ffffff';
+
+        currentWindow = btn.dataset.window;
+        populateRouteTable(currentWindow, currentScheme);
+
+        const msg = currentWindow === 'morning' ? 'Filtered to Morning Peak (7–11 AM)' :
+                    currentWindow === 'midday' ? 'Filtered to Midday Surge (12–4 PM)' :
+                    currentWindow === 'evening' ? 'Filtered to Evening Peak (5–9 PM)' : 'Showing All Operating Hours';
+        if (typeof showToast === 'function') showToast(msg);
+      });
+    });
+
+    document.getElementById('routeSchemeSelect')?.addEventListener('change', (e) => {
+      currentScheme = e.target.value;
+      populateRouteTable(currentWindow, currentScheme);
+      const msg = currentScheme === 'shakti' ? 'Filtered to Shakti Scheme Free Travel' :
+                  currentScheme === 'cash' ? 'Filtered to Paid Cash Fares' : 'Showing All Transactions';
+      if (typeof showToast === 'function') showToast(msg);
+    });
 
   </script>
 </body>

@@ -61,7 +61,10 @@
         <kbd> / </kbd>
       </label>
       <div class="topbar-right">
-        <div class="date-badge">📅 20 October 2026</div>
+        <div id="backendStatusPill" style="font-size:11px; padding:3px 8px; border-radius:12px; background:rgba(0,0,0,0.04); display:inline-flex; align-items:center;"></div>
+        <div class="date-badge" id="topbarDateBadge">📅 20 October 2026</div>
+        <input type="file" id="datasetFileInput" accept=".xlsx,.xls,.csv,.json" style="display:none;">
+        <button class="icon-btn" id="uploadDatasetBtn" title="Upload new ETM ticket dataset (.xlsx, .csv)" aria-label="Upload dataset">📤</button>
         <button class="icon-btn" id="downloadReportBtn" title="Print or save dashboard report" aria-label="Print or save dashboard report">⬇️</button>
         <button class="icon-btn" id="notificationsBtn" title="View operational alerts" aria-label="View operational alerts" onclick="window.location.href='alerts.html'">🔔</button>
       </div>
@@ -80,9 +83,9 @@
               <div class="kpi-icon-wrap">🏛️</div>
               <span class="pill yellow" style="font-size:10px;">Govt Subsidy</span>
             </div>
-            <div class="kpi-value">₹2,90,929</div>
+            <div class="kpi-value" id="kpi-subsidy">₹2,90,929</div>
             <div class="kpi-label">Shakti Subsidy Claim</div>
-            <div class="kpi-sub">75.3% women free fare (reimbursable)</div>
+            <div class="kpi-sub" id="kpi-subsidy-sub">75.3% women free fare (reimbursable)</div>
           </div>
 
           <div class="kpi-card">
@@ -90,7 +93,7 @@
               <div class="kpi-icon-wrap">🚌</div>
               <span class="kpi-trend trend-neutral">Fleet</span>
             </div>
-            <div class="kpi-value">47</div>
+            <div class="kpi-value" id="kpi-buses">47</div>
             <div class="kpi-label">Active Bus Units</div>
             <div class="kpi-sub">Operating daily waybills</div>
           </div>
@@ -98,9 +101,9 @@
           <div class="kpi-card">
             <div class="kpi-top">
               <div class="kpi-icon-wrap">👥</div>
-              <span class="kpi-trend trend-up">699 / trip</span>
+              <span class="kpi-trend trend-up" id="kpi-pax-trend">699 / trip</span>
             </div>
-            <div class="kpi-value">32,874</div>
+            <div class="kpi-value" id="kpi-passengers">32,874</div>
             <div class="kpi-label">Total Passengers</div>
             <div class="kpi-sub">Across all 47 trips</div>
           </div>
@@ -108,9 +111,9 @@
           <div class="kpi-card">
             <div class="kpi-top">
               <div class="kpi-icon-wrap">🎫</div>
-              <span class="kpi-trend trend-neutral">410 / trip</span>
+              <span class="kpi-trend trend-neutral" id="kpi-tkt-trend">410 / trip</span>
             </div>
-            <div class="kpi-value">19,275</div>
+            <div class="kpi-value" id="kpi-tickets">19,275</div>
             <div class="kpi-label">Tickets Issued</div>
             <div class="kpi-sub">Total ticket records</div>
           </div>
@@ -118,9 +121,9 @@
           <div class="kpi-card">
             <div class="kpi-top">
               <div class="kpi-icon-wrap">💰</div>
-              <span class="kpi-trend trend-down">24.7% rate</span>
+              <span class="kpi-trend trend-down" id="kpi-col-trend">24.7% rate</span>
             </div>
-            <div class="kpi-value">₹95,491</div>
+            <div class="kpi-value" id="kpi-collected">₹95,491</div>
             <div class="kpi-label">Revenue Collected</div>
             <div class="kpi-sub">₹2,031 avg per trip</div>
           </div>
@@ -130,7 +133,7 @@
               <div class="kpi-icon-wrap">📍</div>
               <span class="kpi-trend trend-neutral">Network</span>
             </div>
-            <div class="kpi-value">134</div>
+            <div class="kpi-value" id="kpi-stops">134</div>
             <div class="kpi-label">Bus Stops</div>
             <div class="kpi-sub">Active stops in network</div>
           </div>
@@ -285,7 +288,7 @@
   <script>
 
     // Hourly Traffic Chart
-    new Chart(document.getElementById('hourlyChart').getContext('2d'), {
+    window.hourlyChartInstance = new Chart(document.getElementById('hourlyChart').getContext('2d'), {
       type: 'bar',
       data: {
         labels: hourLabels,
@@ -314,7 +317,7 @@
     });
 
     // Revenue Doughnut
-    new Chart(document.getElementById('revenuePie').getContext('2d'), {
+    window.revenuePieInstance = new Chart(document.getElementById('revenuePie').getContext('2d'), {
       type: 'doughnut',
       data: {
         labels: ['Collected', 'Uncollected'],
@@ -334,6 +337,11 @@
         }
       }
     });
+
+    // Trigger API Hydration if backend is online
+    if (window.BusPulseAPI) {
+      window.BusPulseAPI.hydrateOverview();
+    }
 
   </script>
 </body>

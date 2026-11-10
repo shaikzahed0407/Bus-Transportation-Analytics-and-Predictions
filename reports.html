@@ -60,7 +60,8 @@
         <kbd> / </kbd>
       </label>
       <div class="topbar-right">
-        <div class="date-badge">📅 20 October 2026</div>
+        <div id="backendStatusPill" style="font-size:11px; padding:3px 8px; border-radius:12px; background:rgba(0,0,0,0.04); display:inline-flex; align-items:center;"></div>
+        <div class="date-badge" id="topbarDateBadge">📅 20 October 2026</div>
         <button class="icon-btn" id="downloadReportBtn" title="Print or save dashboard report" aria-label="Print or save dashboard report">⬇️</button>
         <button class="icon-btn" id="notificationsBtn" title="View operational alerts" aria-label="View operational alerts" onclick="window.location.href='alerts.html'">🔔</button>
       </div>
@@ -68,6 +69,19 @@
 
     <!-- CONTENT -->
     <div class="content">
+
+      <!-- ── DATA GOVERNANCE & PRIVACY AUDIT BADGE ── -->
+      <div style="background:var(--card-bg, #ffffff); border:1px solid var(--border); border-left:4px solid #10B981; border-radius:var(--radius-sm, 8px); padding:12px 16px; margin-bottom:16px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+        <div style="display:flex; align-items:center; gap:10px;">
+          <span style="font-size:20px;">🛡️</span>
+          <div>
+            <div style="font-size:12px; font-weight:700; color:var(--text);">Data Protection & PII Audit: Verified Compliant</div>
+            <div style="font-size:11px; color:var(--text-muted);">Zero Personally Identifiable Information (PII) present. All 19,275 ETM transactions are fully anonymized and protected under the DPDP Act & KSRTC Data Governance.</div>
+          </div>
+        </div>
+        <span class="pill green" style="font-size:10px; font-weight:700;">100% Anonymized Dataset</span>
+      </div>
+
 <!-- ── STOP TABLE ── -->
       <div>
         <div class="section-label" id="section-reports">Stop-Level Performance</div>

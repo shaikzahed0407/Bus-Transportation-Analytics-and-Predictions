@@ -22,33 +22,33 @@
     ];
 
     const topRoutes = [
-      { route: "Budhavihar → Cbs", passengers: 812, collected: 6704, uncollected: 7891, count: 407 },
-      { route: "Cbs → Budhavihar", passengers: 713, collected: 5320, uncollected: 7383, count: 335 },
-      { route: "Cbs → Supermarket", passengers: 642, collected: 2349, uncollected: 5949, count: 366 },
-      { route: "Cbs → Sedam R R", passengers: 445, collected: 1959, uncollected: 3948, count: 320 },
-      { route: "Sedam R R → Cbs", passengers: 433, collected: 1810, uncollected: 4032, count: 315 },
-      { route: "Budhavihar → S V P Circle", passengers: 395, collected: 3795, uncollected: 2934, count: 174 },
-      { route: "Supermarket → Ruknuddin Darga", passengers: 391, collected: 1455, uncollected: 3808, count: 282 },
-      { route: "Supermarket → Cbs", passengers: 387, collected: 1577, uncollected: 3640, count: 262 },
-      { route: "Cbs → Kbn Darga", passengers: 368, collected: 1596, uncollected: 3864, count: 149 },
-      { route: "Ruknuddin Darga → Supermarket", passengers: 322, collected: 1165, uncollected: 3031, count: 214 },
-      { route: "Old Hospital → Cbs", passengers: 312, collected: 756, uncollected: 2766, count: 200 },
-      { route: "Sedam R R → Supermarket", passengers: 308, collected: 1021, uncollected: 2975, count: 217 },
+      { route: "Budhavihar → CBS (Central Bus Stand)", passengers: 812, collected: 6704, uncollected: 7891, count: 407 },
+      { route: "CBS (Central Bus Stand) → Budhavihar", passengers: 713, collected: 5320, uncollected: 7383, count: 335 },
+      { route: "CBS (Central Bus Stand) → Supermarket", passengers: 642, collected: 2349, uncollected: 5949, count: 366 },
+      { route: "CBS (Central Bus Stand) → Sedam Road", passengers: 445, collected: 1959, uncollected: 3948, count: 320 },
+      { route: "Sedam Road → CBS (Central Bus Stand)", passengers: 433, collected: 1810, uncollected: 4032, count: 315 },
+      { route: "Budhavihar → SVP Circle", passengers: 395, collected: 3795, uncollected: 2934, count: 174 },
+      { route: "Supermarket → Ruknuddin Dargah", passengers: 391, collected: 1455, uncollected: 3808, count: 282 },
+      { route: "Supermarket → CBS (Central Bus Stand)", passengers: 387, collected: 1577, uncollected: 3640, count: 262 },
+      { route: "CBS (Central Bus Stand) → KBN Dargah", passengers: 368, collected: 1596, uncollected: 3864, count: 149 },
+      { route: "Ruknuddin Dargah → Supermarket", passengers: 322, collected: 1165, uncollected: 3031, count: 214 },
+      { route: "Old Hospital → CBS (Central Bus Stand)", passengers: 312, collected: 756, uncollected: 2766, count: 200 },
+      { route: "Sedam Road → Supermarket", passengers: 308, collected: 1021, uncollected: 2975, count: 217 },
       { route: "Supermarket → Aland Check Post", passengers: 308, collected: 765, uncollected: 2808, count: 192 },
-      { route: "Cbs → S V P Circle", passengers: 267, collected: 173, uncollected: 1383, count: 183 },
-      { route: "Supermarket → S V P Circle", passengers: 262, collected: 402, uncollected: 2610, count: 136 }
+      { route: "CBS (Central Bus Stand) → SVP Circle", passengers: 267, collected: 173, uncollected: 1383, count: 183 },
+      { route: "Supermarket → SVP Circle", passengers: 262, collected: 402, uncollected: 2610, count: 136 }
     ];
 
     const topStops = [
-      { stop: "Supermarket", boardings: 4569, revenue: 13331 },
-      { stop: "Cbs", boardings: 4342, revenue: 17271 },
-      { stop: "Sedam R R", boardings: 2170, revenue: 5856 },
+      { stop: "Supermarket", boardings: 5322, revenue: 15845 },
+      { stop: "CBS (Central Bus Stand)", boardings: 5208, revenue: 20037 },
+      { stop: "Sedam Road", boardings: 2170, revenue: 5856 },
       { stop: "Budhavihar", boardings: 1906, revenue: 14600 },
+      { stop: "Ruknuddin Dargah", boardings: 1749, revenue: 4536 },
       { stop: "Aland Check Post", boardings: 1283, revenue: 2330 },
       { stop: "Old Hospital", boardings: 1236, revenue: 2196 },
-      { stop: "S V P Circle", boardings: 1218, revenue: 3325 },
-      { stop: "Ruknuddin Darga", boardings: 1077, revenue: 2787 },
-      { stop: "Central Bus Stand", boardings: 866, revenue: 2766 },
+      { stop: "SVP Circle", boardings: 1218, revenue: 3325 },
+      { stop: "Railway Station", boardings: 815, revenue: 2510 },
       { stop: "Madiwala Vritta", boardings: 758, revenue: 1907 }
     ];
 
@@ -306,23 +306,132 @@
 
     // Real Kalaburagi (Gulbarga) transit stops from the dataset
     const kalaburagiHubs = [
-      { name: "Supermarket Transit Hub", coords: [17.3328, 76.8340], boardings: 4569, revenue: 13331, role: "Primary Commercial Hub", color: "#10B981" },
-      { name: "CBS (Central Bus Stand)", coords: [17.3368, 76.8285], boardings: 4342, revenue: 17271, role: "Central Terminal", color: "#8B5CF6" },
+      { name: "Supermarket Transit Hub", coords: [17.3328, 76.8340], boardings: 5322, revenue: 15845, role: "Primary Commercial Hub", color: "#10B981" },
+      { name: "CBS (Central Bus Stand)", coords: [17.3368, 76.8285], boardings: 5208, revenue: 20037, role: "Central Terminal Hub", color: "#8B5CF6" },
       { name: "Sedam Road (Sedam R R)", coords: [17.3160, 76.8530], boardings: 2170, revenue: 5856, role: "Suburban Arterial Hub", color: "#F59E0B" },
       { name: "Budhavihar Terminal", coords: [17.3620, 76.8710], boardings: 1906, revenue: 14600, role: "North-East Corridor Anchor", color: "#EC4899" },
+      { name: "Ruknuddin Dargah", coords: [17.3450, 76.8420], boardings: 1749, revenue: 4536, role: "Pilgrimage & Heritage Transit Node", color: "#EC4899" },
       { name: "Aland Check Post", coords: [17.3710, 76.8120], boardings: 1283, revenue: 2330, role: "Northern Gateway", color: "#06B6D4" },
       { name: "Old Hospital", coords: [17.3280, 76.8360], boardings: 1236, revenue: 2196, role: "Civic Transit Node", color: "#8B5CF6" },
-      { name: "S V P Circle", coords: [17.3340, 76.8385], boardings: 1218, revenue: 3325, role: "Central Junction", color: "#8B5CF6" },
-      { name: "Ruknuddin Dargah", coords: [17.3450, 76.8420], boardings: 1077, revenue: 2787, role: "Historic Transit Stop", color: "#8B5CF6" },
-      { name: "Madiwala Vritta", coords: [17.3250, 76.8300], boardings: 758, revenue: 1907, role: "Feeder Point", color: "#71717A" }
+      { name: "S V P Circle", coords: [17.3340, 76.8385], boardings: 1218, revenue: 3325, role: "Central Business District Junction", color: "#6366F1" },
+      { name: "Railway Station", coords: [17.3305, 76.8412], boardings: 815, revenue: 2510, role: "Intermodal Rail-Bus Interchange", color: "#EF4444" },
+      { name: "Madiwala Vritta", coords: [17.3250, 76.8300], boardings: 758, revenue: 1907, role: "Feeder Point", color: "#71717A" },
+      { name: "Jagat Circle", coords: [17.3315, 76.8370], boardings: 677, revenue: 1820, role: "Commercial Arterial Junction", color: "#10B981" },
+      { name: "KBN Dargah / University", coords: [17.3480, 76.8450], boardings: 641, revenue: 1950, role: "Higher Education & Heritage", color: "#3B82F6" }
     ];
 
+    // Precision road waypoints bypassing Appanna Kere along Tank Bund Road & Ring Road
     const kalaburagiCorridors = [
-      { from: "Budhavihar", to: "CBS", coords: [[17.3620, 76.8710], [17.3368, 76.8285]], pax: 1525, color: "#8B5CF6", note: "Busiest Corridor (1,525 daily pax)" },
-      { from: "CBS", to: "Supermarket", coords: [[17.3368, 76.8285], [17.3328, 76.8340]], pax: 1029, color: "#10B981", note: "High Frequency Shuttle (1,029 pax)" },
-      { from: "CBS", to: "Sedam Road", coords: [[17.3368, 76.8285], [17.3160, 76.8530]], pax: 878, color: "#F59E0B", note: "Industrial Route (878 pax)" },
-      { from: "Supermarket", to: "Ruknuddin Dargah", coords: [[17.3328, 76.8340], [17.3450, 76.8420]], pax: 713, color: "#3B82F6", note: "High Demand Segment (713 pax)" },
-      { from: "CBS", to: "SVP Circle", coords: [[17.3368, 76.8285], [17.3340, 76.8385]], pax: 662, color: "#EC4899", note: "Urban Core Link (662 pax)" }
+      {
+        from: "Budhavihar",
+        to: "CBS",
+        coords: [
+          [17.3620, 76.8710], // Budhavihar Terminal
+          [17.3550, 76.8620], // Sedam-Ring Road Outer Arc
+          [17.3510, 76.8520], // High Court Bench Link
+          [17.3440, 76.8380], // Nehru Gunj / Fort North Road (North of Appanna Kere)
+          [17.3405, 76.8300], // Fort Road Junction
+          [17.3368, 76.8285]  // Central Bus Stand (CBS)
+        ],
+        pax: 1525,
+        color: "#8B5CF6",
+        note: "Busiest Corridor (1,525 daily pax) · Via Ring Rd & Fort Bypass"
+      },
+      {
+        from: "CBS",
+        to: "Supermarket",
+        coords: [
+          [17.3368, 76.8285], // CBS
+          [17.3332, 76.8288], // Down to Tank Bund Road corner
+          [17.3330, 76.8320], // Along Tank Bund Road (South of Appanna Kere)
+          [17.3315, 76.8335], // Annapurna Circle
+          [17.3328, 76.8340]  // Supermarket Terminal
+        ],
+        pax: 1029,
+        color: "#10B981",
+        note: "High Frequency Shuttle (1,029 pax) · Via Tank Bund Road & Annapurna Circle"
+      },
+      {
+        from: "CBS",
+        to: "Sedam Road",
+        coords: [
+          [17.3368, 76.8285], // CBS
+          [17.3290, 76.8280], // Jewargi Road south
+          [17.3240, 76.8340], // Madiwala Vritta
+          [17.3200, 76.8440], // Rajapur Cross
+          [17.3160, 76.8530]  // Sedam Road (SH-10)
+        ],
+        pax: 878,
+        color: "#F59E0B",
+        note: "Industrial & Institutional Arterial (878 pax) · Via SH-10"
+      },
+      {
+        from: "Supermarket",
+        to: "Ruknuddin Dargah",
+        coords: [
+          [17.3328, 76.8340], // Supermarket
+          [17.3330, 76.8375], // Tank Bund Rd East
+          [17.3380, 76.8405], // Dargah Road corner
+          [17.3450, 76.8420]  // Ruknuddin Dargah
+        ],
+        pax: 713,
+        color: "#EC4899",
+        note: "Heritage Route (713 pax) · Via Dargah Road"
+      },
+      {
+        from: "CBS",
+        to: "Aland Check Post",
+        coords: [
+          [17.3368, 76.8285], // CBS
+          [17.3470, 76.8230], // Aland Road North
+          [17.3580, 76.8190], // Aland Naka Ring Road
+          [17.3710, 76.8120]  // Aland Check Post (SH-32)
+        ],
+        pax: 540,
+        color: "#06B6D4",
+        note: "Northern Gateway Route (540 pax) · Via Aland Rd (SH-32)"
+      },
+      {
+        from: "CBS",
+        to: "Railway Station",
+        coords: [
+          [17.3368, 76.8285], // CBS
+          [17.3400, 76.8310], // Fort North Road
+          [17.3360, 76.8360], // Station Road
+          [17.3305, 76.8412]  // Railway Station Terminal
+        ],
+        pax: 480,
+        color: "#EF4444",
+        note: "Rail Intermodal Transit Link (480 pax) · Via Station Rd"
+      },
+      {
+        from: "CBS",
+        to: "SVP Circle",
+        coords: [
+          [17.3368, 76.8285], // CBS
+          [17.3332, 76.8288], // Tank Bund Road West
+          [17.3330, 76.8360], // Tank Bund Road East
+          [17.3340, 76.8385]  // SVP Circle
+        ],
+        pax: 662,
+        color: "#6366F1",
+        note: "Urban Core Link (662 pax) · Via Tank Bund Road"
+      },
+      {
+        from: "Old Hospital",
+        to: "CBS",
+        coords: [
+          [17.3280, 76.8360], // Old Hospital Hub
+          [17.3305, 76.8350], // Hospital Approach Lane
+          [17.3315, 76.8335], // Annapurna Circle
+          [17.3330, 76.8320], // Tank Bund Road
+          [17.3332, 76.8288], // Tank Bund West
+          [17.3368, 76.8285]  // Central Bus Stand (CBS)
+        ],
+        pax: 312,
+        color: "#8B5CF6",
+        note: "Civic Transit Corridor (312 pax) · Connecting Healthcare Node to CBS"
+      }
     ];
 
     let leafletMapInstance = null;
@@ -343,14 +452,13 @@
           zoomControl: true
         });
 
-        // Use CartoDB Voyager which allows file:// and browser loading without 403 blocks
-        const primaryTileLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+        // Use OpenStreetMap standard tiles (100% free, zero watermarks, zero API key required)
+        const primaryTileLayer = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
           maxZoom: 19,
-          subdomains: 'abcd',
-          attribution: '© <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> · © <a href="https://carto.com/attributions" target="_blank">CARTO</a> · KSRTC Kalaburagi GIS'
+          attribution: '© <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> · KSRTC Kalaburagi GIS'
         });
 
-        // Automatic fallback to Esri WorldStreetMap if network limits Carto
+        // Automatic fallback to Esri WorldStreetMap if network restricts OSM
         primaryTileLayer.on('tileerror', function() {
           if (!leafletMapInstance._hasFallbackTile) {
             leafletMapInstance._hasFallbackTile = true;
@@ -365,8 +473,7 @@
 
         // Add interactive layer selector in bottom right for judges/officials
         const baseLayers = {
-          "Voyager Streets": primaryTileLayer,
-          "Light Canvas": L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { subdomains: 'abcd', maxZoom: 19 }),
+          "Standard Streets": primaryTileLayer,
           "Satellite Imagery": L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { maxZoom: 18 })
         };
         L.control.layers(baseLayers, null, { position: 'bottomright' }).addTo(leafletMapInstance);
@@ -395,14 +502,13 @@
           hubsLayerGroup.addLayer(marker);
         });
 
-        // 2. Corridors Layer
+        // 2. Corridors Layer with Automatic OSRM Road Snapping
         corridorsLayerGroup = L.layerGroup();
         kalaburagiCorridors.forEach(c => {
           const polyline = L.polyline(c.coords, {
             color: c.color,
             weight: 4.5,
-            opacity: 0.82,
-            dashArray: '6, 6'
+            opacity: 0.85
           });
           polyline.bindPopup(`
             <div style="font-family:'Segoe UI',sans-serif; padding:2px;">
@@ -411,6 +517,19 @@
             </div>
           `);
           corridorsLayerGroup.addLayer(polyline);
+
+          // Auto-snap to physical roads & Tank Bund Road via free public OSRM
+          const startPt = c.coords[0];
+          const endPt = c.coords[c.coords.length - 1];
+          fetch(`https://router.project-osrm.org/route/v1/driving/${startPt[1]},${startPt[0]};${endPt[1]},${endPt[0]}?overview=full&geometries=geojson`, { signal: AbortSignal.timeout(1800) })
+            .then(res => res.json())
+            .then(data => {
+              if (data.routes && data.routes.length > 0 && data.routes[0].geometry) {
+                const snapped = data.routes[0].geometry.coordinates.map(pt => [pt[1], pt[0]]);
+                polyline.setLatLngs(snapped);
+              }
+            })
+            .catch(() => { /* keeps Tank Bund precision waypoints on offline fallback */ });
         });
 
         // 3. Heatmap Demand Layer
@@ -477,6 +596,86 @@
     mapLauncher?.addEventListener('click', () => setMapOpen(true));
     minBtn?.addEventListener('click', () => setMapOpen(false));
     mapBackdrop?.addEventListener('click', () => setMapOpen(false));
+
+    // ── Dedicated Inline GIS Map Renderer for Routes Page ──
+    function renderInlineKalaburagiMap(containerId = 'routesInlineMap') {
+      const container = document.getElementById(containerId);
+      if (!container || typeof L === 'undefined') return null;
+
+      container.innerHTML = '';
+      const map = L.map(containerId, {
+        center: [17.3370, 76.8380],
+        zoom: 13,
+        zoomControl: true
+      });
+
+      // Free OpenStreetMap tiles (zero watermark, no API key required)
+      const streetLayer = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '© <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> · KSRTC Kalaburagi GIS'
+      });
+
+      streetLayer.on('tileerror', function() {
+        if (!map._hasFallback) {
+          map._hasFallback = true;
+          L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
+            maxZoom: 18,
+            attribution: 'Tiles © Esri · KSRTC GIS'
+          }).addTo(map);
+        }
+      });
+
+      streetLayer.addTo(map);
+
+      // Add Hubs
+      kalaburagiHubs.forEach(hub => {
+        const radius = Math.max(7, Math.min(20, Math.sqrt(hub.boardings) * 0.26));
+        const marker = L.circleMarker(hub.coords, {
+          radius: radius,
+          fillColor: hub.color,
+          color: '#ffffff',
+          weight: 2,
+          opacity: 1,
+          fillOpacity: 0.88
+        }).addTo(map);
+
+        marker.bindPopup(`
+          <div style="font-family:'Segoe UI',sans-serif; min-width:180px; padding:2px;">
+            <div style="font-size:13px; font-weight:700; color:#18181B; margin-bottom:4px;">📍 ${hub.name}</div>
+            <div style="font-size:12px; color:#52525B;">Boardings: <strong style="color:#18181B;">${hub.boardings.toLocaleString()} pax</strong></div>
+            <div style="font-size:12px; color:#52525B;">Fare Collected: <strong style="color:#059669;">₹${hub.revenue.toLocaleString()}</strong></div>
+            <div style="margin-top:6px;"><span style="display:inline-block; font-size:10px; font-weight:700; padding:2px 8px; border-radius:12px; background:#EDE9FE; color:#8B5CF6;">${hub.role}</span></div>
+          </div>
+        `);
+      });
+
+      // Add Corridors
+      kalaburagiCorridors.forEach(c => {
+        const polyline = L.polyline(c.coords, {
+          color: c.color,
+          weight: 4.5,
+          opacity: 0.85
+        }).addTo(map);
+
+        polyline.bindPopup(`
+          <div style="font-family:'Segoe UI',sans-serif; padding:2px;">
+            <strong style="color:#18181B;">🚌 Corridor: ${c.from} ↔ ${c.to}</strong><br>
+            <div style="font-size:12px; color:#52525B; margin-top:2px;">${c.note}</div>
+          </div>
+        `);
+      });
+
+      window.setTimeout(() => {
+        map.invalidateSize();
+        if (typeof L !== 'undefined' && kalaburagiHubs.length > 0) {
+          const bounds = L.latLngBounds(kalaburagiHubs.map(h => h.coords));
+          map.fitBounds(bounds, { padding: [25, 25] });
+        }
+      }, 350);
+
+      return map;
+    }
+    window.renderInlineKalaburagiMap = renderInlineKalaburagiMap;
 
     document.addEventListener('keydown', event => {
       if (event.key === 'Escape' && floatMap?.classList.contains('open')) {

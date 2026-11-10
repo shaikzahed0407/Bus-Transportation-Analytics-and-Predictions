@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Analytics & Predictive Intelligence | KSRTC Kalaburagi Division</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .slider-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 14px;
+    }
+    .slider-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .slider-val {
+      font-weight: 700;
+      color: var(--accent-dark);
+      background: var(--accent-soft);
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 12px;
+    }
+    input[type=range] {
+      width: 100%;
+      accent-color: var(--accent-dark);
+      cursor: pointer;
+    }
+    .sim-result-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-top: 10px;
+    }
+    .sim-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .sim-card-val {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--text);
+    }
+    .sim-card-label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+    .badge-ai {
+      background: linear-gradient(135deg, #8B5CF6, #6D28D9);
+      color: #fff;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 3px 9px;
+      border-radius: 12px;
+      letter-spacing: 0.4px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .model-meta {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+    .model-meta span strong {
+      color: var(--text);
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ══ COLLAPSIBLE SIDEBAR ══ -->
+  <aside class="sidebar" id="sidebar" aria-label="Main navigation">
+    <div class="sidebar-header">
+      <div class="sidebar-brand">
+        <div class="sidebar-logo">K</div>
+        <span class="sidebar-brand-name">KSRTC Analytics</span>
+      </div>
+      <button class="sidebar-toggle" id="sidebarToggle" type="button" title="Expand sidebar" aria-label="Expand sidebar" aria-expanded="false">
+        <span class="sidebar-toggle-icon" id="sidebarToggleIcon" aria-hidden="true">☰</span>
+      </button>
+    </div>
+
+    <button class="nav-item" title="Overview" data-href="index.html" aria-label="Go to Overview"><span class="nav-icon">🏠</span><span class="nav-label">Overview</span></button>
+    <button class="nav-item" title="Route Analytics" data-href="routes.html" aria-label="Go to Route Analytics"><span class="nav-icon">🗺️</span><span class="nav-label">Route Analytics</span></button>
+    <button class="nav-item" title="Passengers" data-href="passengers.html" aria-label="Go to Passengers"><span class="nav-icon">👥</span><span class="nav-label">Passengers</span></button>
+    <button class="nav-item" title="Bus Fleet" data-href="buses.html" aria-label="Go to Bus Fleet"><span class="nav-icon">🚌</span><span class="nav-label">Bus Fleet</span></button>
+    <button class="nav-item" title="Revenue" data-href="revenue.html" aria-label="Go to Revenue"><span class="nav-icon">💰</span><span class="nav-label">Revenue</span></button>
+    <div class="sidebar-divider"></div>
+    <button class="nav-item active" title="AI Analytics" data-href="ai-analytics.html" aria-label="Go to AI Analytics"><span class="nav-icon">🤖</span><span class="nav-label">AI Analytics</span></button>
+    <button class="nav-item" title="Reports" data-href="reports.html" aria-label="Go to Reports"><span class="nav-icon">📋</span><span class="nav-label">Reports</span></button>
+    <button class="nav-item" title="Alerts" data-href="alerts.html" aria-label="Go to Alerts"><span class="nav-icon">🔔</span><span class="nav-label">Alerts</span></button>
+
+    <div class="sidebar-bottom">
+      <div class="sidebar-divider"></div>
+      <button class="nav-item" id="settingsBtn" title="Settings" aria-label="Settings"><span class="nav-icon">⚙️</span><span class="nav-label">Settings</span></button>
+      <button class="nav-item" id="logoutBtn" title="Exit dashboard preview" aria-label="Exit dashboard preview"><span class="nav-icon">↪️</span><span class="nav-label">Exit preview</span></button>
+    </div>
+  </aside>
+  <button class="sidebar-backdrop" id="sidebarBackdrop" type="button" aria-label="Close navigation"></button>
+
+  <!-- ══ MAIN ══ -->
+  <div class="main-wrapper">
+
+    <!-- TOPBAR -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <button class="mobile-sidebar-btn" id="mobileSidebarToggle" type="button" title="Open navigation" aria-label="Open navigation" aria-expanded="false">☰</button>
+        <div>
+          <div class="topbar-title">AI Analytics & Demand Forecasting</div>
+          <div class="topbar-sub">KSRTC · Kalaburagi Division · Machine Learning Demand Projections, Fleet Optimization & Simulation</div>
+        </div>
+      </div>
+      <label class="search-bar" for="dashboardSearch">
+        <span aria-hidden="true">🔍</span>
+        <input id="dashboardSearch" type="search" placeholder="Search predictions, routes, and recommendations…" autocomplete="off" aria-label="Search predictions">
+        <kbd> / </kbd>
+      </label>
+      <div class="topbar-right">
+        <div id="backendStatusPill" style="font-size:11px; padding:3px 8px; border-radius:12px; background:rgba(0,0,0,0.04); display:inline-flex; align-items:center;"></div>
+        <div class="date-badge"><span class="badge-ai">✦ AI Active</span> D+1 Projection</div>
+        <button class="icon-btn" id="downloadReportBtn" title="Print or save AI report" aria-label="Print or save AI report">⬇️</button>
+        <button class="icon-btn" id="notificationsBtn" title="View operational alerts" aria-label="View operational alerts" onclick="window.location.href='alerts.html'">🔔</button>
+      </div>
+    </header>
+
+    <!-- CONTENT -->
+    <div class="content">
+
+      <!-- ── PREDICTIVE KPIS ── -->
+      <div>
+        <div class="section-label">AI Predictive Key Indicators (Next 24-Hour Horizon)</div>
+        <div class="kpi-grid">
+
+          <div class="kpi-card dark">
+            <div class="kpi-top">
+              <div class="kpi-icon-wrap">🔮</div>
+              <span class="badge-ai">Forecast</span>
+            </div>
+            <div class="kpi-value">35,420</div>
+            <div class="kpi-label">Projected Daily Riders</div>
+            <div class="kpi-sub"><strong>+7.7% surge</strong> vs. today (32,874 pax)</div>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-top">
+              <div class="kpi-icon-wrap">⚡</div>
+              <span class="pill red">Peak Rush</span>
+            </div>
+            <div class="kpi-value">12:15 PM</div>
+            <div class="kpi-label">Forecasted Peak Demand</div>
+            <div class="kpi-sub">3,680 pax/hr predicted surge</div>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-top">
+              <div class="kpi-icon-wrap">🚨</div>
+              <span class="pill yellow">Overcrowd</span>
+            </div>
+            <div class="kpi-value">88.4%</div>
+            <div class="kpi-label">Highest Corridor Load</div>
+            <div class="kpi-sub">Budhavihar ↔ CBS Corridor</div>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-top">
+              <div class="kpi-icon-wrap">🚌</div>
+              <span class="pill purple">Reallocate</span>
+            </div>
+            <div class="kpi-value">+6 Buses</div>
+            <div class="kpi-label">Fleet Deficit Needed</div>
+            <div class="kpi-sub">From low to high rush routes</div>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-top">
+              <div class="kpi-icon-wrap">🏛️</div>
+              <span class="kpi-trend trend-neutral">Subsidy</span>
+            </div>
+            <div class="kpi-value">₹3,12,450</div>
+            <div class="kpi-label">Est. Shakti Claim</div>
+            <div class="kpi-sub">75.8% reimbursable share</div>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-top">
+              <div class="kpi-icon-wrap">🎯</div>
+              <span class="pill green">High Acc</span>
+            </div>
+            <div class="kpi-value">94.2%</div>
+            <div class="kpi-label">Model Accuracy</div>
+            <div class="kpi-sub">Trained on 19,275 ETM records</div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ── SECTION 1: TIME SERIES DEMAND FORECASTING (SPLIT) ── -->
+      <div>
+        <div class="section-label">Predictive Ridership Model & 24-Hour Peak Forecast</div>
+        <div class="row-overview-split">
+
+          <!-- Demand Forecast Chart -->
+          <div class="card">
+            <div class="card-head">
+              <div>
+                <div class="card-title">Hourly Ridership Forecast vs. Historical Demand</div>
+                <div class="card-subtitle">Actual Oct 20 demand vs. AI projected curve with 95% confidence bands</div>
+                <div class="model-meta">
+                  <span>Model: <strong>LightGBM + Moving Ridge</strong></span>
+                  <span>Horizon: <strong>D+1 (21 Oct 2026)</strong></span>
+                  <span>Confidence: <strong>95% CI</strong></span>
+                </div>
+              </div>
+              <button class="card-action" data-export-chart="demandForecastChart">Export ↗</button>
+            </div>
+            <div class="card-body">
+              <div class="chart-wrap chart-hourly">
+                <canvas id="demandForecastChart"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <!-- Peak Rush & Dispatches Recommendation -->
+          <div class="card">
+            <div class="card-head">
+              <div>
+                <div class="card-title">Automated AI Dispatch Guidance</div>
+                <div class="card-subtitle">Real-time scheduling recommendations</div>
+              </div>
+            </div>
+            <div class="card-body" style="display:flex; flex-direction:column; gap:12px;">
+              <div class="alert-card warning" style="margin:0;">
+                <div class="alert-icon">⚡</div>
+                <div>
+                  <div class="alert-title">Critical Surge Window: 12:00 – 14:00</div>
+                  <div class="alert-desc">Projected load exceeds current capacity by <strong>620 seats</strong>. Shift 4 idle depot reserve buses to Supermarket and CBS by 11:45 AM.</div>
+                </div>
+              </div>
+
+              <div class="alert-card info" style="margin:0;">
+                <div class="alert-icon">🔄</div>
+                <div>
+                  <div class="alert-title">Corridor Swapping Recommendation</div>
+                  <div class="alert-desc">Sedam Road morning traffic subsides by 14:30. Recommend early trip transfer of 2 waybills to the Budhavihar afternoon student rush.</div>
+                </div>
+              </div>
+
+              <div class="alert-card success" style="margin:0;">
+                <div class="alert-icon">💰</div>
+                <div>
+                  <div class="alert-title">Projected Revenue Efficiency: +11.2%</div>
+                  <div class="alert-desc">Implementing the AI schedule increases daily cash collections to <strong>₹1,06,200</strong> while reducing passenger wait times from 16m to 9m.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ── SECTION 2: FLEET REALLOCATION & WHAT-IF SIMULATOR ── -->
+      <div>
+        <div class="section-label">Fleet Capacity Optimization & Dynamic What-If Simulation</div>
+        <div class="row-2">
+
+          <!-- Fleet Allocation Bar Chart -->
+          <div class="card">
+            <div class="card-head">
+              <div>
+                <div class="card-title">Corridor Fleet Optimization (Current vs. AI Recommended)</div>
+                <div class="card-subtitle">Identifies under-served corridors and surplus route reallocation</div>
+              </div>
+              <button class="card-action" data-export-chart="fleetOptChart">Export ↗</button>
+            </div>
+            <div class="card-body">
+              <div class="chart-wrap" style="height:270px;">
+                <canvas id="fleetOptChart"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <!-- Interactive What-If Policy & Demand Simulator -->
+          <div class="card">
+            <div class="card-head">
+              <div>
+                <div class="card-title">Interactive Transit Policy Simulator</div>
+                <div class="card-subtitle">Simulate ridership surges, Shakti adoption & revenue projections</div>
+              </div>
+              <button class="card-action" id="resetSimBtn" type="button">Reset ↺</button>
+            </div>
+            <div class="card-body">
+              <div class="slider-group">
+                <div class="slider-header">
+                  <span>Ridership Growth / Special Event</span>
+                  <span class="slider-val" id="paxGrowthVal">+8%</span>
+                </div>
+                <input type="range" id="paxGrowthSlider" min="-20" max="40" value="8" step="1">
+              </div>
+
+              <div class="slider-group">
+                <div class="slider-header">
+                  <span>Shakti Scheme Free Travel Share (%)</span>
+                  <span class="slider-val" id="shaktiShareVal">75.3%</span>
+                </div>
+                <input type="range" id="shaktiShareSlider" min="50" max="90" value="75.3" step="0.5">
+              </div>
+
+              <div class="slider-group">
+                <div class="slider-header">
+                  <span>Base Tariff Adjustment</span>
+                  <span class="slider-val" id="tariffAdjVal">+₹0</span>
+                </div>
+                <input type="range" id="tariffAdjSlider" min="-5" max="15" value="0" step="1">
+              </div>
+
+              <div class="sim-result-grid">
+                <div class="sim-card">
+                  <div class="sim-card-val" id="simPaxOutput" style="color:#8B5CF6;">35,504</div>
+                  <div class="sim-card-label">Simulated Ridership</div>
+                </div>
+                <div class="sim-card">
+                  <div class="sim-card-val" id="simCashOutput" style="color:#10B981;">₹1,03,130</div>
+                  <div class="sim-card-label">Simulated Cash Fare</div>
+                </div>
+                <div class="sim-card">
+                  <div class="sim-card-val" id="simSubsidyOutput" style="color:#F59E0B;">₹3,14,200</div>
+                  <div class="sim-card-label">State Subsidy Receivable</div>
+                </div>
+                <div class="sim-card">
+                  <div class="sim-card-val" id="simBusesOutput" style="color:#06B6D4;">51 units</div>
+                  <div class="sim-card-label">Buses Required</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ── SECTION 3: ROUTE OVERCROWDING & BOTTLENECK RISK AUDIT TABLE ── -->
+      <div>
+        <div class="section-label">Predictive Corridor Overcrowding & Route Vulnerability Ledger</div>
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <div class="card-title">High-Vulnerability Transit Corridors — Bottleneck Risk Ranking</div>
+              <div class="card-subtitle">Real-time risk scoring, forecasted passenger load & AI dispatch intervention</div>
+            </div>
+            <button class="card-action" data-export-table="predTable">Export CSV ↗</button>
+          </div>
+          <div class="card-body" style="padding-top:0;">
+            <div class="tbl-wrap">
+              <table id="predTable">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Corridor (From → To)</th>
+                    <th>Observed Daily Pax</th>
+                    <th>Predicted Load</th>
+                    <th>Peak Hour</th>
+                    <th>Active Buses</th>
+                    <th>AI Recommended</th>
+                    <th>Net Deficit</th>
+                    <th>Congestion Risk</th>
+                    <th>Recommended Action</th>
+                  </tr>
+                </thead>
+                <tbody id="predTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /content -->
+
+    <footer class="footer">
+      KSRTC Kalaburagi Division · AI Predictive Analytics Engine · Model Version: K-Trans-v2.4
+      &nbsp;·&nbsp;
+      Trained on 19,275 ETM records &nbsp;·&nbsp; 
+      <strong>Hackathon PS-3 — Bus Ticket Data Analysis & Demand Prediction</strong>
+    </footer>
+
+  </div><!-- /main-wrapper -->
+
+  <!-- Map launcher remains visible at the right edge when the drawer is closed. -->
+  <button class="map-launcher" id="mapLauncher" type="button" title="Open map" aria-label="Open map">🗺️</button>
+  <button class="map-backdrop" id="mapBackdrop" type="button" aria-label="Close map"></button>
+
+  <!-- ══ RIGHT-SIDE MAP PANEL ══ -->
+  <div class="float-map" id="floatMap" aria-label="Bus network map panel" aria-hidden="true">
+    <div class="float-map-bar" id="floatMapBar">
+      <div class="float-map-bar-left"><span class="map-dot"></span> Kalaburagi Transit GIS</div>
+      <div class="float-map-bar-right">
+        <button class="fmap-ctrl" id="floatMapMinBtn" type="button" title="Minimise map" aria-label="Minimise map">›</button>
+      </div>
+    </div>
+
+    <div class="float-map-tabs" id="floatMapTabs">
+      <button class="fmap-tab active">Routes</button>
+      <button class="fmap-tab">Zones</button>
+      <button class="fmap-tab">Heatmap</button>
+    </div>
+
+    <div class="float-map-body">
+      <div id="google-map-container"></div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="js/common.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/charts.js"></script>
+  <script>
+    // ══ AI PREDICTION DATASETS ══
+    const hours = ['06:00', '07:00', '08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00'];
+    const actualHourlyPax = [102, 849, 1396, 2170, 2849, 3017, 3400, 2922, 2821, 3336, 3144, 2995, 2043, 1064, 442, 231, 75, 18];
+    const predictedHourlyPax = [115, 920, 1510, 2340, 3070, 3250, 3680, 3150, 3050, 3590, 3380, 3220, 2210, 1150, 480, 250, 85, 20];
+    const upperConfidencePax = predictedHourlyPax.map(v => Math.round(v * 1.08));
+    const lowerConfidencePax = predictedHourlyPax.map(v => Math.round(v * 0.94));
+
+    // ── Chart 1: Time Series Forecast with 95% Confidence Interval ──
+    new Chart(document.getElementById('demandForecastChart').getContext('2d'), {
+      type: 'line',
+      data: {
+        labels: hours,
+        datasets: [
+          {
+            label: 'Actual Observed (Today)',
+            data: actualHourlyPax,
+            borderColor: '#A1A1AA',
+            borderWidth: 2,
+            pointRadius: 3,
+            tension: 0.35,
+            fill: false
+          },
+          {
+            label: 'AI Forecast (D+1)',
+            data: predictedHourlyPax,
+            borderColor: '#8B5CF6',
+            borderWidth: 3,
+            pointRadius: 4,
+            pointBackgroundColor: '#8B5CF6',
+            tension: 0.35,
+            fill: false
+          },
+          {
+            label: 'Upper 95% Bound',
+            data: upperConfidencePax,
+            borderColor: 'rgba(139,92,246,0.2)',
+            borderDash: [4, 4],
+            borderWidth: 1.5,
+            pointRadius: 0,
+            fill: '+1',
+            backgroundColor: 'rgba(139,92,246,0.1)'
+          },
+          {
+            label: 'Lower 95% Bound',
+            data: lowerConfidencePax,
+            borderColor: 'rgba(139,92,246,0.2)',
+            borderDash: [4, 4],
+            borderWidth: 1.5,
+            pointRadius: 0,
+            fill: false
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { position: 'top', labels: { padding: 12, usePointStyle: true } },
+          tooltip: {
+            callbacks: {
+              label: ctx => ` ${ctx.dataset.label}: ${ctx.raw.toLocaleString()} pax`
+            }
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            grid: { color: GRID_COLOR },
+            ticks: { callback: v => v >= 1000 ? (v / 1000) + 'k' : v }
+          },
+          x: { grid: { display: false } }
+        }
+      }
+    });
+
+    // ── Chart 2: Fleet Optimization (Current vs AI Recommended) ──
+    const corridorsList = ['Budhavihar → CBS', 'CBS → Supermarket', 'Sedam R R → CBS', 'Supermarket → CBS', 'CBS → KBN Darga', 'CBS → SVP Circle'];
+    const currentBuses = [6, 5, 4, 3, 2, 4];
+    const recommendedBuses = [9, 7, 5, 4, 2, 3];
+
+    new Chart(document.getElementById('fleetOptChart').getContext('2d'), {
+      type: 'bar',
+      data: {
+        labels: corridorsList,
+        datasets: [
+          {
+            label: 'Current Bus Allocation',
+            data: currentBuses,
+            backgroundColor: '#CBD5E1',
+            borderRadius: 4
+          },
+          {
+            label: 'AI Optimized Deployment',
+            data: recommendedBuses,
+            backgroundColor: '#8B5CF6',
+            borderRadius: 4
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { position: 'top', labels: { padding: 12 } },
+          tooltip: {
+            callbacks: {
+              afterLabel: ctx => {
+                const diff = recommendedBuses[ctx.dataIndex] - currentBuses[ctx.dataIndex];
+                return diff > 0 ? `Deficit: +${diff} bus required` : diff < 0 ? `Surplus: ${Math.abs(diff)} bus can reallocate` : 'Optimal allocation';
+              }
+            }
+          }
+        },
+        scales: {
+          y: { beginAtZero: true, ticks: { stepSize: 2 } },
+          x: { ticks: { font: { size: 10 } } }
+        }
+      }
+    });
+
+    // ── Corridor Vulnerability & Overcrowding Prediction Ledger ──
+    const corridorLedger = [
+      { id: 1, corridor: "Budhavihar → CBS", actual: 812, pred: 930, peak: "12:00 – 13:00", curr: 6, rec: 9, deficit: 3, risk: ["red", "Critical (88%)"], action: "Deploy +3 High-Capacity Shuttles" },
+      { id: 2, corridor: "CBS → Budhavihar", actual: 713, pred: 815, peak: "17:00 – 18:00", curr: 5, rec: 8, deficit: 3, risk: ["red", "Critical (84%)"], action: "Evening Peak Dispatch +3 Units" },
+      { id: 3, corridor: "CBS → Supermarket", actual: 642, pred: 730, peak: "11:00 – 12:00", curr: 5, rec: 7, deficit: 2, risk: ["red", "High (82%)"], action: "Inject 2 Additional Interval Trips" },
+      { id: 4, corridor: "Sedam R R → CBS", actual: 433, pred: 495, peak: "08:00 – 09:00", curr: 4, rec: 5, deficit: 1, risk: ["yellow", "Moderate (65%)"], action: "Shift 1 Morning Unit from Depot" },
+      { id: 5, corridor: "CBS → Sedam R R", actual: 445, pred: 480, peak: "16:00 – 17:00", curr: 4, rec: 5, deficit: 1, risk: ["yellow", "Moderate (62%)"], action: "Pre-stage Bus at CBS Bay 4" },
+      { id: 6, corridor: "Supermarket → Ruknuddin", actual: 391, pred: 410, peak: "13:00 – 14:00", curr: 4, rec: 4, deficit: 0, risk: ["green", "Balanced (45%)"], action: "Maintain Scheduled Frequency" },
+      { id: 7, corridor: "CBS → S V P Circle", actual: 267, pred: 275, peak: "10:00 – 11:00", curr: 4, rec: 3, deficit: -1, risk: ["green", "Surplus (28%)"], action: "Reassign 1 Bus to Budhavihar" },
+      { id: 8, corridor: "Aland Check Post → CBS", actual: 308, pred: 320, peak: "09:00 – 10:00", curr: 3, rec: 2, deficit: -1, risk: ["green", "Surplus (31%)"], action: "Reassign 1 Bus to Supermarket" }
+    ];
+
+    const predTbody = document.getElementById('predTableBody');
+    if (predTbody) {
+      predTbody.innerHTML = corridorLedger.map(r => `
+        <tr>
+          <td style="font-weight:700; color:var(--text-muted);">${r.id}</td>
+          <td><strong>${r.corridor}</strong></td>
+          <td style="color:var(--text-muted);">${r.actual.toLocaleString()}</td>
+          <td><strong style="color:var(--accent-dark);">${r.pred.toLocaleString()}</strong></td>
+          <td><span style="font-size:11px; font-weight:600; color:var(--text);">${r.peak}</span></td>
+          <td style="font-weight:600;">${r.curr} units</td>
+          <td style="font-weight:700; color:#059669;">${r.rec} units</td>
+          <td style="font-weight:700; color:${r.deficit > 0 ? '#DC2626' : r.deficit < 0 ? '#059669' : 'var(--text-muted)'};">
+            ${r.deficit > 0 ? `+${r.deficit} needed` : r.deficit < 0 ? `${r.deficit} surplus` : '0 (Optimal)'}
+          </td>
+          <td><span class="pill ${r.risk[0]}">${r.risk[1]}</span></td>
+          <td><span style="font-size:11px; font-weight:600; color:#52525B;">${r.action}</span></td>
+        </tr>
+      `).join('');
+    }
+
+    // ── Interactive What-If Simulator Logic ──
+    const basePax = 32874;
+    const baseColl = 95491;
+    const baseUncoll = 290929;
+    const baseBuses = 47;
+
+    const paxSlider = document.getElementById('paxGrowthSlider');
+    const shaktiSlider = document.getElementById('shaktiShareSlider');
+    const tariffSlider = document.getElementById('tariffAdjSlider');
+
+    const paxValDisplay = document.getElementById('paxGrowthVal');
+    const shaktiValDisplay = document.getElementById('shaktiShareVal');
+    const tariffValDisplay = document.getElementById('tariffAdjVal');
+
+    const outPax = document.getElementById('simPaxOutput');
+    const outCash = document.getElementById('simCashOutput');
+    const outSubsidy = document.getElementById('simSubsidyOutput');
+    const outBuses = document.getElementById('simBusesOutput');
+
+    let simDebounceTimer = null;
+
+    async function updateSimulation() {
+      const growthPct = parseFloat(paxSlider.value);
+      const shaktiPct = parseFloat(shaktiSlider.value);
+      const tariffAdj = parseFloat(tariffSlider.value);
+
+      paxValDisplay.textContent = (growthPct >= 0 ? '+' : '') + growthPct + '%';
+      shaktiValDisplay.textContent = shaktiPct.toFixed(1) + '%';
+      tariffValDisplay.textContent = (tariffAdj >= 0 ? '+' : '') + '₹' + tariffAdj;
+
+      // Instant local calculation (keeps UI responsive at 60fps)
+      const simPax = Math.round(basePax * (1 + growthPct / 100));
+      const avgFare = 11.75 + tariffAdj;
+      const totalSimRevenue = simPax * avgFare;
+
+      const subsidyRate = shaktiPct / 100;
+      const cashRate = 1 - subsidyRate;
+
+      const simCash = Math.round(totalSimRevenue * cashRate);
+      const simSubsidy = Math.round(totalSimRevenue * subsidyRate);
+      const simBuses = Math.round(baseBuses * (1 + (growthPct * 0.75) / 100));
+
+      outPax.textContent = simPax.toLocaleString() + ' pax';
+      outCash.textContent = '₹' + simCash.toLocaleString();
+      outSubsidy.textContent = '₹' + simSubsidy.toLocaleString();
+      outBuses.textContent = simBuses + ' units';
+
+      // Live async sync with backend simulation API if available
+      if (window.BusPulseAPI && window.BusPulseAPI.isBackendOnline) {
+        clearTimeout(simDebounceTimer);
+        simDebounceTimer = setTimeout(async () => {
+          const apiRes = await window.BusPulseAPI.post('/ai/simulate', {
+            growth_pct: growthPct,
+            shakti_pct: shaktiPct,
+            tariff_pct: (tariffAdj / 11.75) * 100
+          });
+          if (apiRes && apiRes.projected_passengers) {
+            outPax.textContent = Number(apiRes.projected_passengers).toLocaleString() + ' pax';
+            outCash.textContent = '₹' + Number(Math.round(apiRes.projected_cash_collection)).toLocaleString();
+            outSubsidy.textContent = '₹' + Number(Math.round(apiRes.projected_shakti_subsidy)).toLocaleString();
+            outBuses.textContent = apiRes.buses_required + ' units';
+          }
+        }, 150);
+      }
+    }
+
+    [paxSlider, shaktiSlider, tariffSlider].forEach(s => s.addEventListener('input', updateSimulation));
+
+    document.getElementById('resetSimBtn')?.addEventListener('click', () => {
+      paxSlider.value = 8;
+      shaktiSlider.value = 75.3;
+      tariffSlider.value = 0;
+      updateSimulation();
+      showToast('Simulator reset to baseline projection.');
+    });
+
+    updateSimulation();
+  </script>
+</body>
+
+</html>
