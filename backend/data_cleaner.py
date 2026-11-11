@@ -35,17 +35,55 @@ def clean_ticket_data(df: pd.DataFrame) -> pd.DataFrame:
     # 1. Standardize column names
     col_map = {
         'Waybill Number': 'waybill_number',
+        'waybill_no': 'waybill_number',
+        'waybill': 'waybill_number',
         'Ticket Number': 'ticket_number',
+        'ticket_no': 'ticket_number',
         'From Stop': 'from_stop',
+        'from_stage_name': 'from_stop',
+        'origin': 'from_stop',
+        'source': 'from_stop',
         'To Stop': 'to_stop',
+        'to_stage_name': 'to_stop',
+        'destination': 'to_stop',
+        'dest': 'to_stop',
         'Date': 'date',
+        'txn_date': 'date',
         'Time': 'time',
+        'txn_time': 'time',
         'Total Psgr': 'passengers',
+        'total_psgr': 'passengers',
+        'total_seats': 'passengers',
+        'psgr': 'passengers',
+        'pax': 'passengers',
         'Coll Amt': 'collected_fare',
+        'coll_amt': 'collected_fare',
+        'fare': 'collected_fare',
+        'ticket_amount': 'collected_fare',
         'Uncoll Amt': 'subsidy_fare',
+        'uncoll_amt': 'subsidy_fare',
+        'subsidy': 'subsidy_fare',
+        'subsidy_amount': 'subsidy_fare',
         'Unnamed: 9': 'notes'
     }
-    df = df.rename(columns=lambda c: col_map.get(str(c).strip(), str(c).strip().lower().replace(' ', '_')))
+    df = df.rename(columns=lambda c: col_map.get(str(c).strip(), col_map.get(str(c).strip().lower().replace(' ', '_'), str(c).strip().lower().replace(' ', '_'))))
+
+    # Fallback column creation if missing
+    if 'passengers' not in df.columns:
+        df['passengers'] = 1
+    if 'collected_fare' not in df.columns:
+        df['collected_fare'] = 0.0
+    if 'subsidy_fare' not in df.columns:
+        df['subsidy_fare'] = 0.0
+    if 'time' not in df.columns:
+        df['time'] = '12:00:00'
+    if 'date' not in df.columns:
+        df['date'] = str(datetime.now().date())
+    if 'waybill_id' not in df.columns:
+        if 'waybill_number' in df.columns:
+            df['waybill_id'] = df['waybill_number'].astype(str)
+        else:
+            df['waybill_id'] = 'WB-1'
 
     # Drop unneeded notes column if present
     if 'notes' in df.columns:

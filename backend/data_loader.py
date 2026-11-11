@@ -19,6 +19,7 @@ except ImportError:
 BASE_DIR = Path(__file__).resolve().parent.parent
 RAW_DIR = BASE_DIR / "data" / "raw"
 PROCESSED_DIR = BASE_DIR / "data" / "processed"
+BACKUP_DIR = BASE_DIR / "data" / "backups"
 CACHE_PATH = PROCESSED_DIR / "tickets.pkl"
 
 # File candidates in order of priority
@@ -128,11 +129,48 @@ def get_data(force_reload: bool = False) -> pd.DataFrame:
     return _cached_df
 
 
-def update_dataset(raw_df: pd.DataFrame) -> pd.DataFrame:
-    """Updates dataset from an uploaded DataFrame (Excel/CSV/JSON), cleans, and syncs."""
+def update_dataset(raw_df: pd.DataFrame, mode: str = "replace") -> pd.DataFrame:
+    """Updates dataset from an uploaded DataFrame (Excel/CSV/JSON), cleans, and syncs.
+    If mode == 'replace', creates an automatic local backup in data/backups/ before overwriting.
+    If mode == 'merge', concatenates with existing data and drops duplicate ticket records.
+    """
     global _cached_df
-    cleaned_df = clean_ticket_data(raw_df)
+    import datetime
+
     PROCESSED_DIR.mkdir(parents=True, exist_ok=True)
+    BACKUP_DIR.mkdir(parents=True, exist_ok=True)
+
+    cleaned_new = clean_ticket_data(raw_df)
+
+    if mode == "merge":
+        try:
+            current_df = get_data()
+        except Exception:
+            current_df = None
+
+        if current_df is not None and not current_df.empty:
+            merged_df = pd.concat([current_df, cleaned_new], ignore_index=True)
+            subset_cols = [c for c in ['ticket_number', 'waybill_number', 'route', 'time'] if c in merged_df.columns]
+            if subset_cols:
+                merged_df = merged_df.drop_duplicates(subset=subset_cols, keep='last')
+            else:
+                merged_df = merged_df.drop_duplicates()
+            cleaned_df = merged_df
+        else:
+            cleaned_df = cleaned_new
+    else:
+        # replace mode: create backup of current data first
+        try:
+            current_df = get_data()
+            if current_df is not None and not current_df.empty:
+                ts = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+                backup_file = BACKUP_DIR / f"tickets_backup_{ts}.csv"
+                current_df.to_csv(backup_file, index=False)
+                print(f"📦 Local backup snapshot saved: {backup_file}")
+        except Exception as e:
+            print(f"⚠️ Failed to create local backup: {e}")
+
+        cleaned_df = cleaned_new
 
     # Cache locally
     with open(CACHE_PATH, "wb") as f:
@@ -142,11 +180,20 @@ def update_dataset(raw_df: pd.DataFrame) -> pd.DataFrame:
     # Sync to Supabase in background/thread if configured
     if is_supabase_configured():
         try:
-            from seed_supabase import seed_data
+            import math
             # Upload records
-            print("Syncing newly uploaded dataset to Supabase...")
-            records = cleaned_df.to_dict(orient="records")
-            supabase.table("tickets").delete().neq("id", 0).execute()
+            print("Syncing newly updated dataset to Supabase...")
+            safe_df = cleaned_df.where(pd.notnull(cleaned_df), None)
+            records = safe_df.to_dict(orient="records")
+            for r in records:
+                for k, v in r.items():
+                    if isinstance(v, float) and (math.isnan(v) or math.isinf(v)):
+                        r[k] = None
+            if mode == "replace":
+                try:
+                    supabase.table("tickets").delete().neq("id", 0).execute()
+                except Exception:
+                    pass
             for i in range(0, len(records), 1000):
                 supabase.table("tickets").insert(records[i : i + 1000]).execute()
             print("✅ Uploaded data synced to Supabase successfully!")

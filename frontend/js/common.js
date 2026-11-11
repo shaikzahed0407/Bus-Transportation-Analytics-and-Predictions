@@ -291,7 +291,7 @@
     });
 
     document.getElementById('settingsBtn')?.addEventListener('click', () => {
-      showToast('Department configuration & permissions settings.');
+      window.location.href = 'settings.html';
     });
 
     document.getElementById('logoutBtn')?.addEventListener('click', () => {
