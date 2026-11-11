@@ -2,7 +2,6 @@
 __pycache__/
 *.py[cod]
 *$py.class
-<<<<<<< Updated upstream
 *.so
 .Python
 env/
@@ -24,28 +23,19 @@ wheels/
 .installed.cfg
 *.egg
 
+# Environment / Secrets
+.env
+
 # Processed Cache
-data/processed/*.pkl
-data/processed/*.parquet
+data/processed/
+*.pkl
+*.parquet
 
 # OS & Editor
 .DS_Store
 Thumbs.db
 .vscode/
 .idea/
-*.swp
-=======
-venv/
-env/
-.env
-
-# Cache & Data
-data/processed/
-*.pkl
-
-# IDE / Editor
-.vscode/
-.idea/
 .cursor/
->>>>>>> Stashed changes
+*.swp
 

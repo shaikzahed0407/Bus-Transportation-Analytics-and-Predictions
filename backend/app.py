@@ -14,17 +14,6 @@ from backend.routes.data import bp as data_bp
 BACKEND_DIR = Path(__file__).resolve().parent
 sys.path.insert(0, str(BACKEND_DIR))
 
-<<<<<<< Updated upstream
-from data_loader import get_data
-from analytics.demand import get_hourly_demand, get_peak_demand_stats
-from analytics.stops import get_stop_rankings, get_gis_stops_geojson
-from analytics.movement import get_top_corridors, get_corridor_directional_balance
-from analytics.fleet import get_fleet_statistics, get_fleet_summary
-from analytics.revenue import get_revenue_summary, get_revenue_by_route
-from analytics.predictions import get_demand_forecast, simulate_what_if
-from services.filters import apply_filters
-from services.alerts import get_system_alerts
-=======
 try:
     from .data_loader import get_data, update_dataset
     from .analytics.demand import get_hourly_demand, get_peak_demand_stats
@@ -45,11 +34,11 @@ except ImportError:
     from analytics.predictions import get_demand_forecast, simulate_what_if
     from services.filters import apply_filters
     from services.alerts import get_system_alerts
->>>>>>> Stashed changes
 
-# Frontend path for optional direct serving
-# HTML pages (index.html, routes.html, etc.) live in the project root
-FRONTEND_DIR = BACKEND_DIR.parent
+# Frontend path for serving dashboard
+FRONTEND_DIR = BACKEND_DIR.parent / "frontend"
+if not (FRONTEND_DIR / "index.html").exists():
+    FRONTEND_DIR = BACKEND_DIR.parent
 
 app = Flask(__name__, static_folder=str(FRONTEND_DIR), static_url_path="")
 CORS(app)  # Enable Cross-Origin Resource Sharing for file:// and localhost
@@ -69,7 +58,13 @@ def index():
 @app.route("/<path:path>")
 def static_proxy(path):
     """Serves static files (HTML, CSS, JS)."""
-    return send_from_directory(FRONTEND_DIR, path)
+    if (FRONTEND_DIR / path).exists():
+        return send_from_directory(FRONTEND_DIR, path)
+    if (BACKEND_DIR.parent / path).exists():
+        return send_from_directory(BACKEND_DIR.parent, path)
+    if not path.endswith(".html") and (FRONTEND_DIR / f"{path}.html").exists():
+        return send_from_directory(FRONTEND_DIR, f"{path}.html")
+    return send_from_directory(FRONTEND_DIR, "index.html")
 
 # ══════════════════════════════════════════════════════════════════════════
 # REST API ENDPOINTS

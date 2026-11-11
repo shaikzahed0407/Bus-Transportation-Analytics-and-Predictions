@@ -127,8 +127,6 @@ def get_data(force_reload: bool = False) -> pd.DataFrame:
     print(f"Dataset cached successfully! Total transactions: {len(_cached_df):,}")
     return _cached_df
 
-<<<<<<< Updated upstream
-=======
 
 def update_dataset(raw_df: pd.DataFrame) -> pd.DataFrame:
     """Updates dataset from an uploaded DataFrame (Excel/CSV/JSON), cleans, and syncs."""
@@ -158,7 +156,6 @@ def update_dataset(raw_df: pd.DataFrame) -> pd.DataFrame:
     return _cached_df
 
 
->>>>>>> Stashed changes
 if __name__ == "__main__":
     df = get_data()
     print(f"Loaded {len(df)} rows. Columns: {df.columns.tolist()}")
