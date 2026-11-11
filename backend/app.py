@@ -184,10 +184,11 @@ def ai_simulate():
     return jsonify(simulation_result)
 
 if __name__ == "__main__":
+    host = os.environ.get("HOST", "0.0.0.0")
     port = int(os.environ.get("PORT", 5000))
     print(f"\n=======================================================")
     print(f"🚌 KSRTC BusPulse Analytics Server running at:")
-    print(f"👉 http://127.0.0.1:{port}")
+    print(f"👉 http://{host}:{port}")
     print(f"=======================================================\n")
-    app.run(host="127.0.0.1", port=port, debug=False)
+    app.run(host=host, port=port, debug=False)
 
