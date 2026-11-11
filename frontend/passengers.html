@@ -76,7 +76,68 @@
         <kbd> / </kbd>
       </label>
       <div class="topbar-right">
-        <div class="date-badge">📅 20 October 2026</div>
+        <!-- Single Filter Box with Expanding Popover (Inspired by Reference) -->
+        <div class="filter-box-container" id="filterBoxContainer">
+          <button class="filter-trigger-btn" id="filterDropdownBtn" type="button" aria-expanded="false" title="Click to open filter options">
+            <span class="filter-btn-icon">⚡</span>
+            <span>Filters</span>
+            <span class="filter-badge-dot" id="filterActiveDot"></span>
+            <span class="filter-caret" id="filterCaret">▾</span>
+          </button>
+
+          <!-- Expanding Popover Menu -->
+          <div class="filter-popover" id="filterPopover" aria-hidden="true">
+            <div class="filter-popover-header">
+              <span class="filter-popover-title">Filter Options</span>
+              <button type="button" class="filter-reset-link" id="resetFiltersBtn">Reset</button>
+            </div>
+
+            <div class="filter-form-group">
+              <label for="filterFromDate">From Date</label>
+              <input type="date" id="filterFromDate" class="filter-input" value="2026-10-20">
+            </div>
+
+            <div class="filter-form-group">
+              <label for="filterToDate">To Date</label>
+              <input type="date" id="filterToDate" class="filter-input" value="2026-10-20">
+            </div>
+
+            <div class="filter-form-group">
+              <label for="filterDivision">Division</label>
+              <select id="filterDivision" class="filter-select">
+                <option value="all">All Divisions</option>
+                <option value="kalaburagi" selected>Kalaburagi Division (KKRTC)</option>
+              </select>
+            </div>
+
+            <div class="filter-form-group">
+              <label for="filterDepot">Depot / Shift Window</label>
+              <select id="filterDepot" class="filter-select">
+                <option value="all">All Depots & Shifts</option>
+                <option value="morning">Morning Rush (06:00 – 11:00)</option>
+                <option value="midday">Midday Peak (12:00 – 16:00)</option>
+                <option value="evening">Evening Rush (17:00 – 21:00)</option>
+                <option value="night">Night Shift (22:00 – 23:00)</option>
+                <option value="depot1">Kalaburagi Depot-1</option>
+                <option value="depot2">Kalaburagi Depot-2</option>
+              </select>
+            </div>
+
+            <div class="filter-form-group">
+              <label for="filterFareScheme">Fare Category</label>
+              <select id="filterFareScheme" class="filter-select">
+                <option value="all">All Fares (Cash + Shakti)</option>
+                <option value="shakti">Shakti Scheme Only (Free Pass)</option>
+                <option value="cash">Paid Cash Only</option>
+              </select>
+            </div>
+
+            <button type="button" id="applyFiltersBtn" class="filter-apply-btn">
+              <span class="funnel-icon">▼</span> Apply Filters
+            </button>
+          </div>
+        </div>
+
         <button class="icon-btn" id="downloadReportBtn" title="Print or save dashboard report"
           aria-label="Print or save dashboard report">⬇️</button>
         <button class="icon-btn" id="notificationsBtn" title="View operational alerts"

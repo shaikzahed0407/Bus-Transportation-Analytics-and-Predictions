@@ -34,6 +34,15 @@ class TestBusPulseAPI(unittest.TestCase):
         self.assertEqual(data['active_fleet_buses'], 47)
         self.assertGreater(data['shakti_subsidy_claim'], 0)
 
+        # Test interactive filters
+        res_morning = self.client.get('/api/v1/kpi/summary?window=morning')
+        self.assertEqual(res_morning.status_code, 200)
+        self.assertLess(res_morning.get_json()['total_passengers'], data['total_passengers'])
+
+        res_shakti = self.client.get('/api/v1/kpi/summary?shakti=true')
+        self.assertEqual(res_shakti.status_code, 200)
+        self.assertGreater(res_shakti.get_json()['shakti_subsidy_claim'], 0)
+
     def test_hourly_analytics(self):
         res = self.client.get('/api/v1/analytics/hourly')
         self.assertEqual(res.status_code, 200)

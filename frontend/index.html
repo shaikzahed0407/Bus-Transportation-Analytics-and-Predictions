@@ -61,7 +61,68 @@
         <kbd> / </kbd>
       </label>
       <div class="topbar-right">
-        <div class="date-badge">📅 20 October 2026</div>
+        <!-- Single Filter Box with Expanding Popover (Inspired by Reference) -->
+        <div class="filter-box-container" id="filterBoxContainer">
+          <button class="filter-trigger-btn" id="filterDropdownBtn" type="button" aria-expanded="false" title="Click to open filter options">
+            <span class="filter-btn-icon">⚡</span>
+            <span>Filters</span>
+            <span class="filter-badge-dot" id="filterActiveDot"></span>
+            <span class="filter-caret" id="filterCaret">▾</span>
+          </button>
+
+          <!-- Expanding Popover Menu -->
+          <div class="filter-popover" id="filterPopover" aria-hidden="true">
+            <div class="filter-popover-header">
+              <span class="filter-popover-title">Filter Options</span>
+              <button type="button" class="filter-reset-link" id="resetFiltersBtn">Reset</button>
+            </div>
+
+            <div class="filter-form-group">
+              <label for="filterFromDate">From Date</label>
+              <input type="date" id="filterFromDate" class="filter-input" value="2026-10-20">
+            </div>
+
+            <div class="filter-form-group">
+              <label for="filterToDate">To Date</label>
+              <input type="date" id="filterToDate" class="filter-input" value="2026-10-20">
+            </div>
+
+            <div class="filter-form-group">
+              <label for="filterDivision">Division</label>
+              <select id="filterDivision" class="filter-select">
+                <option value="all">All Divisions</option>
+                <option value="kalaburagi" selected>Kalaburagi Division (KKRTC)</option>
+              </select>
+            </div>
+
+            <div class="filter-form-group">
+              <label for="filterDepot">Depot / Shift Window</label>
+              <select id="filterDepot" class="filter-select">
+                <option value="all">All Depots & Shifts</option>
+                <option value="morning">Morning Rush (06:00 – 11:00)</option>
+                <option value="midday">Midday Peak (12:00 – 16:00)</option>
+                <option value="evening">Evening Rush (17:00 – 21:00)</option>
+                <option value="night">Night Shift (22:00 – 23:00)</option>
+                <option value="depot1">Kalaburagi Depot-1</option>
+                <option value="depot2">Kalaburagi Depot-2</option>
+              </select>
+            </div>
+
+            <div class="filter-form-group">
+              <label for="filterFareScheme">Fare Category</label>
+              <select id="filterFareScheme" class="filter-select">
+                <option value="all">All Fares (Cash + Shakti)</option>
+                <option value="shakti">Shakti Scheme Only (Free Pass)</option>
+                <option value="cash">Paid Cash Only</option>
+              </select>
+            </div>
+
+            <button type="button" id="applyFiltersBtn" class="filter-apply-btn">
+              <span class="funnel-icon">▼</span> Apply Filters
+            </button>
+          </div>
+        </div>
+
         <button class="icon-btn" id="downloadReportBtn" title="Print or save dashboard report" aria-label="Print or save dashboard report">⬇️</button>
         <button class="icon-btn" id="notificationsBtn" title="View operational alerts" aria-label="View operational alerts" onclick="window.location.href='alerts.html'">🔔</button>
       </div>
@@ -80,9 +141,9 @@
               <div class="kpi-icon-wrap">🏛️</div>
               <span class="pill yellow" style="font-size:10px;">Govt Subsidy</span>
             </div>
-            <div class="kpi-value">₹2,90,929</div>
+            <div class="kpi-value" id="kpiShaktiSubsidy">₹2,90,929</div>
             <div class="kpi-label">Shakti Subsidy Claim</div>
-            <div class="kpi-sub">75.3% women free fare (reimbursable)</div>
+            <div class="kpi-sub" id="kpiShaktiSub">75.3% women free fare (reimbursable)</div>
           </div>
 
           <div class="kpi-card">
@@ -90,39 +151,39 @@
               <div class="kpi-icon-wrap">🚌</div>
               <span class="kpi-trend trend-neutral">Fleet</span>
             </div>
-            <div class="kpi-value">47</div>
+            <div class="kpi-value" id="kpiActiveBuses">47</div>
             <div class="kpi-label">Active Bus Units</div>
-            <div class="kpi-sub">Operating daily waybills</div>
+            <div class="kpi-sub" id="kpiActiveBusesSub">Operating daily waybills</div>
           </div>
 
           <div class="kpi-card">
             <div class="kpi-top">
               <div class="kpi-icon-wrap">👥</div>
-              <span class="kpi-trend trend-up">699 / trip</span>
+              <span class="kpi-trend trend-up" id="kpiPaxPerTrip">699 / trip</span>
             </div>
-            <div class="kpi-value">32,874</div>
+            <div class="kpi-value" id="kpiTotalPax">32,874</div>
             <div class="kpi-label">Total Passengers</div>
-            <div class="kpi-sub">Across all 47 trips</div>
+            <div class="kpi-sub" id="kpiTotalPaxSub">Across all active trips</div>
           </div>
 
           <div class="kpi-card">
             <div class="kpi-top">
               <div class="kpi-icon-wrap">🎫</div>
-              <span class="kpi-trend trend-neutral">410 / trip</span>
+              <span class="kpi-trend trend-neutral" id="kpiTktsPerTrip">410 / trip</span>
             </div>
-            <div class="kpi-value">19,275</div>
+            <div class="kpi-value" id="kpiTotalTkts">19,275</div>
             <div class="kpi-label">Tickets Issued</div>
-            <div class="kpi-sub">Total ticket records</div>
+            <div class="kpi-sub" id="kpiTotalTktsSub">Total ticket records</div>
           </div>
 
           <div class="kpi-card">
             <div class="kpi-top">
               <div class="kpi-icon-wrap">💰</div>
-              <span class="kpi-trend trend-down">24.7% rate</span>
+              <span class="kpi-trend trend-down" id="kpiCollectionRate">24.7% rate</span>
             </div>
-            <div class="kpi-value">₹95,491</div>
+            <div class="kpi-value" id="kpiRevenueCollected">₹95,491</div>
             <div class="kpi-label">Revenue Collected</div>
-            <div class="kpi-sub">₹2,031 avg per trip</div>
+            <div class="kpi-sub" id="kpiAvgFarePerTrip">₹2,031 avg per trip</div>
           </div>
 
           <div class="kpi-card">
@@ -130,9 +191,9 @@
               <div class="kpi-icon-wrap">📍</div>
               <span class="kpi-trend trend-neutral">Network</span>
             </div>
-            <div class="kpi-value">134</div>
+            <div class="kpi-value" id="kpiBusStops">134</div>
             <div class="kpi-label">Bus Stops</div>
-            <div class="kpi-sub">Active stops in network</div>
+            <div class="kpi-sub" id="kpiBusStopsSub">Active stops in network</div>
           </div>
 
         </div>
@@ -150,9 +211,9 @@
               <div class="kpi-icon-wrap">⚡</div>
               <span class="pill purple">Rush Period</span>
             </div>
-            <div class="kpi-value">12:00 – 13:00</div>
+            <div class="kpi-value" id="kpiPeakHour">12:00 – 13:00</div>
             <div class="kpi-label">Peak Activity Hour</div>
-            <div class="kpi-sub"><strong>3,400 pax</strong> · 1,965 tickets · ₹9,826 collected</div>
+            <div class="kpi-sub" id="kpiPeakHourSub"><strong>3,400 pax</strong> · 1,965 tickets</div>
           </div>
 
           <!-- Busiest Origin -->
@@ -161,9 +222,9 @@
               <div class="kpi-icon-wrap">🛫</div>
               <span class="pill green">Top Boarding</span>
             </div>
-            <div class="kpi-value">Supermarket</div>
+            <div class="kpi-value" id="kpiTopOrigin">Supermarket</div>
             <div class="kpi-label">Busiest Origin Stop</div>
-            <div class="kpi-sub"><strong>4,569 pax</strong> boarded (13.9% share) · 2,808 tickets</div>
+            <div class="kpi-sub" id="kpiTopOriginSub"><strong>4,569 pax</strong> boarded</div>
           </div>
 
           <!-- Busiest Destination -->
@@ -172,9 +233,9 @@
               <div class="kpi-icon-wrap">🛬</div>
               <span class="pill yellow">Top Alighting</span>
             </div>
-            <div class="kpi-value">Supermarket</div>
+            <div class="kpi-value" id="kpiTopDest">Supermarket</div>
             <div class="kpi-label">Busiest Destination Stop</div>
-            <div class="kpi-sub"><strong>4,056 pax</strong> arrived (12.3% share) · CBS close 2nd (3,477)</div>
+            <div class="kpi-sub" id="kpiTopDestSub"><strong>4,056 pax</strong> arrived</div>
           </div>
 
         </div>
@@ -218,15 +279,15 @@
               </div>
               <div class="donut-stats">
                 <div class="donut-stat">
-                  <div class="donut-stat-val" style="color:#10B981;">₹95K</div>
+                  <div class="donut-stat-val" id="donutCollectedVal" style="color:#10B981;">₹95K</div>
                   <div class="donut-stat-label">Collected</div>
                 </div>
                 <div class="donut-stat">
-                  <div class="donut-stat-val" style="color:#EF4444;">₹2.9L</div>
+                  <div class="donut-stat-val" id="donutUncollectedVal" style="color:#EF4444;">₹2.9L</div>
                   <div class="donut-stat-label">Uncollected</div>
                 </div>
                 <div class="donut-stat">
-                  <div class="donut-stat-val">24.7%</div>
+                  <div class="donut-stat-val" id="donutEfficiencyVal">24.7%</div>
                   <div class="donut-stat-label">Efficiency</div>
                 </div>
               </div>
@@ -285,9 +346,9 @@
   <script src="js/api.js"></script>
   <script src="js/charts.js"></script>
   <script>
-
-    // Hourly Traffic Chart
-    new Chart(document.getElementById('hourlyChart').getContext('2d'), {
+    // ── CHARTS INITIALIZATION ──
+    const hourlyCtx = document.getElementById('hourlyChart').getContext('2d');
+    const hourlyChartInstance = new Chart(hourlyCtx, {
       type: 'bar',
       data: {
         labels: hourLabels,
@@ -315,8 +376,8 @@
       }
     });
 
-    // Revenue Doughnut
-    new Chart(document.getElementById('revenuePie').getContext('2d'), {
+    const revenuePieCtx = document.getElementById('revenuePie').getContext('2d');
+    const revenuePieInstance = new Chart(revenuePieCtx, {
       type: 'doughnut',
       data: {
         labels: ['Collected', 'Uncollected'],
@@ -332,11 +393,107 @@
         cutout: '64%',
         plugins: {
           legend: { display: false },
-          tooltip: { callbacks: { label: ctx => ' ₹' + ctx.raw.toLocaleString() + ' (' + (ctx.raw / 386420 * 100).toFixed(1) + '%)' } }
+          tooltip: {
+            callbacks: {
+              label: ctx => {
+                const total = ctx.dataset.data.reduce((a, b) => a + b, 0);
+                const pct = total > 0 ? (ctx.raw / total * 100).toFixed(1) : 0;
+                return ` ₹${ctx.raw.toLocaleString()} (${pct}%)`;
+              }
+            }
+          }
         }
       }
     });
 
+    // ── DYNAMIC KPI & FILTER REFRESH ENGINE ──
+    async function refreshOverviewDashboard(customFilters = null) {
+      const filterParams = customFilters || (typeof getGlobalFilters === 'function' ? getGlobalFilters() : {});
+
+      // 1. Fetch dynamic KPIs
+      const kpi = await BusPulseAPI.get('/kpi/summary', filterParams);
+      if (kpi) {
+        const setTxt = (id, val) => {
+          const el = document.getElementById(id);
+          if (el) el.textContent = val;
+        };
+
+        const buses = kpi.active_fleet_buses || 47;
+        const totalPax = kpi.total_passengers || 32874;
+        const cashAmt = kpi.cash_collected ?? 95491;
+        const subsidyAmt = kpi.shakti_subsidy_claim ?? 290929;
+        const grossAmt = kpi.total_gross_fare ?? (cashAmt + subsidyAmt);
+
+        const paxPerTrip = kpi.avg_pax_per_trip ?? (buses > 0 ? (totalPax / buses).toFixed(1) : '699.4');
+        const avgFareTrip = kpi.avg_fare_per_trip ?? (buses > 0 ? Math.round(cashAmt / buses) : 2031);
+        const ratePct = kpi.collection_rate_pct ?? (grossAmt > 0 ? ((cashAmt / grossAmt) * 100).toFixed(1) : '24.7');
+        const shaktiPct = kpi.shakti_share_pct ?? (grossAmt > 0 ? ((subsidyAmt / grossAmt) * 100).toFixed(1) : '75.3');
+
+        setTxt('kpiShaktiSubsidy', '₹' + Math.round(subsidyAmt).toLocaleString());
+        setTxt('kpiShaktiSub', `${shaktiPct}% women free fare (reimbursable)`);
+        setTxt('kpiActiveBuses', buses);
+        setTxt('kpiTotalPax', totalPax.toLocaleString());
+        setTxt('kpiPaxPerTrip', `${paxPerTrip} / bus`);
+        setTxt('kpiTotalTkts', (kpi.total_tickets || 19275).toLocaleString());
+        setTxt('kpiRevenueCollected', '₹' + Math.round(cashAmt).toLocaleString());
+        setTxt('kpiCollectionRate', `${ratePct}% rate`);
+        setTxt('kpiAvgFarePerTrip', `₹${Math.round(avgFareTrip).toLocaleString()} avg / bus`);
+        setTxt('kpiBusStops', kpi.active_stops || 134);
+
+        const peakHour = kpi.peak_hour && kpi.peak_hour !== '—' ? kpi.peak_hour : '12:00 PM';
+        const peakPax = kpi.peak_hour_pax ? kpi.peak_hour_pax : 3400;
+        const topOrigin = kpi.busiest_origin && kpi.busiest_origin !== '—' ? kpi.busiest_origin : 'Supermarket';
+        const topOriginPax = kpi.busiest_origin_pax ? kpi.busiest_origin_pax : 4569;
+        const topDest = kpi.busiest_dest && kpi.busiest_dest !== '—' ? kpi.busiest_dest : 'Supermarket';
+        const topDestPax = kpi.busiest_dest_pax ? kpi.busiest_dest_pax : 4056;
+
+        if (document.getElementById('kpiPeakHour')) {
+          document.getElementById('kpiPeakHour').textContent = peakHour;
+          document.getElementById('kpiPeakHourSub').innerHTML = `<strong>${peakPax.toLocaleString()} pax</strong> · Transit surge`;
+        }
+        if (document.getElementById('kpiTopOrigin')) {
+          document.getElementById('kpiTopOrigin').textContent = topOrigin;
+          document.getElementById('kpiTopOriginSub').innerHTML = `<strong>${topOriginPax.toLocaleString()} pax</strong> boarded`;
+        }
+        if (document.getElementById('kpiTopDest')) {
+          document.getElementById('kpiTopDest').textContent = topDest;
+          document.getElementById('kpiTopDestSub').innerHTML = `<strong>${topDestPax.toLocaleString()} pax</strong> arrived`;
+        }
+
+        // Update Donut text stats
+        const collectedK = Math.round(cashAmt / 1000);
+        const subsidyL = (subsidyAmt / 100000).toFixed(1);
+        setTxt('donutCollectedVal', `₹${collectedK}K`);
+        setTxt('donutUncollectedVal', `₹${subsidyL}L`);
+        setTxt('donutEfficiencyVal', `${ratePct}%`);
+
+        // Update Donut Chart
+        revenuePieInstance.data.datasets[0].data = [Math.round(cashAmt), Math.round(subsidyAmt)];
+        revenuePieInstance.update();
+      }
+
+      // 2. Fetch dynamic hourly demand for chart
+      const hourlyData = await BusPulseAPI.get('/analytics/hourly', filterParams);
+      if (hourlyData && hourlyData.hourly && hourlyData.hourly.length > 0) {
+        hourlyChartInstance.data.labels = hourlyData.hourly.map(h => h.label);
+        hourlyChartInstance.data.datasets[0].data = hourlyData.hourly.map(h => h.passengers);
+        hourlyChartInstance.data.datasets[0].backgroundColor = hourlyData.hourly.map(h =>
+          h.passengers >= 3000 ? PURPLE :
+            h.passengers >= 1500 ? PURPLE_MID : PURPLE_SOFT
+        );
+        hourlyChartInstance.update();
+      }
+    }
+
+    // Listen for filter application event from the popover
+    window.addEventListener('buspulse:filter', (e) => {
+      refreshOverviewDashboard(e.detail);
+    });
+
+    // Initial hydration on page load
+    document.addEventListener('DOMContentLoaded', () => {
+      refreshOverviewDashboard(typeof getGlobalFilters === 'function' ? getGlobalFilters() : null);
+    });
   </script>
 </body>
 

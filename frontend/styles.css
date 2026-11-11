@@ -337,6 +337,180 @@
       color: var(--text-muted);
     }
 
+    /* ══ EXPANDABLE FILTER BOX & POPOVER (MATCHING REFERENCE) ══ */
+    .filter-box-container {
+      position: relative;
+      display: inline-block;
+    }
+
+    .filter-trigger-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 5px 12px;
+      font-size: 11.5px;
+      font-weight: 600;
+      color: var(--text-dark);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      font-family: inherit;
+    }
+
+    .filter-trigger-btn:hover,
+    .filter-trigger-btn.active {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+      color: var(--accent-dark);
+    }
+
+    .filter-caret {
+      font-size: 10px;
+      color: var(--text-muted);
+      transition: transform 0.2s ease;
+    }
+
+    .filter-trigger-btn.active .filter-caret {
+      transform: rotate(180deg);
+    }
+
+    .filter-badge-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #10B981;
+      display: none;
+    }
+
+    .filter-badge-dot.visible {
+      display: inline-block;
+    }
+
+    /* Popover Card */
+    .filter-popover {
+      position: absolute;
+      top: calc(100% + 8px);
+      right: 0;
+      width: 250px;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 14px;
+      box-shadow: 0 12px 28px -6px rgba(0, 0, 0, 0.12), 0 6px 12px -4px rgba(0, 0, 0, 0.08);
+      padding: 14px 16px;
+      z-index: 1000;
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+      animation: filterFadeIn 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .filter-popover.open {
+      display: flex;
+    }
+
+    @keyframes filterFadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(-6px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .filter-popover-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #f1f5f9;
+      padding-bottom: 6px;
+      margin-bottom: 2px;
+    }
+
+    .filter-popover-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: #334155;
+    }
+
+    .filter-reset-link {
+      background: none;
+      border: none;
+      font-size: 11px;
+      font-weight: 600;
+      color: #8b5cf6;
+      cursor: pointer;
+      padding: 0;
+    }
+
+    .filter-reset-link:hover {
+      text-decoration: underline;
+    }
+
+    .filter-form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .filter-form-group label {
+      font-size: 11px;
+      font-weight: 600;
+      color: #64748b;
+    }
+
+    .filter-input,
+    .filter-select {
+      width: 100%;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 6px 9px;
+      font-size: 12px;
+      color: #1e293b;
+      background: #ffffff;
+      outline: none;
+      font-family: inherit;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+
+    .filter-input:focus,
+    .filter-select:focus {
+      border-color: #10B981;
+      box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.15);
+    }
+
+    .filter-apply-btn {
+      width: 100%;
+      background: linear-gradient(180deg, #16a34a 0%, #15803d 100%);
+      color: #ffffff;
+      font-size: 13px;
+      font-weight: 700;
+      border: none;
+      border-radius: 8px;
+      padding: 9px 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      margin-top: 4px;
+      box-shadow: 0 2px 6px rgba(22, 163, 74, 0.3);
+      transition: all 0.15s ease;
+      font-family: inherit;
+    }
+
+    .filter-apply-btn:hover {
+      background: linear-gradient(180deg, #15803d 0%, #166534 100%);
+      box-shadow: 0 3px 8px rgba(22, 163, 74, 0.4);
+    }
+
+    .filter-apply-btn .funnel-icon {
+      font-size: 10px;
+    }
+
     /* ══ CONTENT ══ */
     .content {
       padding: 14px 22px 24px;

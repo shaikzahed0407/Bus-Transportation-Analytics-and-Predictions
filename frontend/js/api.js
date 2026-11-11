@@ -32,11 +32,27 @@ const BusPulseAPI = {
   },
 
   /**
-   * Universal fetch helper with fallback.
+   * Universal fetch helper with query parameter support & fallback.
    */
-  async get(endpoint, fallbackData = null) {
+  async get(endpoint, params = null, fallbackData = null) {
+    // Support calling as get(endpoint, fallbackData) if 2nd arg is not an object or is fallback array
+    if (params && typeof params === 'object' && !Array.isArray(params)) {
+      const cleanParams = {};
+      for (const [k, v] of Object.entries(params)) {
+        if (v !== undefined && v !== null && v !== '' && v !== 'all') {
+          cleanParams[k] = v;
+        }
+      }
+      const qs = new URLSearchParams(cleanParams).toString();
+      if (qs) {
+        endpoint += (endpoint.includes('?') ? '&' : '?') + qs;
+      }
+    } else if (params && !fallbackData) {
+      fallbackData = params;
+    }
+
     try {
-      const res = await fetch(`${API_BASE_URL}${endpoint}`, { signal: AbortSignal.timeout(2000) });
+      const res = await fetch(`${API_BASE_URL}${endpoint}`, { signal: AbortSignal.timeout(3000) });
       if (res.ok) {
         this._updateStatusPill(true);
         return await res.json();

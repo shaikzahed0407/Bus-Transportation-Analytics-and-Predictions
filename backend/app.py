@@ -5,14 +5,22 @@ Flask REST API connecting HTML/JS dashboards with Pandas Analytical Pipeline.
 import os
 import sys
 from pathlib import Path
+import pandas as pd
 from flask import Flask, jsonify, request, send_from_directory
 from flask_cors import CORS
-# Import data management blueprint (upload, backup, history)
-from backend.routes.data import bp as data_bp
-
-# Add backend directory to Python path
+# Add project root and backend directory to Python path
 BACKEND_DIR = Path(__file__).resolve().parent
-sys.path.insert(0, str(BACKEND_DIR))
+ROOT_DIR = BACKEND_DIR.parent
+if str(ROOT_DIR) not in sys.path:
+    sys.path.insert(0, str(ROOT_DIR))
+if str(BACKEND_DIR) not in sys.path:
+    sys.path.insert(0, str(BACKEND_DIR))
+
+# Import data management blueprint (upload, backup, history)
+try:
+    from backend.routes.data import bp as data_bp
+except ImportError:
+    from routes.data import bp as data_bp
 
 try:
     from .data_loader import get_data, update_dataset
@@ -70,6 +78,44 @@ def static_proxy(path):
 # REST API ENDPOINTS
 # ══════════════════════════════════════════════════════════════════════════
 
+def _get_filtered_df():
+    """Extracts query parameters and applies unified slicing to the dataset."""
+    df = get_data()
+    window = request.args.get("window", "").lower().strip()
+    start_hour = request.args.get("start_hour", type=int)
+    end_hour = request.args.get("end_hour", type=int)
+
+    # Map named transit windows
+    if window == "morning":
+        start_hour, end_hour = 6, 11
+    elif window == "midday":
+        start_hour, end_hour = 12, 16
+    elif window == "evening":
+        start_hour, end_hour = 17, 21
+    elif window == "night":
+        start_hour, end_hour = 22, 23
+
+    bus_id = request.args.get("bus_id")
+    route_name = request.args.get("route")
+    stop_name = request.args.get("stop")
+
+    shakti_param = request.args.get("shakti", "").lower().strip()
+    shakti_only = None
+    if shakti_param in ("true", "1", "yes", "shakti"):
+        shakti_only = True
+    elif shakti_param in ("false", "0", "no", "cash"):
+        shakti_only = False
+
+    return apply_filters(
+        df,
+        start_hour=start_hour,
+        end_hour=end_hour,
+        bus_id=bus_id,
+        route_name=route_name,
+        stop_name=stop_name,
+        shakti_only=shakti_only
+    )
+
 @app.route("/api/v1/health", methods=["GET"])
 def health():
     return jsonify({
@@ -81,14 +127,64 @@ def health():
 
 @app.route("/api/v1/kpi/summary", methods=["GET"])
 def kpi_summary():
-    """Returns top-level KPIs for Overview dashboard."""
-    df = get_data()
+    """Returns dynamic top-level KPIs based on active filters."""
+    df = _get_filtered_df()
+    if df.empty:
+        return jsonify({
+            "total_passengers": 0,
+            "total_tickets": 0,
+            "cash_collected": 0.0,
+            "shakti_subsidy_claim": 0.0,
+            "total_gross_fare": 0.0,
+            "active_fleet_buses": 0,
+            "shakti_share_pct": 0.0,
+            "active_stops": 0,
+            "avg_pax_per_trip": 0.0,
+            "avg_fare_per_trip": 0.0,
+            "collection_rate_pct": 0.0,
+            "peak_hour": "—",
+            "peak_hour_pax": 0,
+            "busiest_corridor": "—",
+            "busiest_origin": "—",
+            "busiest_origin_pax": 0,
+            "busiest_dest": "—",
+            "busiest_dest_pax": 0
+        })
+
     total_pax = int(df['passengers'].sum())
     total_tkts = len(df)
     total_collected = float(df['collected_fare'].sum())
     total_subsidy = float(df['subsidy_fare'].sum())
     total_gross = total_collected + total_subsidy
     active_buses = int(df['waybill_id'].nunique())
+
+    # Active stops in filtered slice
+    all_stops = pd.concat([df['from_stop_clean'], df['to_stop_clean']]).dropna()
+    active_stops = int(all_stops.nunique())
+
+    # Dynamic peak hour & corridors
+    hourly_pax = df.groupby('hour')['passengers'].sum()
+    peak_hr_val = int(hourly_pax.idxmax()) if not hourly_pax.empty else 12
+    peak_pax_val = int(hourly_pax.max()) if not hourly_pax.empty else 0
+    period = "AM" if peak_hr_val < 12 else "PM"
+    display_hr = 12 if peak_hr_val in [0, 12] else peak_hr_val % 12
+    peak_label = f"{display_hr}:00 {period}"
+
+    top_corridors = df.groupby('route')['passengers'].sum().sort_values(ascending=False)
+    busiest_corridor = str(top_corridors.index[0]) if not top_corridors.empty else "—"
+
+    top_origins = df.groupby('from_stop_clean')['passengers'].sum().sort_values(ascending=False)
+    busiest_origin = str(top_origins.index[0]) if not top_origins.empty else "—"
+    busiest_origin_pax = int(top_origins.iloc[0]) if not top_origins.empty else 0
+
+    top_dests = df.groupby('to_stop_clean')['passengers'].sum().sort_values(ascending=False)
+    busiest_dest = str(top_dests.index[0]) if not top_dests.empty else "—"
+    busiest_dest_pax = int(top_dests.iloc[0]) if not top_dests.empty else 0
+
+    avg_pax_trip = round(total_pax / active_buses, 1) if active_buses > 0 else 0
+    avg_fare_trip = round(total_collected / active_buses, 1) if active_buses > 0 else 0
+    collection_rate = round((total_collected / total_gross * 100), 1) if total_gross > 0 else 0
+    shakti_share = round((total_subsidy / total_gross * 100), 1) if total_gross > 0 else 0
 
     return jsonify({
         "total_passengers": total_pax,
@@ -97,15 +193,24 @@ def kpi_summary():
         "shakti_subsidy_claim": round(total_subsidy, 2),
         "total_gross_fare": round(total_gross, 2),
         "active_fleet_buses": active_buses,
-        "shakti_share_pct": round((total_subsidy / total_gross * 100), 1) if total_gross > 0 else 0,
-        "peak_hour": "12:00 PM",
-        "busiest_corridor": "Budhavihar ↔ CBS"
+        "active_stops": active_stops,
+        "avg_pax_per_trip": avg_pax_trip,
+        "avg_fare_per_trip": avg_fare_trip,
+        "collection_rate_pct": collection_rate,
+        "shakti_share_pct": shakti_share,
+        "peak_hour": peak_label,
+        "peak_hour_pax": peak_pax_val,
+        "busiest_corridor": busiest_corridor,
+        "busiest_origin": busiest_origin,
+        "busiest_origin_pax": busiest_origin_pax,
+        "busiest_dest": busiest_dest,
+        "busiest_dest_pax": busiest_dest_pax
     })
 
 @app.route("/api/v1/analytics/hourly", methods=["GET"])
 def hourly_analytics():
     """Returns hourly ridership, trips, and revenue."""
-    df = get_data()
+    df = _get_filtered_df()
     return jsonify({
         "hourly": get_hourly_demand(df),
         "peak_stats": get_peak_demand_stats(df)
@@ -114,7 +219,7 @@ def hourly_analytics():
 @app.route("/api/v1/analytics/routes", methods=["GET"])
 def routes_analytics():
     """Returns top corridors and directional balance."""
-    df = get_data()
+    df = _get_filtered_df()
     limit = int(request.args.get("limit", 20))
     return jsonify({
         "top_routes": get_top_corridors(df, limit=limit),
@@ -124,7 +229,7 @@ def routes_analytics():
 @app.route("/api/v1/analytics/stops", methods=["GET"])
 def stops_analytics():
     """Returns stop rankings and GIS GeoJSON features."""
-    df = get_data()
+    df = _get_filtered_df()
     limit = int(request.args.get("limit", 20))
     return jsonify({
         "stops": get_stop_rankings(df, limit=limit),
@@ -134,7 +239,7 @@ def stops_analytics():
 @app.route("/api/v1/analytics/buses", methods=["GET"])
 def buses_analytics():
     """Returns 47-bus fleet breakdown by Waybill."""
-    df = get_data()
+    df = _get_filtered_df()
     return jsonify({
         "fleet": get_fleet_statistics(df),
         "summary": get_fleet_summary(df)
@@ -143,7 +248,7 @@ def buses_analytics():
 @app.route("/api/v1/analytics/revenue", methods=["GET"])
 def revenue_analytics():
     """Returns cash collections and Shakti state subsidy receivable."""
-    df = get_data()
+    df = _get_filtered_df()
     return jsonify({
         "summary": get_revenue_summary(df),
         "by_route": get_revenue_by_route(df, limit=20)
@@ -152,7 +257,7 @@ def revenue_analytics():
 @app.route("/api/v1/analytics/alerts", methods=["GET"])
 def alerts_analytics():
     """Returns system alerts and diagnostic notices."""
-    df = get_data()
+    df = _get_filtered_df()
     return jsonify({
         "alerts": get_system_alerts(df)
     })

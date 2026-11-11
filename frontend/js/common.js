@@ -2627,4 +2627,121 @@
         switchMapTab(btn.textContent.trim());
       });
     });
+
+    // ── Global Filter Box & Popover Manager (Inspired by Reference) ──
+    function getGlobalFilters() {
+      const fromDate = document.getElementById('filterFromDate')?.value || '';
+      const toDate = document.getElementById('filterToDate')?.value || '';
+      const division = document.getElementById('filterDivision')?.value || 'all';
+      const depotVal = document.getElementById('filterDepot')?.value || 'all';
+      const fareVal = document.getElementById('filterFareScheme')?.value || 'all';
+
+      // Map shift windows
+      const windowVal = ['morning', 'midday', 'evening', 'night'].includes(depotVal) ? depotVal : 'all';
+      const depot = ['depot1', 'depot2'].includes(depotVal) ? depotVal : 'all';
+
+      return {
+        from_date: fromDate,
+        to_date: toDate,
+        division: division,
+        depot: depot,
+        window: windowVal,
+        shakti: fareVal
+      };
+    }
+
+    function initFilterPopover() {
+      const btn = document.getElementById('filterDropdownBtn');
+      const popover = document.getElementById('filterPopover');
+      const activeDot = document.getElementById('filterActiveDot');
+      const applyBtn = document.getElementById('applyFiltersBtn');
+      const resetBtn = document.getElementById('resetFiltersBtn');
+
+      if (!btn || !popover) return;
+
+      // Restore saved filter state
+      try {
+        const saved = JSON.parse(sessionStorage.getItem('ksrtc_filters') || '{}');
+        if (saved.from_date && document.getElementById('filterFromDate')) document.getElementById('filterFromDate').value = saved.from_date;
+        if (saved.to_date && document.getElementById('filterToDate')) document.getElementById('filterToDate').value = saved.to_date;
+        if (saved.division && document.getElementById('filterDivision')) document.getElementById('filterDivision').value = saved.division;
+        if (saved.depotVal && document.getElementById('filterDepot')) document.getElementById('filterDepot').value = saved.depotVal;
+        if (saved.shakti && document.getElementById('filterFareScheme')) document.getElementById('filterFareScheme').value = saved.shakti;
+
+        const isFiltered = (saved.depotVal && saved.depotVal !== 'all') || (saved.shakti && saved.shakti !== 'all');
+        if (activeDot) activeDot.classList.toggle('visible', Boolean(isFiltered));
+      } catch (_) {}
+
+      function togglePopover(show) {
+        const isOpen = show !== undefined ? show : !popover.classList.contains('open');
+        popover.classList.toggle('open', isOpen);
+        btn.classList.toggle('active', isOpen);
+        btn.setAttribute('aria-expanded', String(isOpen));
+      }
+
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        togglePopover();
+      });
+
+      popover.addEventListener('click', (e) => {
+        e.stopPropagation();
+      });
+
+      document.addEventListener('click', () => {
+        if (popover.classList.contains('open')) {
+          togglePopover(false);
+        }
+      });
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && popover.classList.contains('open')) {
+          togglePopover(false);
+        }
+      });
+
+      applyBtn?.addEventListener('click', () => {
+        const filters = getGlobalFilters();
+        const depotSelectVal = document.getElementById('filterDepot')?.value || 'all';
+
+        // Check if non-default filter is applied
+        const isFiltered = (depotSelectVal !== 'all') || (filters.shakti !== 'all');
+        if (activeDot) activeDot.classList.toggle('visible', isFiltered);
+
+        try {
+          sessionStorage.setItem('ksrtc_filters', JSON.stringify({
+            ...filters,
+            depotVal: depotSelectVal
+          }));
+        } catch (_) {}
+
+        togglePopover(false);
+
+        if (typeof showToast === 'function') {
+          showToast('Applied filter criteria successfully.');
+        }
+
+        window.dispatchEvent(new CustomEvent('buspulse:filter', { detail: filters }));
+      });
+
+      resetBtn?.addEventListener('click', () => {
+        if (document.getElementById('filterFromDate')) document.getElementById('filterFromDate').value = '2026-10-20';
+        if (document.getElementById('filterToDate')) document.getElementById('filterToDate').value = '2026-10-20';
+        if (document.getElementById('filterDivision')) document.getElementById('filterDivision').value = 'all';
+        if (document.getElementById('filterDepot')) document.getElementById('filterDepot').value = 'all';
+        if (document.getElementById('filterFareScheme')) document.getElementById('filterFareScheme').value = 'all';
+
+        if (activeDot) activeDot.classList.remove('visible');
+        try { sessionStorage.removeItem('ksrtc_filters'); } catch (_) {}
+
+        togglePopover(false);
+        if (typeof showToast === 'function') {
+          showToast('Filters reset to default.');
+        }
+
+        window.dispatchEvent(new CustomEvent('buspulse:filter', { detail: getGlobalFilters() }));
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', initFilterPopover);
   
