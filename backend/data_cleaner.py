@@ -64,6 +64,9 @@ def clean_ticket_data(df: pd.DataFrame) -> pd.DataFrame:
     df['is_shakti_scheme'] = (df['collected_fare'] == 0) & (df['subsidy_fare'] > 0)
 
     # 4. Normalize Stop Names
+    df['from_stop'] = df['from_stop'].fillna('Unknown Stop').astype(str)
+    df['to_stop'] = df['to_stop'].fillna('Unknown Stop').astype(str)
+
     def norm_stop(val):
         if not isinstance(val, str) or not val.strip():
             return 'Unknown Stop'

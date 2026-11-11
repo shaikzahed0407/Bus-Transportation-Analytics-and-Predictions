@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Settings – Bus Pulse</title>
+  <link rel="stylesheet" href="styles.css">
+  <!-- Re‑use the same Chart.js and Leaflet styles as the rest of the app -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+</head>
+<body>
+  <!-- Sidebar (reuse same markup as index.html) -->
+  <aside class="sidebar" id="sidebar" aria-label="Main navigation">
+    <div class="sidebar-header">
+      <div class="sidebar-brand">
+        <div class="sidebar-logo">K</div>
+        <span class="sidebar-brand-name">KSRTC Analytics</span>
+      </div>
+      <button class="sidebar-toggle" id="sidebarToggle" type="button" title="Expand sidebar" aria-label="Expand sidebar" aria-expanded="false">
+        <span class="sidebar-toggle-icon" id="sidebarToggleIcon" aria-hidden="true">☰</span>
+      </button>
+    </div>
+    <!-- copy navigation items from index.html -->
+    <button class="nav-item" title="Overview" data-href="index.html" aria-label="Go to Overview"><span class="nav-icon">🏠</span><span class="nav-label">Overview</span></button>
+    <button class="nav-item" title="Route Analytics" data-href="routes.html" aria-label="Go to Route Analytics"><span class="nav-icon">🗺️</span><span class="nav-label">Route Analytics</span></button>
+    <button class="nav-item" title="Revenue" data-href="revenue.html" aria-label="Go to Revenue"><span class="nav-icon">💰</span><span class="nav-label">Revenue</span></button>
+    <div class="sidebar-divider"></div>
+    <button class="nav-item" title="Settings" data-href="settings.html" aria-label="Settings" id="settingsNav"><span class="nav-icon">⚙️</span><span class="nav-label">Settings</span></button>
+    <button class="nav-item" title="Exit preview" id="logoutBtn" aria-label="Exit dashboard preview"><span class="nav-icon">↪️</span><span class="nav-label">Exit preview</span></button>
+  </aside>
+  <button class="sidebar-backdrop" id="sidebarBackdrop" type="button" aria-label="Close navigation"></button>
+
+  <div class="main-wrapper">
+    <header class="topbar">
+      <div class="topbar-left">
+        <div class="topbar-title">Settings</div>
+      </div>
+    </header>
+
+    <div class="content">
+      <section>
+        <h2>Data Management</h2>
+        <button class="btn btn-danger" id="replaceDatasetBtn">Replace Dataset</button>
+        <p class="note">Replace will **completely** overwrite the current dataset. A backup of the existing data is created automatically.</p>
+        <hr/>
+        <h3>Backups</h3>
+        <table class="table" id="backupsTable">
+          <thead><tr><th>Name</th><th>Created</th><th>Download</th></tr></thead>
+          <tbody></tbody>
+        </table>
+        <hr/>
+        <h3>Upload History</h3>
+        <table class="table" id="historyTable">
+          <thead><tr><th>Timestamp (UTC)</th><th>Mode</th><th>Filename</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </section>
+    </div>
+  </div>
+
+  <!-- Custom script for settings page -->
+  <script src="js/settings.js"></script>
+  <script>
+    // Simple navigation handling – copy from other pages if present
+    document.querySelectorAll('.nav-item[data-href]').forEach(btn => {
+      btn.addEventListener('click', () => { window.location.href = btn.dataset.href; });
+    });
+  </script>
+</body>
+</html>
+

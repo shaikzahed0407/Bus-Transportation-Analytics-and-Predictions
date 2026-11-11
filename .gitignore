@@ -2,6 +2,7 @@
 __pycache__/
 *.py[cod]
 *$py.class
+<<<<<<< Updated upstream
 *.so
 .Python
 env/
@@ -33,4 +34,18 @@ Thumbs.db
 .vscode/
 .idea/
 *.swp
+=======
+venv/
+env/
+.env
+
+# Cache & Data
+data/processed/
+*.pkl
+
+# IDE / Editor
+.vscode/
+.idea/
+.cursor/
+>>>>>>> Stashed changes
 

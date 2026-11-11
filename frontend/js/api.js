@@ -5,7 +5,10 @@
  * 2. Gracefully falls back to local data if the Python server is offline or unreachable.
  */
 
-const API_BASE_URL = 'http://127.0.0.1:5000/api/v1';
+// Auto-detect environment: use local port 5000 during standalone dev, or relative /api/v1 when served by Flask or deployed
+const API_BASE_URL = (typeof window !== 'undefined' && (window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost') && window.location.port !== '5000')
+  ? 'http://127.0.0.1:5000/api/v1'
+  : '/api/v1';
 
 const BusPulseAPI = {
   isBackendOnline: null,

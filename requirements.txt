@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 # KSRTC Kalaburagi Division - BusPulse Analytics Requirements
 Flask>=3.0.0
 flask-cors>=4.0.0
@@ -6,3 +7,13 @@ numpy>=1.26.0
 openpyxl>=3.1.2
 python-dateutil>=2.8.2
 
+=======
+flask>=3.0.0
+flask-cors>=4.0.0
+pandas>=2.2.0
+supabase>=2.34.1
+numpy>=1.26.0
+openpyxl>=3.1.2
+python-dateutil>=2.8.2
+python-dotenv>=1.0.0
+>>>>>>> Stashed changes

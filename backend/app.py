@@ -7,11 +7,14 @@ import sys
 from pathlib import Path
 from flask import Flask, jsonify, request, send_from_directory
 from flask_cors import CORS
+# Import data management blueprint (upload, backup, history)
+from backend.routes.data import bp as data_bp
 
 # Add backend directory to Python path
 BACKEND_DIR = Path(__file__).resolve().parent
 sys.path.insert(0, str(BACKEND_DIR))
 
+<<<<<<< Updated upstream
 from data_loader import get_data
 from analytics.demand import get_hourly_demand, get_peak_demand_stats
 from analytics.stops import get_stop_rankings, get_gis_stops_geojson
@@ -21,12 +24,36 @@ from analytics.revenue import get_revenue_summary, get_revenue_by_route
 from analytics.predictions import get_demand_forecast, simulate_what_if
 from services.filters import apply_filters
 from services.alerts import get_system_alerts
+=======
+try:
+    from .data_loader import get_data, update_dataset
+    from .analytics.demand import get_hourly_demand, get_peak_demand_stats
+    from .analytics.stops import get_stop_rankings, get_gis_stops_geojson
+    from .analytics.movement import get_top_corridors, get_corridor_directional_balance
+    from .analytics.fleet import get_fleet_statistics, get_fleet_summary
+    from .analytics.revenue import get_revenue_summary, get_revenue_by_route
+    from .analytics.predictions import get_demand_forecast, simulate_what_if
+    from .services.filters import apply_filters
+    from .services.alerts import get_system_alerts
+except ImportError:
+    from data_loader import get_data, update_dataset
+    from analytics.demand import get_hourly_demand, get_peak_demand_stats
+    from analytics.stops import get_stop_rankings, get_gis_stops_geojson
+    from analytics.movement import get_top_corridors, get_corridor_directional_balance
+    from analytics.fleet import get_fleet_statistics, get_fleet_summary
+    from analytics.revenue import get_revenue_summary, get_revenue_by_route
+    from analytics.predictions import get_demand_forecast, simulate_what_if
+    from services.filters import apply_filters
+    from services.alerts import get_system_alerts
+>>>>>>> Stashed changes
 
 # Frontend path for optional direct serving
-FRONTEND_DIR = BACKEND_DIR.parent / "frontend"
+# HTML pages (index.html, routes.html, etc.) live in the project root
+FRONTEND_DIR = BACKEND_DIR.parent
 
 app = Flask(__name__, static_folder=str(FRONTEND_DIR), static_url_path="")
 CORS(app)  # Enable Cross-Origin Resource Sharing for file:// and localhost
+app.register_blueprint(data_bp)
 
 # Warm up data cache immediately when server starts
 with app.app_context():
