@@ -4,6 +4,7 @@ Flask REST API connecting HTML/JS dashboards with Pandas Analytical Pipeline.
 """
 import os
 import sys
+from datetime import timedelta
 from pathlib import Path
 from flask import Flask, jsonify, request, send_from_directory
 from flask_cors import CORS
@@ -26,7 +27,35 @@ from services.alerts import get_system_alerts
 FRONTEND_DIR = BACKEND_DIR.parent / "frontend"
 
 app = Flask(__name__, static_folder=str(FRONTEND_DIR), static_url_path="")
+is_production = os.getenv('FLASK_ENV', '').lower() == 'production' or os.getenv('RENDER') == 'true'
+secret_key = os.environ.get('SECRET_KEY')
+if is_production and not secret_key:
+    raise RuntimeError('SECRET_KEY must be configured in production.')
+app.secret_key = secret_key or 'local-development-only-change-before-deploy'
+app.config.update(
+    SESSION_COOKIE_HTTPONLY=True,
+    SESSION_COOKIE_SAMESITE='Lax',
+    SESSION_COOKIE_SECURE=is_production,
+    PERMANENT_SESSION_LIFETIME=timedelta(hours=8),
+)
 CORS(app)  # Enable Cross-Origin Resource Sharing for file:// and localhost
+
+try:
+    from .auth import auth_status, login, logout
+except ImportError:
+    from auth import auth_status, login, logout
+
+@app.route('/api/v1/auth/status', methods=['GET'])
+def admin_auth_status():
+    return auth_status()
+
+@app.route('/api/v1/auth/login', methods=['POST'])
+def admin_login():
+    return login()
+
+@app.route('/api/v1/auth/logout', methods=['POST'])
+def admin_logout():
+    return logout()
 
 # Warm up data cache immediately when server starts
 with app.app_context():
@@ -53,7 +82,15 @@ def get_filtered_df():
     bus_id = request.args.get("bus_id") or request.args.get("waybill")
     route_name = request.args.get("route")
     stop_name = request.args.get("stop")
+<<<<<<< Updated upstream
     shakti_param = request.args.get("shakti_only")
+=======
+
+    shakti_param = request.args.get("shakti", "").lower().strip()
+    from_date = request.args.get("from_date")
+    to_date = request.args.get("to_date")
+    data_status = request.args.get("data_status")
+>>>>>>> Stashed changes
     shakti_only = None
     if shakti_param is not None:
         shakti_only = shakti_param.lower() in ("1", "true", "yes")
@@ -65,7 +102,10 @@ def get_filtered_df():
         bus_id=bus_id,
         route_name=route_name,
         stop_name=stop_name,
-        shakti_only=shakti_only
+        shakti_only=shakti_only,
+        from_date=from_date,
+        to_date=to_date,
+        data_status=data_status,
     )
 
 # ══════════════════════════════════════════════════════════════════════════
@@ -85,8 +125,14 @@ def health():
         "status": "healthy",
         "service": "KSRTC Kalaburagi BusPulse Analytics Engine",
         "division": "Kalaburagi / KKRTC",
+<<<<<<< Updated upstream
         "records_loaded": len(df),
         "dataset_date": date_str
+=======
+        "records_loaded": len(get_data()),
+        "date_range": sorted(get_data()['date'].dropna().unique().tolist()),
+        "data_status": get_data().get('data_status', pd.Series(['Source sample'] * len(get_data()))).value_counts().to_dict()
+>>>>>>> Stashed changes
     })
 
 @app.route("/api/v1/data/upload", methods=["POST"])
@@ -129,12 +175,43 @@ def upload_data():
 
 @app.route("/api/v1/kpi/summary", methods=["GET"])
 def kpi_summary():
+<<<<<<< Updated upstream
     """Returns top-level KPIs for Overview dashboard."""
     df = get_filtered_df()
     total_pax = int(df['passengers'].sum()) if not df.empty else 0
     total_tkts = len(df)
     total_collected = float(df['collected_fare'].sum()) if not df.empty else 0.0
     total_subsidy = float(df['subsidy_fare'].sum()) if not df.empty else 0.0
+=======
+    """Returns dynamic top-level KPIs based on active filters."""
+    df = _get_filtered_df()
+    if df.empty:
+        return jsonify({
+            "total_passengers": 0,
+            "total_tickets": 0,
+            "cash_collected": 0.0,
+            "shakti_subsidy_claim": 0.0,
+            "total_gross_fare": 0.0,
+            "active_fleet_buses": 0,
+            "shakti_share_pct": 0.0,
+            "active_stops": 0,
+            "avg_pax_per_trip": 0.0,
+            "avg_fare_per_trip": 0.0,
+            "collection_rate_pct": 0.0,
+            "peak_hour": "—",
+            "peak_hour_pax": 0,
+            "busiest_corridor": "—",
+            "busiest_origin": "—",
+            "busiest_origin_pax": 0,
+            "busiest_dest": "—",
+            "busiest_dest_pax": 0
+        })
+
+    total_pax = int(df['passengers'].sum())
+    total_tkts = int(df[['date', 'waybill_id', 'ticket_number']].drop_duplicates().shape[0])
+    total_collected = float(df['collected_fare'].sum())
+    total_subsidy = float(df['subsidy_fare'].sum())
+>>>>>>> Stashed changes
     total_gross = total_collected + total_subsidy
     active_buses = int(df['waybill_id'].nunique()) if not df.empty else 0
 
@@ -166,7 +243,9 @@ def routes_analytics():
     limit = int(request.args.get("limit", 20))
     return jsonify({
         "top_routes": get_top_corridors(df, limit=limit),
-        "directional_balance": get_corridor_directional_balance(df)
+        "directional_balance": get_corridor_directional_balance(df),
+        "stops": get_stop_rankings(df, limit=20),
+        "revenue_by_route": get_revenue_by_route(df, limit=20)
     })
 
 @app.route("/api/v1/analytics/stops", methods=["GET"])
@@ -208,7 +287,7 @@ def alerts_analytics():
 @app.route("/api/v1/ai/forecast", methods=["GET"])
 def ai_forecast():
     """Returns AI predictive demand forecast with confidence intervals."""
-    df = get_data()
+    df = _get_filtered_df()
     return jsonify(get_demand_forecast(df))
 
 @app.route("/api/v1/ai/simulate", methods=["POST"])

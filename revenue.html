@@ -60,8 +60,73 @@
         <kbd> / </kbd>
       </label>
       <div class="topbar-right">
+<<<<<<< Updated upstream:revenue.html
         <div id="backendStatusPill" style="font-size:11px; padding:3px 8px; border-radius:12px; background:rgba(0,0,0,0.04); display:inline-flex; align-items:center;"></div>
         <div class="date-badge" id="topbarDateBadge">📅 20 October 2026</div>
+=======
+        <!-- Single Filter Box with Expanding Popover (Inspired by Reference) -->
+        <div class="filter-box-container" id="filterBoxContainer">
+          <button class="filter-trigger-btn" id="filterDropdownBtn" type="button" aria-expanded="false" title="Click to open filter options">
+            <span class="filter-btn-icon">⚡</span>
+            <span>Filters</span>
+            <span class="filter-badge-dot" id="filterActiveDot"></span>
+            <span class="filter-caret" id="filterCaret">▾</span>
+          </button>
+
+          <!-- Expanding Popover Menu -->
+          <div class="filter-popover" id="filterPopover" aria-hidden="true">
+            <div class="filter-popover-header">
+              <span class="filter-popover-title">Filter Options</span>
+              <button type="button" class="filter-reset-link" id="resetFiltersBtn">Reset</button>
+            </div>
+
+            <div class="filter-form-group">
+              <label for="filterFromDate">From Date</label>
+              <input type="date" id="filterFromDate" class="filter-input" value="2026-09-20">
+            </div>
+
+            <div class="filter-form-group">
+              <label for="filterToDate">To Date</label>
+              <input type="date" id="filterToDate" class="filter-input" value="2026-10-20">
+            </div>
+
+            <div class="filter-form-group">
+              <label for="filterDivision">Division</label>
+              <select id="filterDivision" class="filter-select">
+                <option value="all">All Divisions</option>
+                <option value="kalaburagi" selected>Kalaburagi Division (KKRTC)</option>
+              </select>
+            </div>
+
+            <div class="filter-form-group">
+              <label for="filterDepot">Depot / Shift Window</label>
+              <select id="filterDepot" class="filter-select">
+                <option value="all">All Depots & Shifts</option>
+                <option value="morning">Morning Rush (06:00 – 11:00)</option>
+                <option value="midday">Midday Peak (12:00 – 16:00)</option>
+                <option value="evening">Evening Rush (17:00 – 21:00)</option>
+                <option value="night">Night Shift (22:00 – 23:00)</option>
+                <option value="depot1">Kalaburagi Depot-1</option>
+                <option value="depot2">Kalaburagi Depot-2</option>
+              </select>
+            </div>
+
+            <div class="filter-form-group">
+              <label for="filterFareScheme">Fare Category</label>
+              <select id="filterFareScheme" class="filter-select">
+                <option value="all">All Fares (Cash + Shakti)</option>
+                <option value="shakti">Shakti Scheme Only (Free Pass)</option>
+                <option value="cash">Paid Cash Only</option>
+              </select>
+            </div>
+
+            <button type="button" id="applyFiltersBtn" class="filter-apply-btn">
+              <span class="funnel-icon">▼</span> Apply Filters
+            </button>
+          </div>
+        </div>
+
+>>>>>>> Stashed changes:frontend/revenue.html
         <button class="icon-btn" id="downloadReportBtn" title="Print or save dashboard report" aria-label="Print or save dashboard report">⬇️</button>
         <button class="icon-btn" id="notificationsBtn" title="View operational alerts" aria-label="View operational alerts" onclick="window.location.href='alerts.html'">🔔</button>
       </div>
@@ -73,28 +138,28 @@
     <div class="section-label">Revenue Metrics</div>
     <div class="kpi-grid kpi-grid-4">
       <div class="kpi-card dark">
-        <div class="kpi-top"><div class="kpi-icon-wrap">🏛️</div><span class="pill yellow" style="font-size:10px;">Govt Subsidy</span></div>
-        <div class="kpi-value">₹2,90,929</div>
-        <div class="kpi-label">Shakti Subsidy Receivable (75.3%)</div>
-        <div class="kpi-sub">State-reimbursable women passenger fare</div>
+        <div class="kpi-top"><div class="kpi-icon-wrap">🏛️</div><span class="pill yellow" style="font-size:10px;">Fare pattern</span></div>
+        <div class="kpi-value" id="revenueShaktiValue">—</div>
+        <div class="kpi-label">Uncollected Fare Pattern (<span id="revenueShaktiShare">—</span>)</div>
+        <div class="kpi-sub">Candidate subsidy amount; eligibility requires external verification</div>
       </div>
       <div class="kpi-card">
         <div class="kpi-top"><div class="kpi-icon-wrap">💰</div><span class="kpi-trend trend-down">24.7%</span></div>
-        <div class="kpi-value">₹95,491</div>
+        <div class="kpi-value" id="revenueCashValue">—</div>
         <div class="kpi-label">Collected Cash Fare</div>
-        <div class="kpi-sub">₹2,031 avg per trip</div>
+        <div class="kpi-sub" id="revenueCashSub">Filtered ETM cash total</div>
       </div>
       <div class="kpi-card">
         <div class="kpi-top"><div class="kpi-icon-wrap">💵</div><span class="kpi-trend trend-neutral">Gross</span></div>
-        <div class="kpi-value">₹3,86,420</div>
+        <div class="kpi-value" id="revenueGrossValue">—</div>
         <div class="kpi-label">Total Billed Value</div>
-        <div class="kpi-sub">Across 19,275 tickets</div>
+        <div class="kpi-sub" id="revenueGrossSub">Filtered ETM records</div>
       </div>
       <div class="kpi-card">
         <div class="kpi-top"><div class="kpi-icon-wrap">👥</div><span class="kpi-trend trend-neutral">Per Pax</span></div>
-        <div class="kpi-value">₹11.75</div>
+        <div class="kpi-value" id="revenueAvgFareValue">—</div>
         <div class="kpi-label">Avg Fare Realization</div>
-        <div class="kpi-sub">₹2.90 cash collected avg</div>
+        <div class="kpi-sub" id="revenueAvgFareSub">Average billed fare per passenger</div>
       </div>
     </div>
   </div>
@@ -108,7 +173,7 @@
             <div class="card-head">
               <div>
                 <div class="card-title">Hourly Passenger Traffic & Demand</div>
-                <div class="card-subtitle">Hourly passenger boardings & peak fleet demand · 20 Oct 2026</div>
+                <div class="card-subtitle">Passenger boardings by hour for the selected records</div>
               </div>
               <button class="card-action" data-export-chart="hourlyChart">Export ↗</button>
             </div>
@@ -123,8 +188,8 @@
           <div class="card" id="section-revenue">
             <div class="card-head">
               <div>
-                <div class="card-title">Revenue Collection Status</div>
-                <div class="card-subtitle">Collected vs Uncollected fare</div>
+                <div class="card-title">Fare Breakdown</div>
+                <div class="card-subtitle">Collected fare vs Shakti-pattern fare; reimbursement is not verified here</div>
               </div>
             </div>
             <div class="card-body">
@@ -133,15 +198,15 @@
               </div>
               <div class="donut-stats">
                 <div class="donut-stat">
-                  <div class="donut-stat-val" style="color:#10B981;">₹95K</div>
+                  <div class="donut-stat-val" id="revenueDonutCash" style="color:#10B981;">—</div>
                   <div class="donut-stat-label">Collected</div>
                 </div>
                 <div class="donut-stat">
-                  <div class="donut-stat-val" style="color:#EF4444;">₹2.9L</div>
+                  <div class="donut-stat-val" id="revenueDonutSubsidy" style="color:#EF4444;">—</div>
                   <div class="donut-stat-label">Uncollected</div>
                 </div>
                 <div class="donut-stat">
-                  <div class="donut-stat-val">24.7%</div>
+                  <div class="donut-stat-val" id="revenueDonutEfficiency">—</div>
                   <div class="donut-stat-label">Efficiency</div>
                 </div>
               </div>
@@ -165,9 +230,8 @@
     </div><!-- /content -->
 
     <footer class="footer">
-      KSRTC Kalaburagi Division · Bus Ticket Intelligence Dashboard · Data: PS-3 Bus Ticket System · 20 Oct 2026
-      &nbsp;·&nbsp;
-      19,275 records &nbsp;·&nbsp; All amounts in INR &nbsp;·&nbsp;
+      KSRTC Kalaburagi Division · Bus Ticket Intelligence Dashboard · Filtered ETM dataset
+      &nbsp;·&nbsp; All amounts in INR &nbsp;·&nbsp;
       <strong>Hackathon PS-3 — Bus Ticket Data Analysis</strong>
     </footer>
 
@@ -180,7 +244,7 @@
   <!-- ══ RIGHT-SIDE MAP PANEL ══ -->
   <div class="float-map" id="floatMap" aria-label="Bus network map panel" aria-hidden="true">
     <div class="float-map-bar" id="floatMapBar">
-      <div class="float-map-bar-left"><span class="map-dot"></span> Kalaburagi Transit GIS</div>
+      <div class="float-map-bar-left"><span class="map-dot"></span> Kalaburagi Transit GIS · Illustrative</div>
       <div class="float-map-bar-right">
         <button class="fmap-ctrl" id="floatMapMinBtn" type="button" title="Minimise map" aria-label="Minimise map">›</button>
       </div>
@@ -198,7 +262,7 @@
           <div class="pin">📍</div>
           <h3 id="mapPlaceholderTitle">Route view preview</h3>
           <p id="mapPlaceholderText">Route summary is available in the dashboard. A geographic map requires stop coordinates or latitude/longitude values in the source dataset.</p>
-          <div class="ready-badge" id="mapReadyBadge">✦ Route data available</div>
+          <div class="ready-badge" id="mapReadyBadge">Illustrative location preview</div>
         </div>
       </div>
     </div>
@@ -206,7 +270,14 @@
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
+<<<<<<< Updated upstream:revenue.html
   <script src="common.js"></script>
+=======
+  <script src="js/common.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/charts.js"></script>
+  <script src="js/live-dashboard.js"></script>
+>>>>>>> Stashed changes:frontend/revenue.html
   <script>
 
     // Hourly Traffic Chart
@@ -216,11 +287,8 @@
         labels: hourLabels,
         datasets: [{
           label: 'Passengers',
-          data: hourly.map(h => h.passengers),
-          backgroundColor: hourly.map(h =>
-            h.passengers >= 3000 ? PURPLE :
-              h.passengers >= 1500 ? PURPLE_MID : PURPLE_SOFT
-          ),
+          data: hourly.map(() => 0),
+          backgroundColor: hourly.map(() => PURPLE_SOFT),
           borderRadius: 5,
           borderSkipped: false
         }]
@@ -242,9 +310,9 @@
     new Chart(document.getElementById('revenuePie').getContext('2d'), {
       type: 'doughnut',
       data: {
-        labels: ['Collected', 'Uncollected'],
+        labels: ['Collected', 'Shakti-pattern fare'],
         datasets: [{
-          data: [95491, 290929],
+          data: [0, 0],
           backgroundColor: [GREEN, RED],
           borderWidth: 3,
           borderColor: '#fff',
@@ -255,7 +323,10 @@
         cutout: '64%',
         plugins: {
           legend: { display: false },
-          tooltip: { callbacks: { label: ctx => ' ₹' + ctx.raw.toLocaleString() + ' (' + (ctx.raw / 386420 * 100).toFixed(1) + '%)' } }
+          tooltip: { callbacks: { label: ctx => {
+            const total = ctx.dataset.data.reduce((sum, value) => sum + Number(value || 0), 0);
+            return ' ₹' + Number(ctx.raw || 0).toLocaleString() + ' (' + (total ? (ctx.raw / total * 100).toFixed(1) : '0.0') + '%)';
+          } } }
         }
       }
     });
@@ -267,7 +338,7 @@
         labels: hourLabels,
         datasets: [{
           label: 'Collected (₹)',
-          data: hourly.map(h => h.collected),
+          data: hourly.map(() => 0),
           borderColor: GREEN,
           backgroundColor: 'rgba(16,185,129,0.1)',
           fill: true, tension: 0.4,
@@ -289,14 +360,13 @@
     });
 
     // Route Revenue Stacked
-    const topR8 = topRoutes.slice(0, 8);
     new Chart(document.getElementById('routeRevenueChart').getContext('2d'), {
       type: 'bar',
       data: {
-        labels: topR8.map(r => r.route.replace(' → ', '→').substring(0, 20)),
+      labels: [],
         datasets: [
-          { label: 'Collected', data: topR8.map(r => r.collected), backgroundColor: GREEN, borderRadius: 3 },
-          { label: 'Uncollected', data: topR8.map(r => r.uncollected), backgroundColor: RED, borderRadius: 3 }
+          { label: 'Collected', data: [], backgroundColor: GREEN, borderRadius: 3 },
+          { label: 'Shakti-pattern fare', data: [], backgroundColor: RED, borderRadius: 3 }
         ]
       },
       options: {

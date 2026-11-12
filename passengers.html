@@ -66,7 +66,7 @@
           aria-label="Open navigation" aria-expanded="false">☰</button>
         <div>
           <div class="topbar-title">Passenger Analytics & Demographics</div>
-          <div class="topbar-sub">KSRTC · Kalaburagi Division · Ridership Patterns, Demand Timing & Pickup Shares</div>
+          <div class="topbar-sub">KSRTC · Kalaburagi Division · Ridership Patterns & Pickup Shares · Age/gender demographics are illustrative; ETM data does not include them</div>
         </div>
       </div>
       <label class="search-bar" for="dashboardSearch">
@@ -76,8 +76,73 @@
         <kbd> / </kbd>
       </label>
       <div class="topbar-right">
+<<<<<<< Updated upstream:passengers.html
         <div id="backendStatusPill" style="font-size:11px; padding:3px 8px; border-radius:12px; background:rgba(0,0,0,0.04); display:inline-flex; align-items:center;"></div>
         <div class="date-badge" id="topbarDateBadge">📅 20 October 2026</div>
+=======
+        <!-- Single Filter Box with Expanding Popover (Inspired by Reference) -->
+        <div class="filter-box-container" id="filterBoxContainer">
+          <button class="filter-trigger-btn" id="filterDropdownBtn" type="button" aria-expanded="false" title="Click to open filter options">
+            <span class="filter-btn-icon">⚡</span>
+            <span>Filters</span>
+            <span class="filter-badge-dot" id="filterActiveDot"></span>
+            <span class="filter-caret" id="filterCaret">▾</span>
+          </button>
+
+          <!-- Expanding Popover Menu -->
+          <div class="filter-popover" id="filterPopover" aria-hidden="true">
+            <div class="filter-popover-header">
+              <span class="filter-popover-title">Filter Options</span>
+              <button type="button" class="filter-reset-link" id="resetFiltersBtn">Reset</button>
+            </div>
+
+            <div class="filter-form-group">
+              <label for="filterFromDate">From Date</label>
+              <input type="date" id="filterFromDate" class="filter-input" value="2026-09-20">
+            </div>
+
+            <div class="filter-form-group">
+              <label for="filterToDate">To Date</label>
+              <input type="date" id="filterToDate" class="filter-input" value="2026-10-20">
+            </div>
+
+            <div class="filter-form-group">
+              <label for="filterDivision">Division</label>
+              <select id="filterDivision" class="filter-select">
+                <option value="all">All Divisions</option>
+                <option value="kalaburagi" selected>Kalaburagi Division (KKRTC)</option>
+              </select>
+            </div>
+
+            <div class="filter-form-group">
+              <label for="filterDepot">Depot / Shift Window</label>
+              <select id="filterDepot" class="filter-select">
+                <option value="all">All Depots & Shifts</option>
+                <option value="morning">Morning Rush (06:00 – 11:00)</option>
+                <option value="midday">Midday Peak (12:00 – 16:00)</option>
+                <option value="evening">Evening Rush (17:00 – 21:00)</option>
+                <option value="night">Night Shift (22:00 – 23:00)</option>
+                <option value="depot1">Kalaburagi Depot-1</option>
+                <option value="depot2">Kalaburagi Depot-2</option>
+              </select>
+            </div>
+
+            <div class="filter-form-group">
+              <label for="filterFareScheme">Fare Category</label>
+              <select id="filterFareScheme" class="filter-select">
+                <option value="all">All Fares (Cash + Shakti)</option>
+                <option value="shakti">Shakti Scheme Only (Free Pass)</option>
+                <option value="cash">Paid Cash Only</option>
+              </select>
+            </div>
+
+            <button type="button" id="applyFiltersBtn" class="filter-apply-btn">
+              <span class="funnel-icon">▼</span> Apply Filters
+            </button>
+          </div>
+        </div>
+
+>>>>>>> Stashed changes:frontend/passengers.html
         <button class="icon-btn" id="downloadReportBtn" title="Print or save dashboard report"
           aria-label="Print or save dashboard report">⬇️</button>
         <button class="icon-btn" id="notificationsBtn" title="View operational alerts"
@@ -253,7 +318,7 @@
             <div class="card-head">
               <div>
                 <div class="card-title">Passengers per Ticket (Party Size)</div>
-                <div class="card-subtitle">Proportion of solo, paired, and group tickets issued</div>
+                <div class="card-subtitle">Illustrative split only; group-size values are not currently hydrated from the selected records</div>
               </div>
               <button class="card-action" data-export-chart="groupSizeChart">Export ↗</button>
             </div>
@@ -405,7 +470,7 @@
   <!-- ══ RIGHT-SIDE MAP PANEL ══ -->
   <div class="float-map" id="floatMap" aria-label="Bus network map panel" aria-hidden="true">
     <div class="float-map-bar" id="floatMapBar">
-      <div class="float-map-bar-left"><span class="map-dot"></span> Kalaburagi Transit GIS</div>
+      <div class="float-map-bar-left"><span class="map-dot"></span> Kalaburagi Transit GIS · Illustrative</div>
       <div class="float-map-bar-right">
         <button class="fmap-ctrl" id="floatMapMinBtn" type="button" title="Minimise map"
           aria-label="Minimise map">›</button>
@@ -425,7 +490,7 @@
           <h3 id="mapPlaceholderTitle">Route view preview</h3>
           <p id="mapPlaceholderText">Route summary is available in the dashboard. A geographic map requires stop
             coordinates or latitude/longitude values in the source dataset.</p>
-          <div class="ready-badge" id="mapReadyBadge">✦ Route data available</div>
+          <div class="ready-badge" id="mapReadyBadge">Illustrative location preview</div>
         </div>
       </div>
     </div>
@@ -433,7 +498,14 @@
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
+<<<<<<< Updated upstream:passengers.html
   <script src="common.js"></script>
+=======
+  <script src="js/common.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/charts.js"></script>
+  <script src="js/live-dashboard.js"></script>
+>>>>>>> Stashed changes:frontend/passengers.html
   <script>
     // ══ DATASETS ══
     const topBusesData = [

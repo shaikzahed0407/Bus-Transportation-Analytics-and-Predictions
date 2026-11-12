@@ -4,7 +4,7 @@ Standardizes raw ETM ticket transactions from Excel or JSON.
 """
 import pandas as pd
 import numpy as np
-from datetime import datetime, time
+from datetime import datetime, time, timedelta
 
 # Stop name normalization map for Kalaburagi Division
 STOP_NORM_MAP = {
@@ -64,6 +64,15 @@ def clean_ticket_data(df: pd.DataFrame) -> pd.DataFrame:
     }
     df = df.rename(columns=lambda c: col_map.get(str(c).strip(), str(c).strip().lower().replace(' ', '_')))
 
+    # Excel dates are day serials (the supplied ETM data uses 1899-12-30 epoch).
+    def parse_date(value):
+        if pd.isna(value):
+            return pd.NaT
+        if isinstance(value, (int, float)) and 20000 <= value <= 80000:
+            return pd.Timestamp('1899-12-30') + pd.to_timedelta(float(value), unit='D')
+        return pd.to_datetime(value, errors='coerce')
+    df['date'] = df['date'].apply(parse_date).dt.strftime('%Y-%m-%d')
+
     # Drop unneeded notes column if present
     if 'notes' in df.columns:
         df = df.drop(columns=['notes'])
@@ -109,9 +118,11 @@ def clean_ticket_data(df: pd.DataFrame) -> pd.DataFrame:
                 return int(parts[0])
             except Exception:
                 pass
-        return 12  # default midday fallback
+        return -1  # invalid times remain visible and are excluded from hour windows
 
     df['hour'] = df['time'].apply(parse_hour)
+    if 'data_status' not in df.columns:
+        df['data_status'] = 'Source sample'
 
     # 6. Waybill to Bus Number string mapping
     df['waybill_id'] = df['waybill_number'].astype(str)

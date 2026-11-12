@@ -4,14 +4,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Reports & Tables | KSRTC Kalaburagi Division</title>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <title>Data Sheet | KSRTC Kalaburagi Division</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 
-<body>
+<body class="data-sheet-page">
 
   <!-- ══ COLLAPSIBLE SIDEBAR ══ -->
   <aside class="sidebar" id="sidebar" aria-label="Main navigation">
@@ -50,18 +47,81 @@
       <div class="topbar-left">
         <button class="mobile-sidebar-btn" id="mobileSidebarToggle" type="button" title="Open navigation" aria-label="Open navigation" aria-expanded="false">☰</button>
         <div>
-          <div class="topbar-title">Reports & Tables</div>
-          <div class="topbar-sub">KSRTC · Kalaburagi Division · Operations Intelligence</div>
+          <div class="topbar-title">Data Sheet</div>
+          <div class="topbar-sub">KSRTC · Kalaburagi Division · ETM Ticket Records</div>
         </div>
       </div>
-      <label class="search-bar" for="dashboardSearch">
+      <label class="search-bar" for="datasetSearch">
         <span aria-hidden="true">🔍</span>
-        <input id="dashboardSearch" type="search" placeholder="Search routes and stops…" autocomplete="off" aria-label="Search tables">
+        <input id="datasetSearch" type="search" placeholder="Search ticket records…" autocomplete="off" aria-label="Search ticket dataset">
         <kbd> / </kbd>
       </label>
       <div class="topbar-right">
+<<<<<<< Updated upstream:reports.html
         <div id="backendStatusPill" style="font-size:11px; padding:3px 8px; border-radius:12px; background:rgba(0,0,0,0.04); display:inline-flex; align-items:center;"></div>
         <div class="date-badge" id="topbarDateBadge">📅 20 October 2026</div>
+=======
+        <!-- Single Filter Box with Expanding Popover (Inspired by Reference) -->
+        <div class="filter-box-container" id="filterBoxContainer">
+          <button class="filter-trigger-btn" id="filterDropdownBtn" type="button" aria-expanded="false" title="Click to open filter options">
+            <span class="filter-btn-icon">⚡</span>
+            <span>Filters</span>
+            <span class="filter-badge-dot" id="filterActiveDot"></span>
+            <span class="filter-caret" id="filterCaret">▾</span>
+          </button>
+
+          <!-- Expanding Popover Menu -->
+          <div class="filter-popover" id="filterPopover" aria-hidden="true">
+            <div class="filter-popover-header">
+              <span class="filter-popover-title">Filter Options</span>
+              <button type="button" class="filter-reset-link" id="resetFiltersBtn">Reset</button>
+            </div>
+
+            <div class="filter-form-group">
+              <label for="filterFromDate">From Date</label>
+              <input type="date" id="filterFromDate" class="filter-input" value="2026-09-20">
+            </div>
+
+            <div class="filter-form-group">
+              <label for="filterToDate">To Date</label>
+              <input type="date" id="filterToDate" class="filter-input" value="2026-10-20">
+            </div>
+
+            <div class="filter-form-group">
+              <label for="filterDivision">Division</label>
+              <select id="filterDivision" class="filter-select">
+                <option value="all">All Divisions</option>
+                <option value="kalaburagi" selected>Kalaburagi Division (KKRTC)</option>
+              </select>
+            </div>
+
+            <div class="filter-form-group">
+              <label for="filterDepot">Time Window</label>
+              <select id="filterDepot" class="filter-select">
+                <option value="all">All time windows</option>
+                <option value="morning">Morning Rush (06:00 – 11:00)</option>
+                <option value="midday">Midday Peak (12:00 – 16:00)</option>
+                <option value="evening">Evening Rush (17:00 – 21:00)</option>
+                <option value="night">Night Shift (22:00 – 23:00)</option>
+              </select>
+            </div>
+
+            <div class="filter-form-group">
+              <label for="filterFareScheme">Fare Category</label>
+              <select id="filterFareScheme" class="filter-select">
+                <option value="all">All Fares (Cash + Shakti)</option>
+                <option value="shakti">Shakti Scheme Only (Free Pass)</option>
+                <option value="cash">Paid Cash Only</option>
+              </select>
+            </div>
+
+            <button type="button" id="applyFiltersBtn" class="filter-apply-btn">
+              <span class="funnel-icon">▼</span> Apply Filters
+            </button>
+          </div>
+        </div>
+
+>>>>>>> Stashed changes:frontend/reports.html
         <button class="icon-btn" id="downloadReportBtn" title="Print or save dashboard report" aria-label="Print or save dashboard report">⬇️</button>
         <button class="icon-btn" id="notificationsBtn" title="View operational alerts" aria-label="View operational alerts" onclick="window.location.href='alerts.html'">🔔</button>
       </div>
@@ -69,6 +129,7 @@
 
     <!-- CONTENT -->
     <div class="content">
+<<<<<<< Updated upstream:reports.html
 
       <!-- ── DATA GOVERNANCE & PRIVACY AUDIT BADGE ── -->
       <div style="background:var(--card-bg, #ffffff); border:1px solid var(--border); border-left:4px solid #10B981; border-radius:var(--radius-sm, 8px); padding:12px 16px; margin-bottom:16px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
@@ -110,90 +171,50 @@
                 <tbody id="stopTableBody"></tbody>
               </table>
             </div>
+=======
+      <div class="section-label">Electronic Ticketing Machine Dataset</div>
+      <section class="card data-sheet-card" aria-labelledby="sheetTitle">
+        <div class="card-head data-sheet-head">
+          <div>
+            <div class="card-title" id="sheetTitle">Ticket-level records</div>
+            <div class="card-subtitle">Source fields, fare split, and synthetic-data provenance. Use the date and fare filters above to narrow the sheet.</div>
+>>>>>>> Stashed changes:frontend/reports.html
           </div>
+          <button class="card-action" id="downloadDatasetBtn" type="button">⬇ Download CSV</button>
         </div>
-      </div>
-
-    
-<!-- ── TOP ROUTES TABLE ── -->
-      <div>
-        <div class="section-label" id="section-routes">Route Performance</div>
-        <div class="card">
-          <div class="card-head">
-            <div>
-              <div class="card-title">Top 15 Routes by Passenger Volume</div>
-              <div class="card-subtitle">Sorted by total boardings · Revenue in INR</div>
-            </div>
-            <button class="card-action" data-action="view-all-routes">View All ↗</button>
-          </div>
-          <div class="card-body" style="padding-top:0;">
-            <div class="tbl-wrap">
-              <table id="routeTable">
-                <thead>
-                  <tr>
-                    <th>#</th>
-                    <th>From</th>
-                    <th>To</th>
-                    <th>Passengers</th>
-                    <th>Volume</th>
-                    <th>Collected (₹)</th>
-                    <th>Uncollected (₹)</th>
-                    <th>Tickets</th>
-                    <th>Collection Rate</th>
-                  </tr>
-                </thead>
-                <tbody id="routeTableBody"></tbody>
-              </table>
-            </div>
-          </div>
+        <div class="data-sheet-toolbar">
+          <div id="datasetCount" class="data-sheet-count" aria-live="polite">Loading records…</div>
+          <label class="data-sheet-page-size">Rows per page
+            <select id="datasetPageSize" class="filter-select"><option>25</option><option selected>50</option><option>100</option><option>250</option></select>
+          </label>
         </div>
-      </div>
-
-      
+        <div class="data-sheet-table-wrap">
+          <table class="data-sheet-table" id="datasetTable">
+            <thead>
+              <tr class="data-sheet-groups"><th colspan="3">Record identity</th><th colspan="5">Journey</th><th colspan="4">Passengers & fare (INR)</th><th colspan="2">Classification</th></tr>
+              <tr><th>Date</th><th>Waybill</th><th>Ticket no.</th><th>From stop</th><th>To stop</th><th>Route</th><th>Time</th><th>Hour</th><th>Passengers</th><th>Collected</th><th>Uncollected</th><th>Total fare</th><th>Shakti pattern</th><th>Data source</th></tr>
+            </thead>
+            <tbody id="datasetTableBody"><tr><td colspan="14" class="data-sheet-empty">Loading ticket records…</td></tr></tbody>
+          </table>
+        </div>
+        <div class="data-sheet-pagination">
+          <span id="datasetPageLabel">Page 1</span>
+          <div><button class="btn btn-secondary" id="datasetPrevBtn" type="button" disabled>Previous</button><button class="btn btn-secondary" id="datasetNextBtn" type="button" disabled>Next</button></div>
+        </div>
+      </section>
     </div><!-- /content -->
 
     <footer class="footer">
-      KSRTC Kalaburagi Division · Bus Ticket Intelligence Dashboard · Data: PS-3 Bus Ticket System · 20 Oct 2026
-      &nbsp;·&nbsp;
-      19,275 records &nbsp;·&nbsp; All amounts in INR &nbsp;·&nbsp;
+      KSRTC Kalaburagi Division · Bus Ticket Intelligence Dashboard · ETM ticket records
+      &nbsp;·&nbsp; All amounts in INR &nbsp;·&nbsp;
       <strong>Hackathon PS-3 — Bus Ticket Data Analysis</strong>
     </footer>
 
   </div><!-- /main-wrapper -->
 
-  <!-- Map launcher remains visible at the right edge when the drawer is closed. -->
-  <button class="map-launcher" id="mapLauncher" type="button" title="Open map" aria-label="Open map">🗺️</button>
-  <button class="map-backdrop" id="mapBackdrop" type="button" aria-label="Close map"></button>
-
-  <!-- ══ RIGHT-SIDE MAP PANEL ══ -->
-  <div class="float-map" id="floatMap" aria-label="Bus network map panel" aria-hidden="true">
-    <div class="float-map-bar" id="floatMapBar">
-      <div class="float-map-bar-left"><span class="map-dot"></span> Kalaburagi Transit GIS</div>
-      <div class="float-map-bar-right">
-        <button class="fmap-ctrl" id="floatMapMinBtn" type="button" title="Minimise map" aria-label="Minimise map">›</button>
-      </div>
-    </div>
-
-    <div class="float-map-tabs" id="floatMapTabs">
-      <button class="fmap-tab active">Routes</button>
-      <button class="fmap-tab">Zones</button>
-      <button class="fmap-tab">Heatmap</button>
-    </div>
-
-    <div class="float-map-body">
-      <div id="google-map-container">
-        <div class="float-map-placeholder">
-          <div class="pin">📍</div>
-          <h3 id="mapPlaceholderTitle">Route view preview</h3>
-          <p id="mapPlaceholderText">Route summary is available in the dashboard. A geographic map requires stop coordinates or latitude/longitude values in the source dataset.</p>
-          <div class="ready-badge" id="mapReadyBadge">✦ Route data available</div>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
+<<<<<<< Updated upstream:reports.html
   <script src="common.js"></script>
   <script>
 
@@ -254,6 +275,11 @@
     }
 
   </script>
+=======
+  <script src="js/common.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/dataset-sheet.js"></script>
+>>>>>>> Stashed changes:frontend/reports.html
 </body>
 
 </html>

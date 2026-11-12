@@ -206,11 +206,11 @@
           <div class="kpi-card">
             <div class="kpi-top">
               <div class="kpi-icon-wrap">🎯</div>
-              <span class="pill green">High Acc</span>
+              <span class="pill yellow">Synthetic demo</span>
             </div>
-            <div class="kpi-value">94.2%</div>
-            <div class="kpi-label">Model Accuracy</div>
-            <div class="kpi-sub">Trained on 19,275 ETM records</div>
+            <div class="kpi-value">7-day</div>
+            <div class="kpi-label">Rolling Validation</div>
+            <div class="kpi-sub" id="forecastModelNote">Loading validation metrics…</div>
           </div>
 
         </div>
@@ -290,7 +290,7 @@
             <div class="card-head">
               <div>
                 <div class="card-title">Corridor Fleet Optimization (Current vs. AI Recommended)</div>
-                <div class="card-subtitle">Identifies under-served corridors and surplus route reallocation</div>
+                <div class="card-subtitle">Illustrative allocation scenario; route capacity and schedule data are not in this sample</div>
               </div>
               <button class="card-action" data-export-chart="fleetOptChart">Export ↗</button>
             </div>
@@ -361,12 +361,12 @@
 
       <!-- ── SECTION 3: ROUTE OVERCROWDING & BOTTLENECK RISK AUDIT TABLE ── -->
       <div>
-        <div class="section-label">Predictive Corridor Overcrowding & Route Vulnerability Ledger</div>
+        <div class="section-label">Illustrative Corridor Scenario Ledger</div>
         <div class="card">
           <div class="card-head">
             <div>
               <div class="card-title">High-Vulnerability Transit Corridors — Bottleneck Risk Ranking</div>
-              <div class="card-subtitle">Real-time risk scoring, forecasted passenger load & AI dispatch intervention</div>
+              <div class="card-subtitle">Static demo recommendations; ETM sample lacks capacity, schedules, and dispatch records</div>
             </div>
             <button class="card-action" data-export-table="predTable">Export CSV ↗</button>
           </div>
@@ -399,7 +399,7 @@
     <footer class="footer">
       KSRTC Kalaburagi Division · AI Predictive Analytics Engine · Model Version: K-Trans-v2.4
       &nbsp;·&nbsp;
-      Trained on 19,275 ETM records &nbsp;·&nbsp; 
+      Validation history includes synthetic demo records &nbsp;·&nbsp; 
       <strong>Hackathon PS-3 — Bus Ticket Data Analysis & Demand Prediction</strong>
     </footer>
 
@@ -412,7 +412,7 @@
   <!-- ══ RIGHT-SIDE MAP PANEL ══ -->
   <div class="float-map" id="floatMap" aria-label="Bus network map panel" aria-hidden="true">
     <div class="float-map-bar" id="floatMapBar">
-      <div class="float-map-bar-left"><span class="map-dot"></span> Kalaburagi Transit GIS</div>
+      <div class="float-map-bar-left"><span class="map-dot"></span> Kalaburagi Transit GIS · Illustrative</div>
       <div class="float-map-bar-right">
         <button class="fmap-ctrl" id="floatMapMinBtn" type="button" title="Minimise map" aria-label="Minimise map">›</button>
       </div>
@@ -434,6 +434,7 @@
   <script src="js/common.js"></script>
   <script src="js/api.js"></script>
   <script src="js/charts.js"></script>
+  <script src="js/live-dashboard.js"></script>
   <script>
     // ══ AI PREDICTION DATASETS ══
     const hours = ['06:00', '07:00', '08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00'];
@@ -442,7 +443,7 @@
     const upperConfidencePax = predictedHourlyPax.map(v => Math.round(v * 1.08));
     const lowerConfidencePax = predictedHourlyPax.map(v => Math.round(v * 0.94));
 
-    // ── Chart 1: Time Series Forecast with 95% Confidence Interval ──
+    // ── Chart 1: Time Series Forecast with observed validation-error range ──
     new Chart(document.getElementById('demandForecastChart').getContext('2d'), {
       type: 'line',
       data: {
@@ -468,7 +469,7 @@
             fill: false
           },
           {
-            label: 'Upper 95% Bound',
+            label: 'Upper validation range',
             data: upperConfidencePax,
             borderColor: 'rgba(139,92,246,0.2)',
             borderDash: [4, 4],
@@ -478,7 +479,7 @@
             backgroundColor: 'rgba(139,92,246,0.1)'
           },
           {
-            label: 'Lower 95% Bound',
+            label: 'Lower validation range',
             data: lowerConfidencePax,
             borderColor: 'rgba(139,92,246,0.2)',
             borderDash: [4, 4],

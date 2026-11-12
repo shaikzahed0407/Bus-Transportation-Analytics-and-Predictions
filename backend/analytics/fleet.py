@@ -11,7 +11,7 @@ def get_fleet_statistics(df: pd.DataFrame) -> List[Dict[str, Any]]:
     """
     grouped = df.groupby('waybill_id').agg(
         passengers=('passengers', 'sum'),
-        tickets=('ticket_number', 'count'),
+        tickets=('ticket_number', 'nunique'),
         collected=('collected_fare', 'sum'),
         subsidy=('subsidy_fare', 'sum'),
         totalFare=('total_fare', 'sum'),

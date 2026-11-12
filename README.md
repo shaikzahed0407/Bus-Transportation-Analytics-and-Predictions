@@ -1,5 +1,15 @@
 # KSRTC Kalaburagi Division — BusPulse Analytics Platform
 
+> **Dataset note:** The repository includes one supplied ETM day and 30 clearly labeled synthetic demo days. The synthetic days are generated from the source day's ticket patterns with deterministic weekday and volume variation; they are for interface and forecasting demonstrations, not operational evidence.
+
+> **Forecast note:** The forecast uses hourly trend and weekday effects, evaluated on a rolling seven-day holdout. The history contains synthetic days, so its error scores are illustrative and do not demonstrate real-world forecast accuracy. Its shaded error range is not a formal confidence interval.
+
+For local development, the app uses the bundled local sample data by default. Set `DATA_SOURCE=supabase` only when the Supabase table has been populated and you intend the server to read/write that database.
+
+### Dataset administration login
+
+Settings dataset management endpoints require an authenticated admin session and CSRF token. For local development only, the sample login is `admin@gmail.com` / `Admin123`. Before deploying, configure `ADMIN_EMAIL` and a unique `ADMIN_PASSWORD` in Render; the Blueprint generates `SECRET_KEY`. The local demo credentials are disabled in production mode. Login attempts are temporarily blocked after five failures from the same IP.
+
 > **Hackathon PS-3**: Electronic Ticketing Machine (ETM) Analytics, Shakti Scheme Subsidy Audit, and Predictive Bus Transit Intelligence.
 
 ---
@@ -11,7 +21,7 @@
 It processes 19,275+ daily electronic ticketing machine (ETM) transactions across 47 active division buses to provide:
 1. **Real-time Operational Intelligence**: Peak commuter surge tracking, corridor ridership, and bus fleet load factor.
 2. **Karnataka Shakti Scheme Audit Ledger**: Transparent accounting separating cash collections from Government of Karnataka free travel subsidy reimbursables (preventing false alerts of conductor fraud).
-3. **AI Predictive Fleet Optimization**: 24-hour demand forecasting with 95% confidence intervals and an interactive "What-If" policy simulator.
+3. **Demand Forecast Prototype**: 24-hour demand estimate with a rolling seven-day validation summary and an interactive "What-If" simulator. Forecast scores remain illustrative while synthetic data is included.
 4. **Interactive GIS Network Drawer**: Leaflet.js CartoDB interactive map rendering Kalaburagi's 12 major transit terminals and top passenger corridors.
 
 ---
@@ -99,8 +109,12 @@ The server will warm up the ticket cache in memory (<1 sec) and start at:
 
 | Endpoint | Method | Description |
 |---|---|---|
+<<<<<<< Updated upstream
 | `/api/v1/health` | `GET` | Service status and records count (19,275 rows) |
 | `/api/v1/data/upload` | `POST` | Upload & re-analyze new ETM dataset (.xlsx, .csv, .json) |
+=======
+| `/api/v1/health` | `GET` | Service status, record count, date range, and source/synthetic data counts |
+>>>>>>> Stashed changes
 | `/api/v1/kpi/summary` | `GET` | Top-level division KPIs (passengers, cash, subsidy, fleet) |
 | `/api/v1/analytics/hourly` | `GET` | 24-hour passenger curve, trips, and peak hour windows |
 | `/api/v1/analytics/routes` | `GET` | High-frequency corridors (Budhavihar ↔ CBS, etc.) |
@@ -108,7 +122,7 @@ The server will warm up the ticket cache in memory (<1 sec) and start at:
 | `/api/v1/analytics/buses` | `GET` | 47-bus fleet & Conductor Shift duty performance |
 | `/api/v1/analytics/revenue` | `GET` | Cash collections vs. Karnataka Shakti Subsidy claim |
 | `/api/v1/analytics/alerts` | `GET` | Active diagnostic alerts (overcrowding, maintenance) |
-| `/api/v1/ai/forecast` | `GET` | Tomorrow's demand forecast with 95% confidence bands |
+| `/api/v1/ai/forecast` | `GET` | Next-day hourly estimate with rolling holdout error range (not a formal confidence interval) |
 | `/api/v1/ai/simulate` | `POST` | What-If Simulator (`{"growth_pct": 10, "shakti_pct": 80}`) |
 
 ---

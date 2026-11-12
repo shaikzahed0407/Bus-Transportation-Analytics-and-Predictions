@@ -1,14 +1,40 @@
-"""
-KSRTC Kalaburagi Division - AI Analytics & Predictive Intelligence
-Implements demand forecasting, confidence interval bands, and an interactive What-If simulation engine.
-"""
+"""Time-series baseline forecasting and scenario simulation."""
 import math
+from typing import Any, Dict
+
+import numpy as np
 import pandas as pd
-from typing import Dict, Any, List
-from .demand import get_hourly_demand
+
+
+def _daily_hourly(df):
+    valid = df[(df.hour >= 6) & (df.hour <= 23)].copy()
+    if valid.empty:
+        return pd.DataFrame()
+    valid['date'] = pd.to_datetime(valid['date'], errors='coerce')
+    return valid.pivot_table(index='date', columns='hour', values='passengers', aggfunc='sum', fill_value=0).reindex(columns=range(6, 24), fill_value=0).sort_index()
+
+
+def _features(dates, origin):
+    dates = pd.DatetimeIndex(dates)
+    trend = (dates - origin).days.to_numpy(dtype=float) / 7.0
+    weekday = pd.get_dummies(dates.day_of_week).reindex(columns=range(6), fill_value=0).to_numpy(dtype=float)
+    return np.column_stack([np.ones(len(dates)), trend, weekday])
+
+
+def _ridge_predict(train_dates, train_values, target_dates, origin):
+    x_train = _features(train_dates, origin)
+    x_target = _features(target_dates, origin)
+    penalty = np.diag([0.0, 0.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5])
+    coefficients = np.linalg.solve(x_train.T @ x_train + penalty, x_train.T @ train_values)
+    return np.maximum(0, x_target @ coefficients)
+
 
 def get_demand_forecast(df: pd.DataFrame) -> Dict[str, Any]:
+    """Predict next-day hourly demand from recent daily hourly profiles.
+
+    Fits a regularized trend plus day-of-week effects. Scores a rolling 7-day holdout.
     """
+<<<<<<< Updated upstream
     Generates 24-hour demand prediction using time-series rolling trend decomposition,
     peak commuter elasticity, and empirical confidence interval bands (95% CI).
     """
@@ -76,55 +102,67 @@ def get_demand_forecast(df: pd.DataFrame) -> Dict[str, Any]:
             "confidence_band": "95% Empirical Interval"
         },
         "vulnerable_corridors": vulnerable_corridors
-    }
-
-def simulate_what_if(
-    df: pd.DataFrame,
-    ridership_growth_pct: float = 0.0,
-    shakti_share_pct: float = 75.0,
-    tariff_adj_pct: float = 0.0
-) -> Dict[str, Any]:
-    """
-    Simulates operational and financial impact under varying policy scenarios:
-    - ridership_growth_pct: -20% to +50%
-    - shakti_share_pct: 50% to 90%
-    - tariff_adj_pct: -15% to +30%
-    """
-    total_base_pax = int(df['passengers'].sum()) if 'passengers' in df.columns else 32883
-    base_collected = float(df['collected_fare'].sum()) if 'collected_fare' in df.columns else 96372.0
-    base_subsidy = float(df['subsidy_fare'].sum()) if 'subsidy_fare' in df.columns else 290929.0
-    base_total = base_collected + base_subsidy
-
-    # Compute simulated ridership
-    sim_pax = int(round(total_base_pax * (1 + (ridership_growth_pct / 100.0))))
-
-    # Base fare per passenger adjusted by tariff
-    avg_fare_per_pax = (base_total / total_base_pax) * (1 + (tariff_adj_pct / 100.0))
-    sim_gross_fare = sim_pax * avg_fare_per_pax
-
-    # Split into cash vs state subsidy
-    shakti_ratio = max(0.0, min(1.0, shakti_share_pct / 100.0))
-    sim_subsidy = sim_gross_fare * shakti_ratio
-    sim_cash = sim_gross_fare * (1.0 - shakti_ratio)
-
-    # Bus fleet requirement
-    # Base 47 buses carrying 32,883 pax = ~700 pax/bus/day capacity
-    base_buses = 47
-    sim_buses_required = int(math.ceil(base_buses * (sim_pax / total_base_pax)))
-    bus_deficit = sim_buses_required - base_buses
-
+=======
+    daily = _daily_hourly(df)
+    hours = list(range(6, 24))
+    if daily.empty:
+        return {'labels': [], 'actual': [], 'predicted': [], 'upper_ci': [], 'lower_ci': [], 'tomorrow_projected_pax': 0, 'model_name': 'Insufficient data', 'validation_mae': None, 'validation_mape_pct': None, 'training_days': 0, 'data_quality': 'No valid dated records'}
+    values = daily.to_numpy(dtype=float)
+    n = len(values)
+    origin = daily.index[0]
+    if n >= 15:
+        first_test = max(14, n - 7)
+        predictions_holdout = []
+        actual_holdout = []
+        for test_i in range(first_test, n):
+            train_start = max(0, test_i - 28)
+            pred = _ridge_predict(daily.index[train_start:test_i], values[train_start:test_i], [daily.index[test_i]], origin)[0]
+            predictions_holdout.append(pred)
+            actual_holdout.append(values[test_i])
+        holdout_preds = np.asarray(predictions_holdout)
+        holdout_actuals = np.asarray(actual_holdout)
+        abs_errors = np.abs(holdout_preds - holdout_actuals)
+        mae = float(abs_errors.mean())
+        mape = float((abs_errors / np.maximum(holdout_actuals, 1)).mean() * 100)
+        error_band = np.quantile(abs_errors, 0.9, axis=0)
+    else:
+        holdout_preds = holdout_actuals = None
+        error_band = np.maximum(values.mean(axis=0) * .15, 1)
+        mae = mape = None
+    train_start = max(0, n - 28)
+    next_day = daily.index[-1] + pd.Timedelta(days=1)
+    prediction = _ridge_predict(daily.index[train_start:], values[train_start:], [next_day], origin)[0] if n >= 8 else values.mean(axis=0)
+    predictions = np.rint(prediction).astype(int).tolist()
+    last = values[-1].astype(int).tolist()
+    # Preserve the synthetic-data caveat in returned metadata.
+    synthetic = bool((df.get('data_status', pd.Series(dtype=str)) == 'Synthetic demo data').any())
     return {
-        "scenario": {
-            "ridership_growth_pct": ridership_growth_pct,
-            "shakti_share_pct": shakti_share_pct,
-            "tariff_adj_pct": tariff_adj_pct
-        },
-        "projected_passengers": sim_pax,
-        "projected_cash_revenue": round(sim_cash, 2),
-        "projected_shakti_subsidy": round(sim_subsidy, 2),
-        "projected_gross_fare": round(sim_gross_fare, 2),
-        "buses_required": sim_buses_required,
-        "fleet_deficit": bus_deficit,
-        "status": "Fleet Overloaded" if bus_deficit > 0 else "Fleet Optimal"
+        'labels': [f'{h % 12 or 12}:00 {"AM" if h < 12 else "PM"}' for h in hours],
+        'hours': hours, 'actual': last, 'predicted': predictions,
+        'upper_ci': [int(round(p + e)) for p, e in zip(predictions, error_band)],
+        'lower_ci': [max(0, int(round(p - e))) for p, e in zip(predictions, error_band)],
+        'tomorrow_projected_pax': int(sum(predictions)),
+        'model_name': 'Ridge trend + weekday effects', 'validation_mae': round(mae, 1) if mae is not None else None,
+        'validation_mape_pct': round(mape, 1) if mape is not None else None,
+        'training_days': max(0, n - min(7, max(0, n - 14))), 'validation_days': min(7, max(0, n - 14)), 'data_days': n,
+        'data_quality': 'Includes synthetic demo days; illustrative only' if synthetic else 'Source data only',
+        'confidence_note': 'Shaded range uses the 90th percentile of rolling holdout absolute errors; it is not a formal confidence interval.',
+        'prediction_interval_method': 'Rolling holdout absolute error p90'
+>>>>>>> Stashed changes
     }
 
+
+def simulate_what_if(df, ridership_growth_pct=0.0, shakti_share_pct=75.0, tariff_adj_pct=0.0):
+    total_base_pax = int(df['passengers'].sum()) if len(df) and 'passengers' in df else 0
+    base_collected = float(df['collected_fare'].sum()) if len(df) else 0.0
+    base_subsidy = float(df['subsidy_fare'].sum()) if len(df) else 0.0
+    base_total = base_collected + base_subsidy
+    growth = max(-100.0, min(300.0, float(ridership_growth_pct)))
+    tariff = max(-100.0, min(300.0, float(tariff_adj_pct)))
+    sim_pax = int(round(total_base_pax * (1 + growth / 100)))
+    fare = base_total / total_base_pax if total_base_pax else 0
+    gross = sim_pax * fare * (1 + tariff / 100)
+    share = max(0.0, min(1.0, float(shakti_share_pct) / 100))
+    buses = int(df['waybill_id'].nunique()) if len(df) and 'waybill_id' in df else 0
+    required = int(math.ceil(buses * sim_pax / total_base_pax)) if total_base_pax else 0
+    return {'scenario': {'ridership_growth_pct': growth, 'shakti_share_pct': share * 100, 'tariff_adj_pct': tariff}, 'projected_passengers': sim_pax, 'projected_cash_revenue': round(gross * (1-share), 2), 'projected_shakti_subsidy': round(gross * share, 2), 'projected_gross_fare': round(gross, 2), 'buses_required': required, 'fleet_deficit': required - buses, 'status': 'Fleet estimate is proportional to observed buses and ridership; not capacity based.'}

@@ -22,7 +22,8 @@ class TestBusPulseAPI(unittest.TestCase):
         self.assertEqual(res.status_code, 200)
         data = res.get_json()
         self.assertEqual(data['status'], 'healthy')
-        self.assertEqual(data['records_loaded'], 19275)
+        self.assertGreater(data['records_loaded'], 19275)
+        self.assertEqual(len(data['date_range']), 31)
 
     def test_kpi_summary(self):
         res = self.client.get('/api/v1/kpi/summary')
@@ -71,6 +72,32 @@ class TestBusPulseAPI(unittest.TestCase):
         data = res.get_json()
         self.assertIn('predicted', data)
         self.assertGreater(len(data['predicted']), 0)
+        self.assertEqual(data['data_days'], 31)
+        self.assertEqual(data['validation_days'], 7)
+        self.assertIn('validation_mae', data)
+
+    def test_date_filter(self):
+        first = self.client.get('/api/v1/kpi/summary?from_date=2026-09-20&to_date=2026-09-20').get_json()
+        later = self.client.get('/api/v1/kpi/summary?from_date=2026-09-21&to_date=2026-09-26').get_json()
+        self.assertGreater(first['total_passengers'], 0)
+        self.assertGreater(later['total_passengers'], first['total_passengers'])
+
+    def test_settings_requires_admin_and_csrf(self):
+        self.assertEqual(self.client.get('/api/v1/data/status').status_code, 401)
+        auth = self.client.get('/api/v1/auth/status').get_json()
+        csrf = auth['csrf_token']
+        denied = self.client.post('/api/v1/auth/login', json={
+            'email': 'admin@gmail.com', 'password': 'Admin123'
+        })
+        self.assertEqual(denied.status_code, 403)
+        login = self.client.post('/api/v1/auth/login', json={
+            'email': 'admin@gmail.com', 'password': 'Admin123'
+        }, headers={'X-CSRF-Token': csrf})
+        self.assertEqual(login.status_code, 200)
+        self.assertEqual(self.client.get('/api/v1/data/status').status_code, 200)
+        csrf = login.get_json()['csrf_token']
+        self.assertEqual(self.client.post('/api/v1/auth/logout', headers={'X-CSRF-Token': csrf}).status_code, 200)
+        self.assertEqual(self.client.get('/api/v1/data/status').status_code, 401)
 
     def test_ai_simulation(self):
         res = self.client.post('/api/v1/ai/simulate', json={
